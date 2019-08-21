@@ -1,0 +1,118 @@
+[debug] [2019-08-21T15:43:42.126Z] ----------------------------------------------------------------------
+[debug] [2019-08-21T15:43:42.127Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --token 1/XnAnV6yXsG5aYHFMfUnXQgV7r_irFcwSZiMnIR9W6Vg
+[debug] [2019-08-21T15:43:42.128Z] CLI Version:   7.2.4
+[debug] [2019-08-21T15:43:42.128Z] Platform:      darwin
+[debug] [2019-08-21T15:43:42.128Z] Node Version:  v10.13.0
+[debug] [2019-08-21T15:43:42.128Z] Time:          Wed Aug 21 2019 11:43:42 GMT-0400 (Eastern Daylight Time)
+[debug] [2019-08-21T15:43:42.128Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-08-21T15:43:42.134Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-08-21T15:43:42.134Z] > authorizing via --token option
+[debug] [2019-08-21T15:43:42.134Z] [iam] checking project writingrelay for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2019-08-21T15:43:42.135Z] > refreshing access token with scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-08-21T15:43:42.135Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-08-21T15:43:42.338Z] <<< HTTP RESPONSE 200
+[debug] [2019-08-21T15:43:42.339Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/writingrelay:testIamPermissions  
+
+[debug] [2019-08-21T15:43:42.667Z] <<< HTTP RESPONSE 200
+[debug] [2019-08-21T15:43:42.669Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/writingrelay  
+ 
+[debug] [2019-08-21T15:43:42.939Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'writingrelay'...
+[info] 
+[info] i  deploying hosting
+[debug] [2019-08-21T15:43:42.944Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/writingrelay/versions  
+
+[debug] [2019-08-21T15:43:43.795Z] <<< HTTP RESPONSE 200
+[info] i  hosting[writingrelay]: beginning deploy...
+[info] i  hosting[writingrelay]: found 14 files in build
+[debug] [2019-08-21T15:43:43.807Z] [hosting] hash cache [YnVpbGQ] load error: lines is not defined
+[debug] [2019-08-21T15:43:44.470Z] [hosting] hash cache [YnVpbGQ] stored for 14 files
+[debug] [2019-08-21T15:43:44.470Z] [hosting][hash queue][FINAL]
+[debug] [2019-08-21T15:43:44.470Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/writingrelay/versions/80e5c814c699e29d:populateFiles  
+ <request body omitted>
+[debug] [2019-08-21T15:43:45.103Z] <<< HTTP RESPONSE 200
+[debug] [2019-08-21T15:43:45.114Z] [hosting][populate queue][FINAL]
+[debug] [2019-08-21T15:43:45.114Z] [hosting] uploads queued: 14
+[debug] [2019-08-21T15:43:47.991Z] [hosting][upload queue][FINAL]
+[info] ✔  hosting[writingrelay]: file upload complete
+[debug] [2019-08-21T15:43:47.992Z] [hosting] deploy completed after 4196ms
+[debug] [2019-08-21T15:43:47.993Z] [
+  {
+    "config": {
+      "public": "build",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "writingrelay"
+    },
+    "site": "writingrelay",
+    "version": "sites/writingrelay/versions/80e5c814c699e29d"
+  }
+]
+[info] i  hosting[writingrelay]: finalizing version...
+[debug] [2019-08-21T15:43:47.993Z] >>> HTTP REQUEST PATCH https://firebasehosting.googleapis.com/v1beta1/sites/writingrelay/versions/80e5c814c699e29d?updateMask=status  
+
+[debug] [2019-08-21T15:43:48.312Z] <<< HTTP RESPONSE 500
+[debug] [2019-08-21T15:43:48.312Z] <<< HTTP RESPONSE BODY
+[error] 
+[error] Error: HTTP Error: 500, Internal error encountered.
+[debug] [2019-08-21T15:43:48.315Z] Error Context: {
+  "body": {
+    "error": {
+      "code": 500,
+      "message": "Internal error encountered.",
+      "status": "INTERNAL"
+    }
+  },
+  "response": {
+    "statusCode": 500,
+    "body": {
+      "error": {
+        "code": 500,
+        "message": "Internal error encountered.",
+        "status": "INTERNAL"
+      }
+    },
+    "headers": {
+      "vary": "X-Origin, Referer, Origin,Accept-Encoding",
+      "content-type": "application/json; charset=UTF-8",
+      "date": "Wed, 21 Aug 2019 15:43:48 GMT",
+      "server": "ESF",
+      "cache-control": "private",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "alt-svc": "quic=\":443\"; ma=2592000; v=\"46,43,39\"",
+      "accept-ranges": "none",
+      "transfer-encoding": "chunked"
+    },
+    "request": {
+      "uri": {
+        "protocol": "https:",
+        "slashes": true,
+        "auth": null,
+        "host": "firebasehosting.googleapis.com",
+        "port": 443,
+        "hostname": "firebasehosting.googleapis.com",
+        "hash": null,
+        "search": "?updateMask=status",
+        "query": "updateMask=status",
+        "pathname": "/v1beta1/sites/writingrelay/versions/80e5c814c699e29d",
+        "path": "/v1beta1/sites/writingrelay/versions/80e5c814c699e29d?updateMask=status",
+        "href": "https://firebasehosting.googleapis.com/v1beta1/sites/writingrelay/versions/80e5c814c699e29d?updateMask=status"
+      },
+      "method": "PATCH"
+    }
+  }
+}
