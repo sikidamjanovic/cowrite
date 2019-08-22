@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 import NewPostForm from './NewPostForm'
-import { Icon, Button } from 'antd';
+import { Button } from 'antd';
 
 const customStyles = {
   content : {

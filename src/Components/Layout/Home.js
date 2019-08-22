@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Feed from '../Layout/Feed'
 import { connect } from 'react-redux'
+import { firestoreConnect } from 'react-redux-firebase'
+import { compose } from 'redux'
 import Sidebar from '../Layout/Sidebar'
 import { Row, Col } from 'antd';
 import '../../App.css'
@@ -24,9 +26,15 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => {
+    console.log(state)
     return {
-        posts: state.post.posts
+        posts: state.firestore.ordered.posts
     }
 }
 
-export default connect(mapStateToProps)(Home)
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect([
+        { collection: 'posts' }
+    ])
+)(Home)
