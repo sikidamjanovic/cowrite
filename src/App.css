@@ -1,7 +1,7 @@
 @import '~antd/dist/antd.css';
 
 #home{
-    min-height: 100vh;
+    min-height: 90vh;
 }
 
 #prompt{
@@ -13,11 +13,41 @@
     margin-right: 50px;
 }
 
-#navBar{
-    justify-content: flex-end;
-    display: flex;
-    align-items: center;
+#sidebar{
+    padding-top: 10vh;
+    position: fixed;
+    width: 16.6% !important;
 }
+
+.nav-row{
+    width: 100%;
+}
+
+.nav-col-left{
+    display: flex;
+    justify-content: center;
+}
+
+.nav-col-right{
+    display: flex;
+    justify-content: flex-end;
+}
+
+#navBar{
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    margin-bottom: 10vh;
+}
+
 #feed-container{
-    margin-top: 3%;
+    margin-top: 10vh;
+}
+
+#logo{
+    font-family: 'Lato';
+    margin-bottom: 0;
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Menu, Icon } from 'antd';
+import '../../App.css'
 
 class Sidebar extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class Sidebar extends Component {
                 defaultSelectedKeys={['1']}
                 defaultOpenKeys={['sub1']}
                 mode="inline"
+                id="sidebar"
             >
                 <SubMenu
                     key="sub1"

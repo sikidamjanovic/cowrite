@@ -7,10 +7,8 @@ import './App.css'
 const App = () => (
     <Router>
         <div>
-
             <Nav/>
             <Home/>
-
         </div>
     </Router>
 )

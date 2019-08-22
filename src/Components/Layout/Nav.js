@@ -1,61 +1,29 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-import { Menu, Icon, Button } from 'antd'
-import NewPostModal from '../Posts/NewPostModal';
+import React, { Component, Fragment } from 'react'
+import { Menu, Row, Col } from 'antd'
 import '../../App.css'
+import SignedInLinks from '../Auth/SignedInLinks';
+import SignedOutLinks from '../Auth/SignedOutLinks';
 
 class Nav extends Component {
-    
-    constructor(props) {
-        super(props);
-        this.state = {
-            openModal: false
-        };
-        this.showModal = this.showModal.bind(this);
-        this.closeModal = this.closeModal.bind(this)
-    }
-
-    showModal(){
-        this.setState({
-            openModal: true
-        })
-    }
-
-    closeModal(){
-        this.setState({
-            openModal: false
-        })
-    }
-
     render() {
         return (
             <div>
-
-                <NewPostModal isOpen={this.state.openModal} close={this.closeModal}/>
-
                 <Menu id="navBar" mode="horizontal" defaultSelectedKeys={['home']}>
 
-                    <Button type="primary" id="newPrompt" onClick={this.showModal}>
-                        <Icon type="plus"/>
-                        New Prompt
-                    </Button>
+                    <Row className="nav-row">
+                        <Col span={4} className="nav-col-left">
+                            <Menu.Item key="app">
+                                <h1 id="logo">coauthor</h1>
+                            </Menu.Item>
+                        </Col>
 
-                    <Menu.Item key="home">
-                        <Link to="/">
-                            <Icon type="home" />
-                            Home
-                        </Link>
-                    </Menu.Item>
-
-                    <Menu.Item key="book">
-                        <Link to="/saved">
-                            <Icon type="book" />
-                            Sign Out
-                        </Link>
-                    </Menu.Item>
+                        <Col span={18} offset={1} className="nav-col-right">
+                            <SignedInLinks/>
+                            <SignedOutLinks/>
+                        </Col>
+                    </Row>
 
                 </Menu>
-
             </div>
 
         );

@@ -9,13 +9,20 @@ class NewPostForm extends Component {
         super();
         this.state = {
             title: '',
-            content: ''
+            content: '',
+            genre: ''
         }
     }
 
     handleChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
+        })
+    }
+
+    handleSelectChange = (e) => {
+        this.setState({
+            genre: e
         })
     }
 
@@ -56,15 +63,16 @@ class NewPostForm extends Component {
                         showSearch
                         style={{ width: 200 }}
                         placeholder="Category"
+                        onChange={this.handleSelectChange}
                         optionFilterProp="children"
                         filterOption={(input, option) =>
                             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                     >
-                        <Option value="comedy">Comedy</Option>
-                        <Option value="drama">Drama</Option>
-                        <Option value="romance">Romance</Option>
-                        <Option value="scifi">Sci-Fi</Option>
+                        <Option value="Comedy">Comedy</Option>
+                        <Option value="Drama">Drama</Option>
+                        <Option value="Romance">Romance</Option>
+                        <Option value="Scifi">Sci-Fi</Option>
 
                     </Select>
                 </Form.Item>
