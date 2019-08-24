@@ -1,16 +1,15 @@
 import React, { Component } from 'react'
 import { Form, Icon, Input, Button,  Select } from 'antd';
-import { connect } from 'react-redux'
-import { signIn } from '../../store/Actions/authActions'
+import { connect } from 'react-redux';
+import { signIn } from '../../Store/Actions/authActions'
 
 class SignInModalDetails extends Component {
   
     constructor() {
         super();
         this.state = {
-            title: '',
-            content: '',
-            genre: ''
+            email: '',
+            password: ''
         }
     }
 
@@ -20,34 +19,28 @@ class SignInModalDetails extends Component {
         })
     }
 
-    handleSelectChange = (e) => {
-        this.setState({
-            genre: e
-        })
-    }
-
     handleSubmit = (e) => {
         e.preventDefault();
-        console.log(this.state);
+        this.props.signIn(this.state);
     }
 
     render() {
-
+        const { authError } = this.props
         return (
 
             <Form onSubmit={this.handleSubmit} className="login-form">
                 
                 <Form.Item>
                     <Input
-                        id="title"
+                        id="email"
                         onChange={this.handleChange} 
-                        placeholder="Username"
+                        placeholder="Email"
                     />
                 </Form.Item>
 
                 <Form.Item>
                     <Input
-                        id="title"
+                        id="password"
                         onChange={this.handleChange} 
                         placeholder="Password"
                     />
@@ -57,10 +50,25 @@ class SignInModalDetails extends Component {
                     <Icon type="plus"/>
                     Login
                 </Button>
+                <div className="red-text center">
+                    { authError ? <p>{authError}</p> : null }
+                </div>
 
             </Form>
     )
   }
 }
 
-export default SignInModalDetails
+const mapStateToProps = (state) => {
+    return {
+        authError: state.auth.authError
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signIn: (creds) => dispatch(signIn(creds))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignInModalDetails)

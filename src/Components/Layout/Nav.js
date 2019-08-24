@@ -3,6 +3,7 @@ import { Menu, Row, Col } from 'antd'
 import '../../App.css'
 import SignedInLinks from '../Auth/SignedInLinks';
 import SignedOutLinks from '../Auth/SignedOutLinks';
+import { connect } from 'react-redux';
 
 class Nav extends Component {
     render() {
@@ -30,4 +31,10 @@ class Nav extends Component {
     }
 }
 
-export default Nav;
+const mapStateToProps = (state) => {
+    return {
+
+    }
+}
+
+export default connect(mapStateToProps)(Nav);
