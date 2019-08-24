@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Icon, Input, Button,  Select } from 'antd';
+import { connect } from 'react-redux'
+import { signIn } from '../../store/Actions/authActions'
 
 class SignInModalDetails extends Component {
   
