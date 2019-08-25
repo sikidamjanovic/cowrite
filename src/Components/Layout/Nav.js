@@ -5,35 +5,35 @@ import SignedInLinks from '../Auth/SignedInLinks';
 import SignedOutLinks from '../Auth/SignedOutLinks';
 import { connect } from 'react-redux';
 
-class Nav extends Component {
-    render() {
-        return (
-            <div>
-                <Menu id="navBar" mode="horizontal" defaultSelectedKeys={['home']}>
+const Nav = (props) => {
+    const { auth } = props;
+    console.log(auth);
+    const links = auth.uid ? <SignedInLinks /> : <SignedOutLinks/>;
+    return (
+        <div>
+            <Menu id="navBar" mode="horizontal" defaultSelectedKeys={['home']}>
 
-                    <Row className="nav-row">
-                        <Col span={4} className="nav-col-left">
-                            <Menu.Item key="app">
-                                <h1 id="logo">coauthor</h1>
-                            </Menu.Item>
-                        </Col>
+                <Row className="nav-row">
+                    <Col span={4} className="nav-col-left">
+                        <Menu.Item key="app">
+                            <h1 id="logo">coauthor</h1>
+                        </Menu.Item>
+                    </Col>
 
-                        <Col span={18} offset={1} className="nav-col-right">
-                            <SignedInLinks/>
-                            <SignedOutLinks/>
-                        </Col>
-                    </Row>
+                    <Col span={18} offset={1} className="nav-col-right">
+                        { links }
+                    </Col>
+                </Row>
 
-                </Menu>
-            </div>
+            </Menu>
+        </div>
 
-        );
-    }
+    );
 }
 
 const mapStateToProps = (state) => {
     return {
-
+        auth: state.firebase.auth
     }
 }
 
