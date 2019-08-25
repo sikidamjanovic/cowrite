@@ -36,8 +36,9 @@ class SignedOutLinks extends Component {
                         Login
                     </Button>
                 </div>
-
+                
             </Fragment>
+            
         );
     }
 }

@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import { Button, Icon, Menu } from 'antd'
 import NewPostModal from '../Posts/NewPostModal';
+import { signOut } from '../../Store/Actions/authActions'
+import { connect } from 'react-redux'
+import SignInModal from '../Auth/SignInModal'
 
 class SignedInLinks extends Component {
     constructor(props) {
@@ -36,10 +39,21 @@ class SignedInLinks extends Component {
                         New Prompt
                     </Button>
                 </div>
-
+            
+                <div>
+                    <Button type="danger" id="newPrompt" onClick={this.props.signOut}>
+                        LogOut
+                    </Button>
+                </div>
             </Fragment>
         );
     }
 }
 
-export default SignedInLinks;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signOut: () => dispatch(signOut())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(SignedInLinks);
