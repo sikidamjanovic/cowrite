@@ -42,7 +42,7 @@ class SignedInLinks extends Component {
             
                 <div>
                     <Button type="danger" id="newPrompt" onClick={this.props.signOut}>
-                        LogOut
+                        Logout
                     </Button>
                 </div>
             </Fragment>
