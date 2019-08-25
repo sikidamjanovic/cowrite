@@ -6,10 +6,14 @@ import { compose } from 'redux'
 import Sidebar from '../Layout/Sidebar'
 import { Row, Col } from 'antd';
 import '../../App.css'
+import { redirect } from 'react-router-dom'
 
 class Home extends Component {
     render() {
         console.log(this.props.posts)
+        const { posts, auth } = this.props;
+        //if (!auth.uid) return <redirect to= '/signin'/> //Use for actions that the user cant complete unless they are signed in
+
         return (
             <div id="home">
                 <Row>
@@ -17,7 +21,7 @@ class Home extends Component {
                         <Sidebar/>
                     </Col>
                     <Col xs={12} sm={18} offset={1}  id="feed-container">
-                        <Feed posts = {this.props.posts}/>
+                        <Feed posts = {posts}/>
                     </Col>
                 </Row>
             </div>
@@ -28,7 +32,8 @@ class Home extends Component {
 const mapStateToProps = (state) => {
     console.log(state)
     return {
-        posts: state.firestore.ordered.posts
+        posts: state.firestore.ordered.posts,
+        auth: state.firebase.auth
     }
 }
 

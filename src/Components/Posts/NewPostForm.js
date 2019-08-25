@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { createPost } from '../../Store/Actions/postActions'
 import { Form, Icon, Input, Button,  Select } from 'antd';
+import { redirect } from 'react-router-dom'
 
 class NewPostForm extends Component {
   
@@ -33,7 +34,8 @@ class NewPostForm extends Component {
     }
 
     render() {
-
+        const { auth } = this.props;
+        //if (!auth.uid) return <redirect to= '/signin'/> //Use for actions that the user cant complete unless they are signed in
         const { TextArea } = Input;
         const { Option } = Select;
 
@@ -87,10 +89,16 @@ class NewPostForm extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        auth: state.firebase.auth
+    }
+}
+
 const mapDispatchToProps = (dispatch) => {
     return {
         createPost: (post) => dispatch(createPost(post))
     }
 }
 
-export default connect(null, mapDispatchToProps)(NewPostForm)
+export default connect(mapStateToProps, mapDispatchToProps)(NewPostForm)
