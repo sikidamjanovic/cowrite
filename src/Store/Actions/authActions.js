@@ -1,3 +1,7 @@
+import { firestore } from "firebase";
+import { responsiveArray } from "antd/lib/_util/responsiveObserve";
+import { getFirestore } from "redux-firestore";
+
 export const signIn = (credentials) => {
     return (dispatch, getState, {getFirebase}) => {
         const firebase = getFirebase();
@@ -20,5 +24,25 @@ export const signOut = () => {
         firebase.auth().signOut().then(() => {
             dispatch({ type: 'SIGNOUT_SUCCESS' });
         });
+    }
+}
+
+export const signUp = (newUser) => {
+    return (dispatch, getState, {getFirebase}) => {
+        const firebase = getFirebase();
+        const firestore = getFirestore();
+
+        firebase.auth().createUserWithEmailAndPassword(
+            newUser.email,
+            newUser.password
+        ).then((resp) => {
+            return firestore.collection('users').doc(resp.user.uid).setImmediate({
+                username: newUser.username
+            })
+        }).then(() => {
+            dispatch({ type: 'SIGNUP_SUCCESS'})
+        }).catch(err => {
+            dispatch({ type: 'SIGNUP_ERROR', err})
+        })
     }
 }

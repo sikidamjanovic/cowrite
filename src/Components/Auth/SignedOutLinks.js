@@ -1,39 +1,58 @@
 import React, { Component, Fragment } from 'react'
 import { Button, Icon, Menu } from 'antd'
 import SignInModal from '../Auth/SignInModal'
+import SignUpModal from '../Auth/SignUpModal'
 
 class SignedOutLinks extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            openModal: false
+            openModal: false,
+            secondOpenModal: false
         };
-        this.showModal = this.showModal.bind(this);
-        this.closeModal = this.closeModal.bind(this)
     }
 
-    showModal(){
+    showModal = () => {
         this.setState({
             openModal: true
         })
     }
 
-    closeModal(){
+    closeModal = () => {
         this.setState({
             openModal: false
         })
     }
 
+    showSecondModal = () => {
+        this.setState({
+            secondOpenModal: true
+        })
+    }
+
+    closeSecondModal = () => {
+        this.setState({
+            secondOpenModal: false
+        })
+    }
     render() {
         return (
             <Fragment>
 
                 <SignInModal isOpen={this.state.openModal} close={this.closeModal}/>
+                <SignUpModal isOpen={this.state.secondOpenModal} close={this.closeSecondModal}/>
 
                 <div>
                     <Button onClick={this.showModal}>
                         <Icon type="user" />
                         Login
+                    </Button>
+                </div>
+                
+                <div>
+                    <Button onClick={this.showSecondModal}>
+                        <Icon type="user" />
+                        Sign Up
                     </Button>
                 </div>
                 
