@@ -1,6 +1,7 @@
 import { firestore } from "firebase";
 import { responsiveArray } from "antd/lib/_util/responsiveObserve";
 import { getFirestore } from "redux-firestore";
+import { relativeTimeRounding } from "moment";
 
 export const signIn = (credentials) => {
     return (dispatch, getState, {getFirebase}) => {
@@ -34,13 +35,14 @@ export const signUp = (newUser) => {
 
         firebase.auth().createUserWithEmailAndPassword(
             newUser.email,
-            newUser.password
-        ).then((resp) => {
-            return firestore.collection('users').doc(resp.user.uid).setImmediate({
-                username: newUser.username
-            })
+            newUser.password,
+        ).then(function () {
+            firebase.auth().currentUser.updateProfile({
+              displayName: newUser.username
+            });
         }).then(() => {
             dispatch({ type: 'SIGNUP_SUCCESS'})
+            
         }).catch(err => {
             dispatch({ type: 'SIGNUP_ERROR', err})
         })
