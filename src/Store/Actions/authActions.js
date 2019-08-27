@@ -50,9 +50,16 @@ export const signUp = (newUser) => {
                     firebase.auth().currentUser.updateProfile({
                     displayName: newUser.username,
                     });
-                    return firestore.collection('users').doc(newUser.username).set({
-                        uid: resp.user.uid
-                    })
+                    return (
+                        firestore.collection('users').doc(newUser.username).set({
+                            uid: resp.user.uid
+                        }),
+                        firebase.auth().currentUser.sendEmailVerification().then(function() {
+                            //email sent, look for emailVerified 
+                        }).catch(function(err) {
+                            //error
+                        })
+                    )
                 }).then(() => {
                     dispatch({ type: 'SIGNUP_SUCCESS'})
                     
