@@ -51,3 +51,9 @@
     font-family: 'Lato';
     margin-bottom: 0;
 }
+
+/* For demo */
+.ant-carousel {
+    text-align: center;
+    overflow: hidden;
+}

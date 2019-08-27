@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
-import { Button, Icon, Menu } from 'antd'
+import { Button, Icon } from 'antd'
 import NewPostModal from '../Posts/NewPostModal';
 import { signOut } from '../../Store/Actions/authActions'
 import { connect } from 'react-redux'
-import SignInModal from '../Auth/SignInModal'
+import HelpModal from '../Common/HelpModal'
 
 class SignedInLinks extends Component {
     constructor(props) {
@@ -38,6 +38,10 @@ class SignedInLinks extends Component {
                         <Icon type="plus"/>
                         New Prompt
                     </Button>
+                </div>
+
+                <div>
+                    <HelpModal/>
                 </div>
             
                 <div>

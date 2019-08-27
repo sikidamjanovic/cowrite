@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { Button, Icon, Menu } from 'antd'
 import SignInModal from '../Auth/SignInModal'
 import SignUpModal from '../Auth/SignUpModal'
+import HelpModal from '../Common/HelpModal'
 
 class SignedOutLinks extends Component {
     constructor(props) {
@@ -41,6 +42,10 @@ class SignedOutLinks extends Component {
 
                 <SignInModal isOpen={this.state.openModal} close={this.closeModal}/>
                 <SignUpModal isOpen={this.state.secondOpenModal} close={this.closeSecondModal}/>
+
+                <div>
+                    <HelpModal/>
+                </div>
 
                 <div>
                     <Button onClick={this.showModal}>
