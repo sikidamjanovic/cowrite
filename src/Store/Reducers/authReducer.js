@@ -35,6 +35,12 @@ const authReducer = (state = initState, action) => {
                     ...state,
                     authError: action.err.message
                 }
+        case 'NAME_TAKEN':
+                console.log('username taken');
+                return {
+                    ...state,
+                    authError: 'Name is already taken'
+                }
         default:
             return state;
     }

@@ -32,19 +32,37 @@ export const signUp = (newUser) => {
     return (dispatch, getState, {getFirebase}) => {
         const firebase = getFirebase();
         const firestore = getFirestore();
-
-        firebase.auth().createUserWithEmailAndPassword(
-            newUser.email,
-            newUser.password,
-        ).then(function () {
-            firebase.auth().currentUser.updateProfile({
-              displayName: newUser.username
+       
+        let check = false;
+        let usersRef = firestore.collection('users');
+        let query = usersRef.get(
+        ).then(snapshot => {
+            snapshot.forEach(doc => {
+                //console.log(doc.id, '=>', doc.data());
+                if (doc.id == newUser.username) { check = true; console.log('fuck')}
             });
-        }).then(() => {
-            dispatch({ type: 'SIGNUP_SUCCESS'})
-            
-        }).catch(err => {
-            dispatch({ type: 'SIGNUP_ERROR', err})
+            if (check == false) {
+
+                firebase.auth().createUserWithEmailAndPassword(
+                    newUser.email,
+                    newUser.password,
+                ).then((resp) => {
+                    firebase.auth().currentUser.updateProfile({
+                    displayName: newUser.username,
+                    });
+                    return firestore.collection('users').doc(newUser.username).set({
+                        uid: resp.user.uid
+                    })
+                }).then(() => {
+                    dispatch({ type: 'SIGNUP_SUCCESS'})
+                    
+                }).catch(err => {
+                    dispatch({ type: 'SIGNUP_ERROR', err})
+                })
+            } else {
+                dispatch({ type: 'NAME_TAKEN'})
+            }
         })
+
     }
 }
