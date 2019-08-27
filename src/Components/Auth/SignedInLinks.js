@@ -1,54 +1,28 @@
 import React, { Component, Fragment } from 'react'
-import { Button, Icon } from 'antd'
 import NewPostModal from '../Posts/NewPostModal';
 import { signOut } from '../../Store/Actions/authActions'
 import { connect } from 'react-redux'
 import HelpModal from '../Common/HelpModal'
+import AccountDropdown from '../Common/AccountDropdown'
 
 class SignedInLinks extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            openModal: false
-        };
-        this.showModal = this.showModal.bind(this);
-        this.closeModal = this.closeModal.bind(this)
-    }
-
-    showModal(){
-        this.setState({
-            openModal: true
-        })
-    }
-
-    closeModal(){
-        this.setState({
-            openModal: false
-        })
-    }
 
     render() {
         return (
             <Fragment>
 
-                <NewPostModal isOpen={this.state.openModal} close={this.closeModal}/>
-
                 <div>
-                    <Button type="primary" id="newPrompt" onClick={this.showModal}>
-                        <Icon type="plus"/>
-                        New Prompt
-                    </Button>
+                    <NewPostModal/>
                 </div>
 
                 <div>
                     <HelpModal/>
                 </div>
-            
+
                 <div>
-                    <Button type="danger" id="newPrompt" onClick={this.props.signOut}>
-                        Logout
-                    </Button>
+                    <AccountDropdown signOut={this.props.signOut} auth={this.props.auth}/>
                 </div>
+
             </Fragment>
         );
     }

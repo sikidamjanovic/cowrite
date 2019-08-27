@@ -39,7 +39,7 @@ class HelpModal extends Component {
     render() {
         return (
             <div>
-                <Button onClick={this.showModal} id="newPrompt">
+                <Button onClick={this.showModal}>
                     <Icon type="question"/>
                 </Button>
                 <Modal

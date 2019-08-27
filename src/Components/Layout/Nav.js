@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 const Nav = (props) => {
     const { auth } = props;
     console.log(auth);
-    const links = auth.uid ? <SignedInLinks /> : <SignedOutLinks/>;
+    const links = auth.uid ? <SignedInLinks auth={auth}/> : <SignedOutLinks/>;
     return (
         <div>
             <Menu id="navBar" mode="horizontal" defaultSelectedKeys={['home']}>
@@ -20,7 +20,10 @@ const Nav = (props) => {
                         </Menu.Item>
                     </Col>
 
-                    <Col span={18} offset={1} className="nav-col-right">
+                    <Col span={10}>
+                    </Col>
+
+                    <Col span={8} offset={1} className="nav-col-right">
                         { links }
                     </Col>
                 </Row>

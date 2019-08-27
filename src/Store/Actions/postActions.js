@@ -1,3 +1,5 @@
+import { notification } from 'antd'
+
 export const createPost = (post) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
         // make async call to db
@@ -11,6 +13,11 @@ export const createPost = (post) => {
             dispatch({ type: 'CREATE_POST', post})
         }).catch((err) => {
             dispatch({ type: 'CREATE_PROJECT_ERROR', err })
+        })
+        notification.open({
+            message: 'Prompt Posted!',
+            description: 'I bet its really great man...',
+            duration: 2
         })
     }
 }
