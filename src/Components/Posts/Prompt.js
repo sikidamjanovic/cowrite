@@ -18,7 +18,7 @@ class Prompt extends Component {
                     title = {this.props.title}
                     description =  { 
                         <div>
-                            <span>{ this.props.genre } | 11hrs Left </span>
+                            <span>{ this.props.genre } | {this.props.time} </span>
                             <br></br>
                             <span><small>{this.props.author}</small></span>
                             <br></br>

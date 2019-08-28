@@ -7,10 +7,12 @@ export const createPost = (post) => {
         // make async call to db
         const firestore = getFirestore()
         console.log(post)
+        var today = new Date();
         firestore.collection('posts').add({ 
             ...post,
             author: getFirebase().auth().currentUser.displayName,
-            createdAt: new Date()
+            createdAt: new Date(),
+            time: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
         }).then(() => {
             dispatch({ type: 'CREATE_POST', post})
         }).catch((err) => {
