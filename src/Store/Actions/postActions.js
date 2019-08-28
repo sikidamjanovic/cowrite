@@ -1,3 +1,7 @@
+import { getFirestore } from "redux-firestore";
+import { firestore } from "firebase";
+
+
 export const createPost = (post) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
         // make async call to db
@@ -5,7 +9,7 @@ export const createPost = (post) => {
         console.log(post)
         firestore.collection('posts').add({ 
             ...post,
-            author: 'sikiDamjanovic',
+            author: getFirebase().auth().currentUser.displayName,
             createdAt: new Date()
         }).then(() => {
             dispatch({ type: 'CREATE_POST', post})

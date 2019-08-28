@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Icon, Avatar } from 'antd';
+import { Card, Icon, Avatar, Button } from 'antd';
 
 class Prompt extends Component {
     render() {
@@ -7,6 +7,7 @@ class Prompt extends Component {
         return (
             <Card
                 actions={[
+                    <Button></Button>,
                     <Icon type="heart" key="heart" />,
                     <Icon type="book" key="book" />,
                     <Icon type="user" key="user" />,
@@ -17,7 +18,9 @@ class Prompt extends Component {
                     title = {this.props.title}
                     description =  { 
                         <div>
-                            <span>{ this.props.genre } | 11hrs Left</span>
+                            <span>{ this.props.genre } | 11hrs Left </span>
+                            <br></br>
+                            <span><small>{this.props.author}</small></span>
                             <br></br>
                             <br></br>
                             <span>{ this.props.content }</span>

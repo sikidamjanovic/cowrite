@@ -17,6 +17,7 @@ class Feed extends Component {
                                 title={post.title} 
                                 genre={post.genre}
                                 content={post.content}
+                                author={post.author}
                             />
                         </Col> 
                 )
