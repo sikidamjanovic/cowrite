@@ -44,6 +44,7 @@ import 'firebase/database'
 import 'firebase/firestore'
 
 const firebaseConfig = {} // from Firebase Console
+const rfConfig = {} // optional redux-firestore Config Options
 
 // Initialize firebase instance
 firebase.initializeApp(firebaseConfig)
@@ -52,7 +53,7 @@ firebase.firestore();
 
 // Add reduxFirestore store enhancer to store creator
 const createStoreWithFirebase = compose(
-  reduxFirestore(firebase), // firebase instance as first argument
+  reduxFirestore(firebase, rfConfig), // firebase instance as first argument, rfConfig as optional second
 )(createStore)
 
 // Add Firebase to reducers
@@ -221,7 +222,7 @@ store.firestore.runTransaction(t => {
 ```
 
 #### Types of Queries
-
+Each of these functions take a queryOptions object with options as described in the [Query Options section of this README](#query-options). Some simple query options examples are used here for better comprehension.
 ##### get
 ```js
 props.store.firestore.get({ collection: 'cities' }),
@@ -236,13 +237,22 @@ store.firestore.onSnapshot({ collection: 'cities' }),
 // store.firestore.setListener({ collection: 'cities', doc: 'SF' }), // doc
 ```
 
-#### setListeners
+##### setListeners
 
 ```js
 store.firestore.setListeners([
   { collection: 'cities' },
   { collection: 'users' },
 ]),
+```
+
+##### unsetListener / unsetListeners
+After setting a listener/multiple listeners, you can unset them with the following two functions. In order to unset a specific listener, you must pass the same queryOptions object given to onSnapshot/setListener(s).
+```js
+store.firestore.unsetListener({ collection: 'cities' }),
+// of for any number of listeners at once :
+store.firestore.unsetListeners([query1Options, query2Options]), 
+// here query1Options as in { collection: 'cities' } for example
 ```
 
 #### Query Options
@@ -267,7 +277,7 @@ store.firestore.setListeners([
 ```js
 { collection: 'cities', doc: 'SF', subcollections: [{ collection: 'zipcodes' }] },
 // or string equivalent
-// props.store.firestore.get('cities/SF'),
+// props.store.firestore.get('cities/SF'/zipcodes),
 ```
 
 **Note:** When nesting sub-collections, [`storeAs`](#storeas) should be used for more optimal state updates.
@@ -453,6 +463,7 @@ export default enhance(SomeComponent)
 ```
 
 ## Config Options
+Optional configuration options for redux-firestore, provided to reduxFirestore enhancer as optional second argument. Combine any of them together in an object.
 
 #### logListenerError
 Default: `true`
@@ -472,7 +483,7 @@ Whether or not to allow multiple listeners to be attached for the same query. If
 #### oneListenerPerPath
 Default: `false`
 
-If set to true redux-firestore will attach a listener on the same path just once & will count how many the listener was set. When you try to unset the lisnter, it won't unset until you have less than 1 listeners on this path
+If set to true redux-firestore will attach a listener on the same path just once & will count how many the listener was set. When you try to unset the listener, it won't unset until you have less than 1 listeners on this path
 
 #### preserveOnDelete
 Default: `null`

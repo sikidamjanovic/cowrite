@@ -100,7 +100,7 @@ class NewPostModal extends React.Component {
                                 <Option value="Comedy">Comedy</Option>
                                 <Option value="Drama">Drama</Option>
                                 <Option value="Romance">Romance</Option>
-                                <Option value="Scifi">Sci-Fi</Option>
+                                <Option value="SciFi">Sci-Fi</Option>
                             </Select>
                         </Form.Item>
                         <Button type="primary" htmlType="submit">    

@@ -1,20 +1,27 @@
 import React, { Component } from 'react';
 import { Menu, Icon } from 'antd';
+import { NavLink, withRouter } from 'react-router-dom'
 import '../../App.css'
 
 class Sidebar extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.returnQuery = this.returnQuery.bind(this)
     }
+
+    returnQuery(query){
+        return this.props.query(query)
+    }
+
     render() { 
         const { SubMenu } = Menu;
         return (
             <Menu
                 onClick={this.handleClick}
                 style={{ width: '100%', height: '100vh' }}
-                defaultSelectedKeys={['1']}
                 defaultOpenKeys={['sub1']}
+                defaultSelectedKeys={['/prompts/category/Comedy']}
+                selectedKeys={window.location.pathname}
                 mode="inline"
                 id="sidebar"
             >
@@ -34,10 +41,40 @@ class Sidebar extends Component {
                 </Menu.ItemGroup>
 
                 <Menu.ItemGroup key="g2" title="Categories">
-                    <Menu.Item key="3">Comedy</Menu.Item>
-                    <Menu.Item key="4">Drama</Menu.Item>
-                    <Menu.Item key="5">Romance</Menu.Item>
-                    <Menu.Item key="6">Sci-Fi</Menu.Item>
+                    <Menu.Item key="/prompts/category/Comedy">
+                        <NavLink to={{
+                            pathname: "/prompts/category/Comedy",
+                            state: {
+                                query: 'Comedy'
+                            }
+                        }}>
+                            Comedy
+                        </NavLink>
+                    </Menu.Item>
+                    <Menu.Item key="/prompts/category/Drama">
+                        <NavLink to={{
+                            pathname: "/prompts/category/Drama",
+                            state: {
+                                query: 'Drama'
+                            }
+                        }}/>Drama
+                    </Menu.Item>
+                    <Menu.Item key="/prompts/category/Romance">
+                        <NavLink to={{
+                            pathname: "/prompts/category/Romance",
+                            state: {
+                                query: 'Romance'
+                            }
+                        }}/>Romance
+                    </Menu.Item>
+                    <Menu.Item key="/prompts/category/SciFi">
+                        <NavLink to={{
+                            pathname: "/prompts/category/SciFi",
+                            state: {
+                                query: 'SciFi'
+                            }
+                        }}/>SciFi
+                    </Menu.Item>
                     <Menu.Item key="7">Other</Menu.Item>
                 </Menu.ItemGroup>
 
