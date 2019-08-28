@@ -1,6 +1,6 @@
 import { getFirestore } from "redux-firestore";
 import { firestore } from "firebase";
-import { notification } 
+import { notification } from 'antd'
 
 export const createPost = (post) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
