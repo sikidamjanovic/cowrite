@@ -12,7 +12,7 @@ export const createPost = (post) => {
             ...post,
             author: getFirebase().auth().currentUser.displayName,
             createdAt: new Date(),
-            time: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
+            time: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' - '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
         }).then(() => {
             dispatch({ type: 'CREATE_POST', post})
         }).catch((err) => {
