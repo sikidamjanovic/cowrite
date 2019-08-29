@@ -35,12 +35,17 @@ class Sidebar extends Component {
                     }
                 >
 
-                <Menu.ItemGroup key="g1" title="Filter">
-                    <Menu.Item key="1">Hot</Menu.Item>
-                    <Menu.Item key="2">Most Liked</Menu.Item>
-                </Menu.ItemGroup>
-
                 <Menu.ItemGroup key="g2" title="Categories">
+                    <Menu.Item key="/prompts/category/all">
+                        <NavLink to={{
+                            pathname: "/prompts/category/all",
+                            state: {
+                                query: 'All'
+                            }
+                        }}>
+                            All
+                        </NavLink>
+                    </Menu.Item>
                     <Menu.Item key="/prompts/category/Comedy">
                         <NavLink to={{
                             pathname: "/prompts/category/Comedy",

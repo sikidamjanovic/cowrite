@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Prompt from '../Posts/Prompt'
-import { Row, Col } from 'antd';
+import { Row, Col, Menu, Dropdown, Button, Breadcrumb, Icon } from 'antd';
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
@@ -22,7 +22,7 @@ class Feed extends Component {
                                 genre={post.genre}
                                 content={post.content}
                                 author={post.author}
-                                time={post.time}
+                                time={post.createdAt}
                             />
                         </Col> 
                 )
@@ -31,10 +31,44 @@ class Feed extends Component {
     }
 
     render() {
+
+        const menu = (
+            <Menu>
+                <Menu.Item>
+                    <Icon type="arrow-up"/>
+                    Top
+                </Menu.Item>
+                <Menu.Item>
+                    <Icon type="fire"/>
+                    Hot
+                </Menu.Item>
+                <Menu.Item>
+                    <Icon type="bulb"/>
+                    New
+                </Menu.Item>
+            </Menu>
+        )
+
         return (
             <div>
                 <Row>
-                    <h3>Prompts - {this.props.query}</h3>
+                    <div id="feed-header">
+                        <div id="breadcrumb-container">
+                            <Breadcrumb>
+                                <Breadcrumb.Item>
+                                    Prompts
+                                </Breadcrumb.Item>
+                                <Breadcrumb.Item>
+                                    {this.props.query}
+                                </Breadcrumb.Item>
+                            </Breadcrumb>
+                        </div>
+                        <div>
+                            <Dropdown overlay={menu} trigger={['click']} id="feed-sort-dropdown">
+                                <Button>Sort</Button>
+                            </Dropdown>
+                        </div>
+                    </div>
                     {this.getPrompts()}
                 </Row>
             </div>
@@ -62,10 +96,4 @@ export default compose(
             }
         ]
     })
-    // firestoreConnect([{ 
-    //     collection: 'posts',
-    //     where: [
-    //         'genre', '==', window.location.pathname.split("/").pop()
-    //     ]}
-    // ])
 )(Feed)

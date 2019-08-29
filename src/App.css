@@ -57,3 +57,30 @@
     text-align: center;
     overflow: hidden;
 }
+
+#feed-header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#breadcrumb-container{
+    margin-right: 20px;
+}
+
+.ant-card-meta-title{
+    margin: 0 !important;
+}
+
+#card-title{
+    margin-right: 20px;
+}
+
+#title-container{
+    display: flex !important;
+    align-items: center !important;
+}
+
+#card-content{
+    color: rgba(0, 0, 0, 0.55)
+}
