@@ -8,11 +8,16 @@ export const createPost = (post) => {
         const firestore = getFirestore()
         console.log(post)
         var today = new Date();
+
         firestore.collection('posts').add({ 
             ...post,
             author: getFirebase().auth().currentUser.displayName,
             createdAt: new Date(),
-            time: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' - '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds()
+            time: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' - '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds(),
+        }).then(function(docRef) { //setting an initial like from the user
+            firestore.collection('posts').doc(docRef.id).collection('likes').doc(getFirebase().auth().currentUser.displayName).set({
+                uid: getFirebase().auth().currentUser.uid
+            })
         }).then(() => {
             dispatch({ type: 'CREATE_POST', post})
         }).catch((err) => {
