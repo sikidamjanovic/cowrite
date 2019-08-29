@@ -37,7 +37,7 @@ class Prompt extends Component {
                 <Meta
                     avatar={
                         <span>
-                            <Popover content={'@' + this.props.author} title="">
+                            <Popover content={this.props.author} title="">
                                 <Avatar icon="user" />
                             </Popover>
                         </span>

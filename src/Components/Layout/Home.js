@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import Feed from '../Layout/Feed'
-import { connect } from 'react-redux'
-import { firestoreConnect } from 'react-redux-firebase'
-import { compose } from 'redux'
 import Sidebar from '../Layout/Sidebar'
 import { Row, Col } from 'antd';
 import '../../App.css'
-import { redirect } from 'react-router-dom'
+import Footer from '../Layout/Footer'
 
 class Home extends Component {
 
@@ -31,6 +28,7 @@ class Home extends Component {
 
     render() {
         return (
+            <div>
             <div id="home">
                 <Row>
                     <Col xs={12} md={4}>
@@ -40,6 +38,8 @@ class Home extends Component {
                         <Feed query={this.state.query}/>
                     </Col>
                 </Row>
+            </div>
+                <Footer/>
             </div>
         );
     }

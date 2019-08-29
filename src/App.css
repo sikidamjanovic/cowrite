@@ -4,6 +4,17 @@
     min-height: 90vh;
 }
 
+#footer{
+    border-top: 1px solid #e8e8e8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    margin-left: 16.6%;
+    margin-top: 10vh;
+    font-family: 'Lato'
+}
+
 #prompt{
     margin-bottom: 3%;
     margin-top: 3%;
@@ -84,3 +95,4 @@
 #card-content{
     color: rgba(0, 0, 0, 0.55)
 }
+
