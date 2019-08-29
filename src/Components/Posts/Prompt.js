@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Icon, Avatar, Tag, Popover } from 'antd';
+import { Card, Icon, Avatar, Tag, Popover, Tooltip } from 'antd';
 import '../../App.css'
 
 class Prompt extends Component {
@@ -9,11 +9,15 @@ class Prompt extends Component {
         if(postedTime){
             const diff = this.differenceInHours(postedTime.toDate(), new Date())
             if(diff > 12){
-                return <Tag color="blue">{diff + 'h left'}</Tag>
+                return(
+                    <Tooltip placement="topLeft" title="The time left until this prompt possibly becomes a story">
+                        <Tag color="blue">{diff + 'h Left'}</Tag>
+                    </Tooltip>
+                )
             }else if(diff > 4){
-                return <Tag color="volcano">{diff + 'h left'}</Tag>
+                return <Tag color="volcano">{diff + 'h Left'}</Tag>
             }else{
-                return <Tag color="red">{diff + 'h left'}</Tag>
+                return <Tag color="red">{diff + 'h Left'}</Tag>
             }
         }else{
             return <Tag>No Time</Tag>

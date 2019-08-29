@@ -39,7 +39,7 @@ class Home extends Component {
                     </Col>
                 </Row>
             </div>
-                <Footer/>
+            <Footer/>
             </div>
         );
     }
