@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import Prompt from '../Posts/Prompt'
-import { Row, Col, Menu, Dropdown, Button, Breadcrumb, Icon } from 'antd';
+import { Row, Col, Select, Breadcrumb, Icon } from 'antd';
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import '../../App.css'
 
 class Feed extends Component {
+
+    // state = {
+    //     loading: true
+    // }
 
     getPrompts(){
         const { posts, auth } = this.props;
@@ -31,24 +35,7 @@ class Feed extends Component {
     }
 
     render() {
-
-        const menu = (
-            <Menu>
-                <Menu.Item>
-                    <Icon type="arrow-up"/>
-                    Top
-                </Menu.Item>
-                <Menu.Item>
-                    <Icon type="fire"/>
-                    Hot
-                </Menu.Item>
-                <Menu.Item>
-                    <Icon type="bulb"/>
-                    New
-                </Menu.Item>
-            </Menu>
-        )
-
+        const { Option } = Select;
         return (
             <div>
                 <Row>
@@ -64,9 +51,20 @@ class Feed extends Component {
                             </Breadcrumb>
                         </div>
                         <div>
-                            <Dropdown overlay={menu} trigger={['click']} id="feed-sort-dropdown">
-                                <Button>Sort</Button>
-                            </Dropdown>
+                            <Select defaultValue="Sort" style={{ width: 100 }}>
+                                <Option value="Hot">
+                                    <Icon type="fire"/>
+                                    Hot
+                                </Option>
+                                <Option value="Top">
+                                    <Icon type="arrow-up"/>
+                                    Top
+                                </Option>
+                                <Option value="New">
+                                    <Icon type="bulb"/>
+                                    New
+                                </Option>
+                            </Select>
                         </div>
                     </div>
                     {this.getPrompts()}
