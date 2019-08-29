@@ -4,6 +4,11 @@ import '../../App.css'
 
 class Prompt extends Component {
 
+    constructor(props){
+        super(props)
+        this.like = this.like.bind(this)
+    }
+
     getTime(){
         var postedTime = this.props.time
         if(postedTime){
@@ -28,12 +33,18 @@ class Prompt extends Component {
         return Math.round(48 - Math.abs(postedTime - currentTime) / 36e5)
     }
 
+    consoleTest() {
+        console.log('testing')
+    }
+    like(){
+        console.log('yeet')
+    }
     render() {
         const { Meta } = Card;
         return (
             <Card
                 actions={[
-                    <Icon type="heart" key="heart" />,
+                    <button onClick= {this.like}><Icon type="heart" key="heart"/></button>,
                     <Icon type="book" key="book" />,
                     <Icon type="user" key="user" />,
                 ]}
