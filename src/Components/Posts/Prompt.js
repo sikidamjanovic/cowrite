@@ -44,7 +44,7 @@ class Prompt extends Component {
         return (
             <Card
                 actions={[
-                    <button onClick= {this.like}><Icon type="heart" key="heart"/></button>,
+                    <button id="likebtn" onClick= {this.like}><Icon type="heart" key="heart"/></button>,
                     <Icon type="book" key="book" />,
                     <Icon type="user" key="user" />,
                 ]}
