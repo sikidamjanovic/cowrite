@@ -11,7 +11,7 @@ const App = () => (
             <Nav/>
             <BackTop/>
             <Route exact path="/" component={Home} />
-            <Route path="/prompts/category/All" component={Home}/>
+            <Route path="/prompts/category/all" component={Home}/>
             <Route path="/prompts/category/Comedy" component={Home}/>
             <Route path="/prompts/category/Drama" component={Home}/>
             <Route path="/prompts/category/Romance" component={Home}/>

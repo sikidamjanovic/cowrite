@@ -4,15 +4,6 @@ import { NavLink, withRouter } from 'react-router-dom'
 import '../../App.css'
 
 class Sidebar extends Component {
-    constructor(props) {
-        super(props);
-        this.returnQuery = this.returnQuery.bind(this)
-    }
-
-    returnQuery(query){
-        return this.props.query(query)
-    }
-
     render() { 
         const { SubMenu } = Menu;
         return (
@@ -20,7 +11,6 @@ class Sidebar extends Component {
                 onClick={this.handleClick}
                 style={{ width: '100%', height: '100vh' }}
                 defaultOpenKeys={['sub1']}
-                defaultSelectedKeys={['/prompts/category/Comedy']}
                 selectedKeys={window.location.pathname}
                 mode="inline"
                 id="sidebar"
@@ -38,10 +28,7 @@ class Sidebar extends Component {
                 <Menu.ItemGroup key="g2" title="Categories">
                     <Menu.Item key="/prompts/category/all">
                         <NavLink to={{
-                            pathname: "/prompts/category/all",
-                            state: {
-                                query: 'All'
-                            }
+                            pathname: "/prompts/category/all"
                         }}>
                             All
                         </NavLink>

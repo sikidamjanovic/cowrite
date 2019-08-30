@@ -8,9 +8,17 @@ import '../../App.css'
 
 class Feed extends Component {
 
-    // state = {
-    //     loading: true
-    // }
+    constructor(props){
+        super(props)
+        this.state={
+            sort: "new"
+        }
+        this.handleSort = this.handleSort.bind(this)
+    }
+
+    handleSort(value){
+        return this.props.sort(value)
+    }
 
     getPrompts(){
         const { posts, auth } = this.props;
@@ -51,16 +59,16 @@ class Feed extends Component {
                             </Breadcrumb>
                         </div>
                         <div>
-                            <Select defaultValue="Sort" style={{ width: 100 }}>
+                            <Select defaultValue="Sort" style={{ width: 100 }} onChange={this.handleSort}>
                                 <Option value="Hot">
                                     <Icon type="fire"/>
                                     Hot
                                 </Option>
-                                <Option value="Top">
+                                <Option value="author">
                                     <Icon type="arrow-up"/>
-                                    Top
+                                    *TEST*
                                 </Option>
-                                <Option value="New">
+                                <Option value="createdAt">
                                     <Icon type="bulb"/>
                                     New
                                 </Option>
@@ -84,14 +92,21 @@ const mapStateToProps = (state, props) => {
 export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
-        const { query } = props
-        return [
-            {
-                collection: 'posts',
-                where: [
-                    "genre", "==", query
-                ]
-            }
-        ]
+
+        const { getAll, query, sortBy } = props
+        console.log(props)
+
+        if(getAll == true){
+            return [
+                { collection: 'posts' }
+            ]
+        }else{
+            return [{ 
+                collection: 'posts', 
+                orderBy: [sortBy, 'desc'],
+                where: ["genre", "==", query] 
+            }]
+        }
+
     })
 )(Feed)
