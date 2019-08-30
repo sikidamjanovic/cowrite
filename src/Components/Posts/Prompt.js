@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Card, Icon, Avatar, Tag, Popover, Tooltip } from 'antd';
 import '../../App.css'
+import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
 import { firestore } from "firebase";
-import SignedInLinks from '../Auth/SignedInLinks';
 
 class Prompt extends Component {
 
@@ -37,9 +37,15 @@ class Prompt extends Component {
     }
 
     like(){
-        console.log("ues")
+        if (this.props.auth.isEmpty === false) {
+            console.log(this.props.auth.displayName)
+            getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).set({
+                uid: this.props.auth.uid
+            })
+        }
     }
-    render() {
+
+    render() { 
         const { Meta } = Card;
         return (
             <Card
@@ -77,4 +83,13 @@ class Prompt extends Component {
         );
     }
 }
-export default Prompt;
+
+const mapStateToProps = (state, props) => {
+    return {
+        posts: state.firestore.ordered.posts,
+        auth: state.firebase.auth
+    }
+}
+
+
+export default connect(mapStateToProps)(Prompt);
