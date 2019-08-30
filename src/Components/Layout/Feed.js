@@ -98,7 +98,9 @@ export default compose(
 
         if(getAll == true){
             return [
-                { collection: 'posts' }
+                { collection: 'posts',
+                  orderBy: [sortBy, 'desc']
+                }
             ]
         }else{
             return [{ 
