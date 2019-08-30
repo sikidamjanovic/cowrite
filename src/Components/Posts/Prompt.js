@@ -1,6 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Card, Icon, Avatar, Tag, Popover, Tooltip } from 'antd';
 import '../../App.css'
+import { getFirestore } from "redux-firestore";
+import { firestore } from "firebase";
+import SignedInLinks from '../Auth/SignedInLinks';
 
 class Prompt extends Component {
 
@@ -33,11 +36,8 @@ class Prompt extends Component {
         return Math.round(48 - Math.abs(postedTime - currentTime) / 36e5)
     }
 
-    consoleTest() {
-        console.log('testing')
-    }
     like(){
-        console.log('yeet')
+        console.log("ues")
     }
     render() {
         const { Meta } = Card;
@@ -77,5 +77,4 @@ class Prompt extends Component {
         );
     }
 }
-
 export default Prompt;
