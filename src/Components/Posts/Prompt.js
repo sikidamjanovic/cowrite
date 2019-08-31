@@ -42,7 +42,7 @@ class Prompt extends Component {
             getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).set({
                 uid: this.props.auth.uid
             })
-        }
+        } 
     }
 
     render() { 
