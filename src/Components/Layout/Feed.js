@@ -59,18 +59,18 @@ class Feed extends Component {
                             </Breadcrumb>
                         </div>
                         <div>
-                            <Select defaultValue="Sort" style={{ width: 100 }} onChange={this.handleSort}>
+                            <Select defaultValue="createdAt" style={{ width: 100 }} onChange={this.handleSort}>
+                                <Option value="createdAt">
+                                    {/* <Icon type="bulb"/> */}
+                                    New
+                                </Option>
                                 <Option value="Hot">
-                                    <Icon type="fire"/>
+                                    {/* <Icon type="fire"/> */}
                                     Hot
                                 </Option>
                                 <Option value="author">
-                                    <Icon type="arrow-up"/>
-                                    *TEST*
-                                </Option>
-                                <Option value="createdAt">
-                                    <Icon type="bulb"/>
-                                    New
+                                    {/* <Icon type="arrow-up"/> */}
+                                    Author
                                 </Option>
                             </Select>
                         </div>

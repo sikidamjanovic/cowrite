@@ -4,6 +4,7 @@ import { signOut } from '../../Store/Actions/authActions'
 import { connect } from 'react-redux'
 import HelpModal from '../Common/HelpModal'
 import AccountDropdown from '../Common/AccountDropdown'
+import '../../App.css'
 
 class SignedInLinks extends Component {
 
@@ -11,15 +12,15 @@ class SignedInLinks extends Component {
         return (
             <Fragment>
 
-                <div>
+                <div className="nav-link">
                     <NewPostModal/>
                 </div>
 
-                <div>
+                <div className="nav-link">
                     <HelpModal/>
                 </div>
 
-                <div>
+                <div className="nav-link">
                     <AccountDropdown signOut={this.props.signOut} auth={this.props.auth}/>
                 </div>
 
