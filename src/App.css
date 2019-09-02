@@ -41,7 +41,12 @@
 
 .nav-col-right{
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-end
+}
+
+.nav-link{
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 #navBar{

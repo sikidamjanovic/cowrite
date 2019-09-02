@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
-import { Button, Icon, Menu } from 'antd'
 import SignInModal from '../Auth/SignInModal'
 import SignUpModal from '../Auth/SignUpModal'
 import HelpModal from '../Common/HelpModal'
+import '../../App.css'
 
 class SignedOutLinks extends Component {
     
@@ -10,15 +10,15 @@ class SignedOutLinks extends Component {
         return (
             <Fragment>
 
-                <div>
+                <div className="nav-link">
                     <HelpModal/>
                 </div>
 
-                <div>
+                <div className="nav-link">
                     <SignInModal/>
                 </div>
                 
-                <div>
+                <div className="nav-link">
                     <SignUpModal/>
                 </div>
                 
