@@ -40,7 +40,8 @@ class Prompt extends Component {
         if (this.props.auth.isEmpty === false) {
             console.log(this.props.auth.displayName)
             getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).set({
-                uid: this.props.auth.uid
+                uid: this.props.auth.uid,
+                postId: this.props.id
             })
         } 
     }
