@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Prompt from '../Posts/Prompt'
 import { Row, Col, Select, Breadcrumb, Icon } from 'antd';
+import StoryCard from '../Posts/StoryCard'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
@@ -75,6 +76,9 @@ class Feed extends Component {
                             </Select>
                         </div>
                     </div>
+                    {/* TESTING STORY CARDS  */}
+                    <StoryCard/>
+
                     {this.getPrompts()}
                 </Row>
             </div>

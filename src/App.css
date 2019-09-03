@@ -105,3 +105,7 @@
     background: none;
     border: none;
 }
+
+#number-of-submissions{
+    margin-left: 20px;
+}

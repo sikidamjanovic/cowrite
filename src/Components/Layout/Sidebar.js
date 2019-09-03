@@ -84,14 +84,15 @@ class Sidebar extends Component {
                     }
                 >
 
-                <Menu.ItemGroup key="g3" title="Filter">
-                    <Menu.Item key="8">Recently Completed</Menu.Item>
-                    <Menu.Item key="9">Most Liked</Menu.Item>
-                    <Menu.Item key="10">Best Rated</Menu.Item>
-                </Menu.ItemGroup>
-
                 <Menu.ItemGroup key="g4" title="Categories">
-                    <Menu.Item key="11">Comedy</Menu.Item>
+                    <Menu.Item key="/stories/category/Comedy">
+                        <NavLink to={{
+                            pathname: "/stories/category/Comedy",
+                            state: {
+                                query: 'Comedy'
+                            }
+                        }}/>Comedy
+                    </Menu.Item>
                     <Menu.Item key="12">Drama</Menu.Item>
                     <Menu.Item key="13">Romance</Menu.Item>
                     <Menu.Item key="14">Sci-Fi</Menu.Item>
@@ -101,7 +102,6 @@ class Sidebar extends Component {
                 </SubMenu>
 
                 {/* ACCOUNT PART OF SIDEBAR */}
-
 
                 <SubMenu
                     key="sub3"

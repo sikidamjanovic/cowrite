@@ -66,6 +66,7 @@ class Prompt extends Component {
                     title = {
                         <span id="title-container">
                             <span id="card-title">{this.props.title}</span>
+                            <Tag>Prompt</Tag>
                             {this.getTime()}
                         </span>
                     }
