@@ -21,7 +21,7 @@ class StoryComment extends Component {
                 author={<a>{this.props.author}</a>}
                 actions={actions}
                 avatar={
-                    <Avatar/>
+                    <Avatar icon="user" />
                 }
                 content={
                 <p>

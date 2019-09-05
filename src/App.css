@@ -109,3 +109,24 @@
 #number-of-submissions{
     margin-left: 20px;
 }
+
+.ant-collapse-header{
+    width: 180px;
+    border: 1px solid #d9d9d9;
+    color: rgba(0, 0, 0, 0.65) !important;
+    border-radius: 4px !important; 
+}
+
+.ant-collapse-content .ant-collapse-content-box{
+    padding: 0;
+}
+
+.submit-chapter-input{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+#submit-chapter-button{
+    margin-top: 10px;
+    margin-right: 20px;
+}

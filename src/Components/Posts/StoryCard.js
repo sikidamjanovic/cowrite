@@ -65,12 +65,21 @@ class StoryCard extends Component {
                 />
                 </Card>
                 <Modal
-                    title={"Story Title"}
+                    title={
+                        <span>
+                            <span style={{ marginRight: '20px' }}>
+                                The Title of The Story
+                            </span>
+                            <Tag>1 Chapter Left</Tag>
+                            <Tag>#4 in Comedy</Tag>
+                        </span>
+                    }
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null}
                     width={'80%'}
-                    style={{ top: 0 }}
+                    headerStyle={{ backgroundColor: 'red'}}
+                    style={{ top: 0, maxHeight: '100vh', overflow: 'auto', padding: 0 }}
                 >
                     <StoryModal/>
                 </Modal>
