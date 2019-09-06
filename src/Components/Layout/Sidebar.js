@@ -4,15 +4,55 @@ import { NavLink, withRouter } from 'react-router-dom'
 import '../../App.css'
 
 class Sidebar extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { width: 0 };
+        this.updateWidth = this.updateWidth.bind(this);
+    }
+
+    componentDidMount() {
+        this.updateWidth();
+        window.addEventListener('resize', this.updateWidth);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateWidth);
+    }
+
+    updateWidth() {
+        this.setState({ width: window.innerWidth });
+    }
+
+    getStyle(){
+        if(this.state.width > 768){
+            return({
+                overflow: 'auto',
+                height: '100vh',
+                width: '16.6%',
+                position: 'fixed',
+                left: 0
+            })
+        }
+    }
+
+    changeMenuMode(){
+        if(this.state.width > 768){
+            return "inline"
+        }else{
+            return "horizontal"
+        }
+    }
+    
     render() { 
         const { SubMenu } = Menu;
         return (
             <Menu
                 onClick={this.handleClick}
-                style={{ width: '100%', height: '100vh' }}
                 defaultOpenKeys={['sub1']}
                 selectedKeys={window.location.pathname}
-                mode="inline"
+                mode={this.changeMenuMode()}
+                style={this.getStyle()}
                 id="sidebar"
             >
                 <SubMenu
