@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,6 +25,7 @@
 // IWYU pragma: private, include "base/low_level_alloc.h"
 
 #include <sys/types.h>
+
 #include <cstdint>
 
 #include "absl/base/attributes.h"
@@ -39,10 +40,13 @@
 #define ABSL_LOW_LEVEL_ALLOC_MISSING 1
 #endif
 
-// Using LowLevelAlloc with kAsyncSignalSafe isn't supported on Windows.
+// Using LowLevelAlloc with kAsyncSignalSafe isn't supported on Windows or
+// asm.js / WebAssembly.
+// See https://kripken.github.io/emscripten-site/docs/porting/pthreads.html
+// for more information.
 #ifdef ABSL_LOW_LEVEL_ALLOC_ASYNC_SIGNAL_SAFE_MISSING
 #error ABSL_LOW_LEVEL_ALLOC_ASYNC_SIGNAL_SAFE_MISSING cannot be directly set
-#elif defined(_WIN32)
+#elif defined(_WIN32) || defined(__asmjs__) || defined(__wasm__)
 #define ABSL_LOW_LEVEL_ALLOC_ASYNC_SIGNAL_SAFE_MISSING 1
 #endif
 
@@ -93,15 +97,12 @@ class LowLevelAlloc {
     // DefaultArena(). Not supported on all platforms.
     kAsyncSignalSafe = 0x0002,
 #endif
-
-    // When used with DefaultArena(), the NewArena() and DeleteArena() calls
-    // obey the flags given explicitly in the NewArena() call, even if those
-    // flags differ from the settings in DefaultArena().  So the call
-    // NewArena(kAsyncSignalSafe, DefaultArena()) is itself async-signal-safe,
-    // as well as generatating an arena that provides async-signal-safe
-    // Alloc/Free.
   };
-  static Arena *NewArena(int32_t flags, Arena *meta_data_arena);
+  // Construct a new arena.  The allocation of the underlying metadata honors
+  // the provided flags.  For example, the call NewArena(kAsyncSignalSafe)
+  // is itself async-signal-safe, as well as generatating an arena that provides
+  // async-signal-safe Alloc/Free.
+  static Arena *NewArena(int32_t flags);
 
   // Destroys an arena allocated by NewArena and returns true,
   // provided no allocated blocks remain in the arena.
@@ -119,4 +120,5 @@ class LowLevelAlloc {
 
 }  // namespace base_internal
 }  // namespace absl
+
 #endif  // ABSL_BASE_INTERNAL_LOW_LEVEL_ALLOC_H_

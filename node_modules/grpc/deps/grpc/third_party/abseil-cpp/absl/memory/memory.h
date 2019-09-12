@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,6 +30,7 @@
 #include <type_traits>
 #include <utility>
 
+#include "absl/base/macros.h"
 #include "absl/meta/type_traits.h"
 
 namespace absl {
@@ -38,15 +39,25 @@ namespace absl {
 // Function Template: WrapUnique()
 // -----------------------------------------------------------------------------
 //
-// Transfers ownership of a raw pointer to a `std::unique_ptr`. The returned
-// value is a `std::unique_ptr` of deduced type.
+// Adopts ownership from a raw pointer and transfers it to the returned
+// `std::unique_ptr`, whose type is deduced. Because of this deduction, *do not*
+// specify the template type `T` when calling `WrapUnique`.
 //
 // Example:
 //   X* NewX(int, int);
 //   auto x = WrapUnique(NewX(1, 2));  // 'x' is std::unique_ptr<X>.
 //
-// `absl::WrapUnique` is useful for capturing the output of a raw pointer
-// factory. However, prefer 'absl::make_unique<T>(args...) over
+// Do not call WrapUnique with an explicit type, as in
+// `WrapUnique<X>(NewX(1, 2))`.  The purpose of WrapUnique is to automatically
+// deduce the pointer type. If you wish to make the type explicit, just use
+// `std::unique_ptr` directly.
+//
+//   auto x = std::unique_ptr<X>(NewX(1, 2));
+//                  - or -
+//   std::unique_ptr<X> x(NewX(1, 2));
+//
+// While `absl::WrapUnique` is useful for capturing the output of a raw
+// pointer factory, prefer 'absl::make_unique<T>(args...)' over
 // 'absl::WrapUnique(new T(args...))'.
 //
 //   auto x = WrapUnique(new X(1, 2));  // works, but nonideal.
@@ -81,6 +92,13 @@ struct MakeUniqueResult<T[N]> {
 
 }  // namespace memory_internal
 
+// gcc 4.8 has __cplusplus at 201301 but doesn't define make_unique.  Other
+// supported compilers either just define __cplusplus as 201103 but have
+// make_unique (msvc), or have make_unique whenever __cplusplus > 201103 (clang)
+#if (__cplusplus > 201103L || defined(_MSC_VER)) && \
+    !(defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 8)
+using std::make_unique;
+#else
 // -----------------------------------------------------------------------------
 // Function Template: make_unique<T>()
 // -----------------------------------------------------------------------------
@@ -97,7 +115,7 @@ struct MakeUniqueResult<T[N]> {
 //
 // For more background on why `std::unique_ptr<T>(new T(a,b))` is problematic,
 // see Herb Sutter's explanation on
-// (Exception-Safe Function Calls)[http://herbsutter.com/gotw/_102/].
+// (Exception-Safe Function Calls)[https://herbsutter.com/gotw/_102/].
 // (In general, reviewers should treat `new T(a,b)` with scrutiny.)
 //
 // Example usage:
@@ -164,18 +182,19 @@ typename memory_internal::MakeUniqueResult<T>::array make_unique(size_t n) {
 template <typename T, typename... Args>
 typename memory_internal::MakeUniqueResult<T>::invalid make_unique(
     Args&&... /* args */) = delete;
+#endif
 
 // -----------------------------------------------------------------------------
 // Function Template: RawPtr()
 // -----------------------------------------------------------------------------
 //
-// Extracts the raw pointer from a pointer-like 'ptr'. `absl::RawPtr` is useful
-// within templates that need to handle a complement of raw pointers,
+// Extracts the raw pointer from a pointer-like value `ptr`. `absl::RawPtr` is
+// useful within templates that need to handle a complement of raw pointers,
 // `std::nullptr_t`, and smart pointers.
 template <typename T>
-auto RawPtr(T&& ptr) -> decltype(&*ptr) {
+auto RawPtr(T&& ptr) -> decltype(std::addressof(*ptr)) {
   // ptr is a forwarding reference to support Ts with non-const operators.
-  return (ptr != nullptr) ? &*ptr : nullptr;
+  return (ptr != nullptr) ? std::addressof(*ptr) : nullptr;
 }
 inline std::nullptr_t RawPtr(std::nullptr_t) { return nullptr; }
 
@@ -183,9 +202,9 @@ inline std::nullptr_t RawPtr(std::nullptr_t) { return nullptr; }
 // Function Template: ShareUniquePtr()
 // -----------------------------------------------------------------------------
 //
-// Transforms a `std::unique_ptr` rvalue into a `std::shared_ptr`. The returned
-// value is a `std::shared_ptr` of deduced type and ownership is transferred to
-// the shared pointer.
+// Adopts a `std::unique_ptr` rvalue and returns a `std::shared_ptr` of deduced
+// type. Ownership (if any) of the held value is transferred to the returned
+// shared pointer.
 //
 // Example:
 //
@@ -194,8 +213,11 @@ inline std::nullptr_t RawPtr(std::nullptr_t) { return nullptr; }
 //     CHECK_EQ(*sp, 10);
 //     CHECK(up == nullptr);
 //
-// Note that this conversion is correct even when T is an array type, although
-// the resulting shared pointer may not be very useful.
+// Note that this conversion is correct even when T is an array type, and more
+// generally it works for *any* deleter of the `unique_ptr` (single-object
+// deleter, array deleter, or any custom deleter), since the deleter is adopted
+// by the shared pointer as well. The deleter is copied (unless it is a
+// reference).
 //
 // Implements the resolution of [LWG 2415](http://wg21.link/lwg2415), by which a
 // null shared pointer does not attempt to call the deleter.
@@ -311,13 +333,23 @@ struct RebindPtr<T, U, void_t<typename T::template rebind<U>>> {
   using type = typename T::template rebind<U>;
 };
 
-template <typename T, typename U, typename = void>
+template <typename T, typename U>
+constexpr bool HasRebindAlloc(...) {
+  return false;
+}
+
+template <typename T, typename U>
+constexpr bool HasRebindAlloc(typename T::template rebind<U>::other*) {
+  return true;
+}
+
+template <typename T, typename U, bool = HasRebindAlloc<T, U>(nullptr)>
 struct RebindAlloc {
   using type = typename RebindFirstArg<T, U>::type;
 };
 
 template <typename T, typename U>
-struct RebindAlloc<T, U, void_t<typename T::template rebind<U>::other>> {
+struct RebindAlloc<T, U, true> {
   using type = typename T::template rebind<U>::other;
 };
 
@@ -562,7 +594,7 @@ struct allocator_traits {
     return a.max_size();
   }
   static size_type max_size_impl(char, const Alloc&) {
-    return std::numeric_limits<size_type>::max() / sizeof(value_type);
+    return (std::numeric_limits<size_type>::max)() / sizeof(value_type);
   }
 
   template <typename A>
@@ -609,7 +641,7 @@ struct allocator_is_nothrow
     : memory_internal::ExtractOrT<memory_internal::GetIsNothrow, Alloc,
                                   std::false_type> {};
 
-#if ABSL_ALLOCATOR_NOTHROW
+#if defined(ABSL_ALLOCATOR_NOTHROW) && ABSL_ALLOCATOR_NOTHROW
 template <typename T>
 struct allocator_is_nothrow<std::allocator<T>> : std::true_type {};
 struct default_allocator_is_nothrow : std::true_type {};
@@ -617,6 +649,44 @@ struct default_allocator_is_nothrow : std::true_type {};
 struct default_allocator_is_nothrow : std::false_type {};
 #endif
 
+namespace memory_internal {
+template <typename Allocator, typename Iterator, typename... Args>
+void ConstructRange(Allocator& alloc, Iterator first, Iterator last,
+                    const Args&... args) {
+  for (Iterator cur = first; cur != last; ++cur) {
+    ABSL_INTERNAL_TRY {
+      std::allocator_traits<Allocator>::construct(alloc, std::addressof(*cur),
+                                                  args...);
+    }
+    ABSL_INTERNAL_CATCH_ANY {
+      while (cur != first) {
+        --cur;
+        std::allocator_traits<Allocator>::destroy(alloc, std::addressof(*cur));
+      }
+      ABSL_INTERNAL_RETHROW;
+    }
+  }
+}
+
+template <typename Allocator, typename Iterator, typename InputIterator>
+void CopyRange(Allocator& alloc, Iterator destination, InputIterator first,
+               InputIterator last) {
+  for (Iterator cur = destination; first != last;
+       static_cast<void>(++cur), static_cast<void>(++first)) {
+    ABSL_INTERNAL_TRY {
+      std::allocator_traits<Allocator>::construct(alloc, std::addressof(*cur),
+                                                  *first);
+    }
+    ABSL_INTERNAL_CATCH_ANY {
+      while (cur != destination) {
+        --cur;
+        std::allocator_traits<Allocator>::destroy(alloc, std::addressof(*cur));
+      }
+      ABSL_INTERNAL_RETHROW;
+    }
+  }
+}
+}  // namespace memory_internal
 }  // namespace absl
 
 #endif  // ABSL_MEMORY_MEMORY_H_

@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,22 @@
 #ifndef ABSL_BASE_INTERNAL_TSAN_MUTEX_INTERFACE_H_
 #define ABSL_BASE_INTERNAL_TSAN_MUTEX_INTERFACE_H_
 
-#ifdef THREAD_SANITIZER
+// ABSL_INTERNAL_HAVE_TSAN_INTERFACE
+// Macro intended only for internal use.
+//
+// Checks whether LLVM Thread Sanitizer interfaces are available.
+// First made available in LLVM 5.0 (Sep 2017).
+#ifdef ABSL_INTERNAL_HAVE_TSAN_INTERFACE
+#error "ABSL_INTERNAL_HAVE_TSAN_INTERFACE cannot be directly set."
+#endif
+
+#if defined(THREAD_SANITIZER) && defined(__has_include)
+#if __has_include(<sanitizer/tsan_interface.h>)
+#define ABSL_INTERNAL_HAVE_TSAN_INTERFACE 1
+#endif
+#endif
+
+#ifdef ABSL_INTERNAL_HAVE_TSAN_INTERFACE
 #include <sanitizer/tsan_interface.h>
 
 #define ABSL_TSAN_MUTEX_CREATE __tsan_mutex_create

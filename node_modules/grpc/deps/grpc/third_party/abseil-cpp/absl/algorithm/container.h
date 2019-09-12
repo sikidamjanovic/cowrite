@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -36,7 +36,6 @@
 // For template parameter and variable naming, `C` indicates the container type
 // to which the function is applied, `Pred` indicates the predicate object type
 // to be used by the function and `T` indicates the applicable element type.
-//
 
 #ifndef ABSL_ALGORITHM_CONTAINER_H_
 #define ABSL_ALGORITHM_CONTAINER_H_
@@ -46,6 +45,8 @@
 #include <iterator>
 #include <numeric>
 #include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -54,7 +55,6 @@
 #include "absl/meta/type_traits.h"
 
 namespace absl {
-
 namespace container_algorithm_internal {
 
 // NOTE: it is important to defer to ADL lookup for building with C++ modules,
@@ -68,6 +68,12 @@ using std::end;
 // while ContainerIter<vector<T>> gives vector<T>::iterator.
 template <typename C>
 using ContainerIter = decltype(begin(std::declval<C&>()));
+
+// An MSVC bug involving template parameter substitution requires us to use
+// decltype() here instead of just std::pair.
+template <typename C1, typename C2>
+using ContainerIterPairType =
+    decltype(std::make_pair(ContainerIter<C1>(), ContainerIter<C2>()));
 
 template <typename C>
 using ContainerDifferenceType =
@@ -94,6 +100,17 @@ ContainerIter<C> c_begin(C& c) { return begin(c); }
 
 template <typename C>
 ContainerIter<C> c_end(C& c) { return end(c); }
+
+template <typename T>
+struct IsUnorderedContainer : std::false_type {};
+
+template <class Key, class T, class Hash, class KeyEqual, class Allocator>
+struct IsUnorderedContainer<
+    std::unordered_map<Key, T, Hash, KeyEqual, Allocator>> : std::true_type {};
+
+template <class Key, class Hash, class KeyEqual, class Allocator>
+struct IsUnorderedContainer<std::unordered_set<Key, Hash, KeyEqual, Allocator>>
+    : std::true_type {};
 
 }  // namespace container_algorithm_internal
 
@@ -308,11 +325,10 @@ container_algorithm_internal::ContainerDifferenceType<const C> c_count_if(
 
 // c_mismatch()
 //
-// Container-based version of the <algorithm> `std::mismatchf()` function to
+// Container-based version of the <algorithm> `std::mismatch()` function to
 // return the first element where two ordered containers differ.
 template <typename C1, typename C2>
-std::pair<container_algorithm_internal::ContainerIter<C1>,
-          container_algorithm_internal::ContainerIter<C2>>
+container_algorithm_internal::ContainerIterPairType<C1, C2>
 c_mismatch(C1& c1, C2& c2) {
   return std::mismatch(container_algorithm_internal::c_begin(c1),
                        container_algorithm_internal::c_end(c1),
@@ -322,8 +338,7 @@ c_mismatch(C1& c1, C2& c2) {
 // Overload of c_mismatch() for using a predicate evaluation other than `==` as
 // the function's test condition.
 template <typename C1, typename C2, typename BinaryPredicate>
-std::pair<container_algorithm_internal::ContainerIter<C1>,
-          container_algorithm_internal::ContainerIter<C2>>
+container_algorithm_internal::ContainerIterPairType<C1, C2>
 c_mismatch(C1& c1, C2& c2, BinaryPredicate&& pred) {
   return std::mismatch(container_algorithm_internal::c_begin(c1),
                        container_algorithm_internal::c_end(c1),
@@ -490,7 +505,7 @@ BidirectionalIterator c_copy_backward(const C& src,
 // Container-based version of the <algorithm> `std::move()` function to move
 // a container's elements into an iterator.
 template <typename C, typename OutputIterator>
-OutputIterator c_move(C& src, OutputIterator dest) {
+OutputIterator c_move(C&& src, OutputIterator dest) {
   return std::move(container_algorithm_internal::c_begin(src),
                    container_algorithm_internal::c_end(src), dest);
 }
@@ -500,7 +515,7 @@ OutputIterator c_move(C& src, OutputIterator dest) {
 // Container-based version of the <algorithm> `std::move_backward()` function to
 // move a container's elements into an iterator in reverse order.
 template <typename C, typename BidirectionalIterator>
-BidirectionalIterator c_move_backward(C& src, BidirectionalIterator dest) {
+BidirectionalIterator c_move_backward(C&& src, BidirectionalIterator dest) {
   return std::move_backward(container_algorithm_internal::c_begin(src),
                             container_algorithm_internal::c_end(src), dest);
 }
@@ -640,9 +655,8 @@ container_algorithm_internal::ContainerIter<C> c_generate_n(C& c, Size n,
 
 // Note: `c_xx()` <algorithm> container versions for `remove()`, `remove_if()`,
 // and `unique()` are omitted, because it's not clear whether or not such
-// functions should call erase their supplied sequences afterwards. Either
+// functions should call erase on their supplied sequences afterwards. Either
 // behavior would be surprising for a different set of users.
-//
 
 // c_remove_copy()
 //
@@ -869,7 +883,7 @@ void c_stable_sort(C& c, Compare&& comp) {
 // c_is_sorted()
 //
 // Container-based version of the <algorithm> `std::is_sorted()` function
-// to evaluate whether the given containter is sorted in ascending order.
+// to evaluate whether the given container is sorted in ascending order.
 template <typename C>
 bool c_is_sorted(const C& c) {
   return std::is_sorted(container_algorithm_internal::c_begin(c),
@@ -1042,8 +1056,7 @@ container_algorithm_internal::ContainerIter<Sequence> c_upper_bound(
 // to return an iterator pair pointing to the first and last elements in a
 // sorted container which compare equal to `value`.
 template <typename Sequence, typename T>
-std::pair<container_algorithm_internal::ContainerIter<Sequence>,
-          container_algorithm_internal::ContainerIter<Sequence>>
+container_algorithm_internal::ContainerIterPairType<Sequence, Sequence>
 c_equal_range(Sequence& sequence, T&& value) {
   return std::equal_range(container_algorithm_internal::c_begin(sequence),
                           container_algorithm_internal::c_end(sequence),
@@ -1053,8 +1066,7 @@ c_equal_range(Sequence& sequence, T&& value) {
 // Overload of c_equal_range() for performing a `comp` comparison other than
 // the default `operator<`.
 template <typename Sequence, typename T, typename Compare>
-std::pair<container_algorithm_internal::ContainerIter<Sequence>,
-          container_algorithm_internal::ContainerIter<Sequence>>
+container_algorithm_internal::ContainerIterPairType<Sequence, Sequence>
 c_equal_range(Sequence& sequence, T&& value, Compare&& comp) {
   return std::equal_range(container_algorithm_internal::c_begin(sequence),
                           container_algorithm_internal::c_end(sequence),
@@ -1162,7 +1174,13 @@ bool c_includes(const C1& c1, const C2& c2, Compare&& comp) {
 // Container-based version of the <algorithm> `std::set_union()` function
 // to return an iterator containing the union of two containers; duplicate
 // values are not copied into the output.
-template <typename C1, typename C2, typename OutputIterator>
+template <typename C1, typename C2, typename OutputIterator,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C1>::value,
+              void>::type,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C2>::value,
+              void>::type>
 OutputIterator c_set_union(const C1& c1, const C2& c2, OutputIterator output) {
   return std::set_union(container_algorithm_internal::c_begin(c1),
                         container_algorithm_internal::c_end(c1),
@@ -1172,7 +1190,13 @@ OutputIterator c_set_union(const C1& c1, const C2& c2, OutputIterator output) {
 
 // Overload of c_set_union() for performing a merge using a `comp` other than
 // `operator<`.
-template <typename C1, typename C2, typename OutputIterator, typename Compare>
+template <typename C1, typename C2, typename OutputIterator, typename Compare,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C1>::value,
+              void>::type,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C2>::value,
+              void>::type>
 OutputIterator c_set_union(const C1& c1, const C2& c2, OutputIterator output,
                            Compare&& comp) {
   return std::set_union(container_algorithm_internal::c_begin(c1),
@@ -1186,7 +1210,13 @@ OutputIterator c_set_union(const C1& c1, const C2& c2, OutputIterator output,
 //
 // Container-based version of the <algorithm> `std::set_intersection()` function
 // to return an iterator containing the intersection of two containers.
-template <typename C1, typename C2, typename OutputIterator>
+template <typename C1, typename C2, typename OutputIterator,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C1>::value,
+              void>::type,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C2>::value,
+              void>::type>
 OutputIterator c_set_intersection(const C1& c1, const C2& c2,
                                   OutputIterator output) {
   return std::set_intersection(container_algorithm_internal::c_begin(c1),
@@ -1197,7 +1227,13 @@ OutputIterator c_set_intersection(const C1& c1, const C2& c2,
 
 // Overload of c_set_intersection() for performing a merge using a `comp` other
 // than `operator<`.
-template <typename C1, typename C2, typename OutputIterator, typename Compare>
+template <typename C1, typename C2, typename OutputIterator, typename Compare,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C1>::value,
+              void>::type,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C2>::value,
+              void>::type>
 OutputIterator c_set_intersection(const C1& c1, const C2& c2,
                                   OutputIterator output, Compare&& comp) {
   return std::set_intersection(container_algorithm_internal::c_begin(c1),
@@ -1212,7 +1248,13 @@ OutputIterator c_set_intersection(const C1& c1, const C2& c2,
 // Container-based version of the <algorithm> `std::set_difference()` function
 // to return an iterator containing elements present in the first container but
 // not in the second.
-template <typename C1, typename C2, typename OutputIterator>
+template <typename C1, typename C2, typename OutputIterator,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C1>::value,
+              void>::type,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C2>::value,
+              void>::type>
 OutputIterator c_set_difference(const C1& c1, const C2& c2,
                                 OutputIterator output) {
   return std::set_difference(container_algorithm_internal::c_begin(c1),
@@ -1223,7 +1265,13 @@ OutputIterator c_set_difference(const C1& c1, const C2& c2,
 
 // Overload of c_set_difference() for performing a merge using a `comp` other
 // than `operator<`.
-template <typename C1, typename C2, typename OutputIterator, typename Compare>
+template <typename C1, typename C2, typename OutputIterator, typename Compare,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C1>::value,
+              void>::type,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C2>::value,
+              void>::type>
 OutputIterator c_set_difference(const C1& c1, const C2& c2,
                                 OutputIterator output, Compare&& comp) {
   return std::set_difference(container_algorithm_internal::c_begin(c1),
@@ -1238,7 +1286,13 @@ OutputIterator c_set_difference(const C1& c1, const C2& c2,
 // Container-based version of the <algorithm> `std::set_symmetric_difference()`
 // function to return an iterator containing elements present in either one
 // container or the other, but not both.
-template <typename C1, typename C2, typename OutputIterator>
+template <typename C1, typename C2, typename OutputIterator,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C1>::value,
+              void>::type,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C2>::value,
+              void>::type>
 OutputIterator c_set_symmetric_difference(const C1& c1, const C2& c2,
                                           OutputIterator output) {
   return std::set_symmetric_difference(
@@ -1250,7 +1304,13 @@ OutputIterator c_set_symmetric_difference(const C1& c1, const C2& c2,
 
 // Overload of c_set_symmetric_difference() for performing a merge using a
 // `comp` other than `operator<`.
-template <typename C1, typename C2, typename OutputIterator, typename Compare>
+template <typename C1, typename C2, typename OutputIterator, typename Compare,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C1>::value,
+              void>::type,
+          typename = typename std::enable_if<
+              !container_algorithm_internal::IsUnorderedContainer<C2>::value,
+              void>::type>
 OutputIterator c_set_symmetric_difference(const C1& c1, const C2& c2,
                                           OutputIterator output,
                                           Compare&& comp) {
@@ -1437,8 +1497,7 @@ container_algorithm_internal::ContainerIter<Sequence> c_max_element(
 // smallest and largest values, respectively, using `operator<` to make the
 // comparisons.
 template <typename C>
-std::pair<container_algorithm_internal::ContainerIter<C>,
-          container_algorithm_internal::ContainerIter<C>>
+container_algorithm_internal::ContainerIterPairType<C, C>
 c_minmax_element(C& c) {
   return std::minmax_element(container_algorithm_internal::c_begin(c),
                              container_algorithm_internal::c_end(c));
@@ -1447,8 +1506,7 @@ c_minmax_element(C& c) {
 // Overload of c_minmax_element() for performing `comp` comparisons other than
 // `operator<`.
 template <typename C, typename Compare>
-std::pair<container_algorithm_internal::ContainerIter<C>,
-          container_algorithm_internal::ContainerIter<C>>
+container_algorithm_internal::ContainerIterPairType<C, C>
 c_minmax_element(C& c, Compare&& comp) {
   return std::minmax_element(container_algorithm_internal::c_begin(c),
                              container_algorithm_internal::c_end(c),
@@ -1588,7 +1646,7 @@ decay_t<T> c_inner_product(const Sequence1& factors1, const Sequence2& factors2,
 }
 
 // Overload of c_inner_product() for using binary operations other than
-// `operator+` (for computing the accumlation) and `operator*` (for computing
+// `operator+` (for computing the accumulation) and `operator*` (for computing
 // the product between the two container's element pair).
 template <typename Sequence1, typename Sequence2, typename T,
           typename BinaryOp1, typename BinaryOp2>

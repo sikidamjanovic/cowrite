@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Feed from '../Layout/Feed'
+import PromptsFeed from '../Layout/PromptsFeed'
+import StoriesFeed from '../Layout/StoriesFeed'
 import Sidebar from '../Layout/Sidebar'
 import { Row, Col } from 'antd';
 import '../../App.css'
@@ -44,7 +45,13 @@ class Home extends Component {
         })
     }
 
-    
+    showRelevantFeed(){
+        if(window.location.pathname.slice(1,8) == 'prompts'){
+            return <PromptsFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
+        }else{
+            return <StoriesFeed/>
+        }
+    }    
 
     render() {
         return (
@@ -55,7 +62,7 @@ class Home extends Component {
                         <Sidebar query={this.updateQuery}/>
                     </Col>
                     <Col xs={12} sm={18} offset={1}  id="feed-container">
-                        <Feed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
+                        {this.showRelevantFeed()}
                     </Col>
                 </Row>
             </div>

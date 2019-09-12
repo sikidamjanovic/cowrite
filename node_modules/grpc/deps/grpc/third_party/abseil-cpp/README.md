@@ -7,6 +7,8 @@ standard library.
 ## Table of Contents
 
 - [About Abseil](#about)
+- [Quickstart](#quickstart)
+- [Building Abseil](#build)
 - [Codemap](#codemap)
 - [License](#license)
 - [Links](#links)
@@ -29,6 +31,26 @@ just found that many of these utilities serve a purpose within our code
 base, and we now want to provide those resources to the C++ community as
 a whole.
 
+<a name="quickstart"></a>
+## Quickstart
+
+If you want to just get started, make sure you at least run through the
+[Abseil Quickstart](https://abseil.io/docs/cpp/quickstart). The Quickstart
+contains information about setting up your development environment, downloading
+the Abseil code, running tests, and getting a simple binary working.
+
+<a name="build"></a>
+## Building Abseil
+
+[Bazel](https://bazel.build) is the official build system for Abseil,
+which is supported on most major platforms (Linux, Windows, MacOS, for example)
+and compilers. See the [quickstart](https://abseil.io/docs/cpp/quickstart) for
+more information on building Abseil using the Bazel build system.
+
+<a name="cmake"></a>
+If you require CMake support, please check the
+[CMake build instructions](CMake/README.md).
+
 ## Codemap
 
 Abseil contains the following C++ library components:
@@ -41,10 +63,14 @@ Abseil contains the following C++ library components:
   <br /> The `algorithm` library contains additions to the C++ `<algorithm>`
   library and container-based versions of such algorithms.
 * [`container`](absl/container/)
-  <br /> The `container` library contains additional STL-style containers.
+  <br /> The `container` library contains additional STL-style containers,
+  including Abseil's unordered "Swiss table" containers.
 * [`debugging`](absl/debugging/)
   <br /> The `debugging` library contains code useful for enabling leak
-  checks. Future updates will add stacktrace and symbolization utilities.
+  checks, and stacktrace and symbolization utilities.
+* [`hash`](absl/hash/)
+  <br /> The `hash` library contains the hashing framework and default hash
+  functor implementations for hashable types in Abseil.
 * [`memory`](absl/memory/)
   <br /> The `memory` library contains C++11-compatible versions of
   `std::make_unique()` and related memory management facilities.
@@ -67,7 +93,9 @@ Abseil contains the following C++ library components:
   time zones.
 * [`types`](absl/types/)
   <br /> The `types` library contains non-container utility types, like a
-  C++11-compatible version of `absl::optional`.
+  C++11-compatible version of the C++17 `std::optional` type.
+* [`utility`](absl/utility/)
+  <br /> The `utility` library contains utility and helper code.
 
 ## License
 
@@ -78,13 +106,9 @@ license. See [LICENSE](LICENSE) for more information.
 
 For more information about Abseil:
 
-* Consult our [Abseil Introduction](http://abseil.io/about/intro)
-* Read [Why Adopt Abseil](http://abseil.io/about/philosophy) to understand our
+* Consult our [Abseil Introduction](https://abseil.io/about/intro)
+* Read [Why Adopt Abseil](https://abseil.io/about/philosophy) to understand our
   design philosophy.
 * Peruse our
-  [Abseil Compatibility Guarantees](http://abseil.io/about/compatibility) to
+  [Abseil Compatibility Guarantees](https://abseil.io/about/compatibility) to
   understand both what we promise to you, and what we expect of you in return.
-
-## Disclaimer
-
-*   This is not an official Google product.

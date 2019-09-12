@@ -5,7 +5,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,6 +41,7 @@
 
 #include <atomic>
 
+#include "absl/base/attributes.h"
 #include "absl/debugging/internal/elf_mem_image.h"
 
 #ifdef ABSL_HAVE_ELF_MEM_IMAGE
@@ -52,7 +53,7 @@
 #endif
 
 namespace absl {
-namespace debug_internal {
+namespace debugging_internal {
 
 // NOTE: this class may be used from within tcmalloc, and can not
 // use any memory allocation routines.
@@ -132,7 +133,7 @@ class VDSOSupport {
 
   // This function pointer may point to InitAndGetCPU,
   // GetCPUViaSyscall, or __vdso_getcpu at different stages of initialization.
-  static std::atomic<GetCpuFn> getcpu_fn_;
+  ABSL_CONST_INIT static std::atomic<GetCpuFn> getcpu_fn_;
 
   friend int GetCPU(void);  // Needs access to getcpu_fn_.
 
@@ -147,7 +148,7 @@ class VDSOSupport {
 // support SYS_getcpu.
 int GetCPU();
 
-}  // namespace debug_internal
+}  // namespace debugging_internal
 }  // namespace absl
 
 #endif  // ABSL_HAVE_ELF_MEM_IMAGE

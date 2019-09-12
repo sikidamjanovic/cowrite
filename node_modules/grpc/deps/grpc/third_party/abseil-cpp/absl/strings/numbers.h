@@ -5,7 +5,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,32 +41,41 @@ namespace absl {
 
 // SimpleAtoi()
 //
-// Converts the given std::string into an integer value, returning `true` if
-// successful. The std::string must reflect a base-10 integer (optionally followed or
+// Converts the given string into an integer value, returning `true` if
+// successful. The string must reflect a base-10 integer (optionally followed or
 // preceded by ASCII whitespace) whose value falls within the range of the
-// integer type,
+// integer type. If any errors are encountered, this function returns `false`,
+// leaving `out` in an unspecified state.
 template <typename int_type>
 ABSL_MUST_USE_RESULT bool SimpleAtoi(absl::string_view s, int_type* out);
 
 // SimpleAtof()
 //
-// Converts the given std::string (optionally followed or preceded by ASCII
+// Converts the given string (optionally followed or preceded by ASCII
 // whitespace) into a float, which may be rounded on overflow or underflow.
-ABSL_MUST_USE_RESULT bool SimpleAtof(absl::string_view str, float* value);
+// See https://en.cppreference.com/w/c/string/byte/strtof for details about the
+// allowed formats for `str`. If any errors are encountered, this function
+// returns `false`, leaving `out` in an unspecified state.
+ABSL_MUST_USE_RESULT bool SimpleAtof(absl::string_view str, float* out);
 
 // SimpleAtod()
 //
-// Converts the given std::string (optionally followed or preceded by ASCII
+// Converts the given string (optionally followed or preceded by ASCII
 // whitespace) into a double, which may be rounded on overflow or underflow.
-ABSL_MUST_USE_RESULT bool SimpleAtod(absl::string_view str, double* value);
+// See https://en.cppreference.com/w/c/string/byte/strtof for details about the
+// allowed formats for `str`. If any errors are encountered, this function
+// returns `false`, leaving `out` in an unspecified state.
+ABSL_MUST_USE_RESULT bool SimpleAtod(absl::string_view str, double* out);
 
 // SimpleAtob()
 //
-// Converts the given std::string into into a boolean, returning `true` if
-// successful. The following case-insensitive strings are interpreted as boolean
-// `true`: "true", "t", "yes", "y", "1". The following case-insensitive strings
-// are interpreted as boolean `false`: "false", "f", "no", "n", "0".
-ABSL_MUST_USE_RESULT bool SimpleAtob(absl::string_view str, bool* value);
+// Converts the given string into a boolean, returning `true` if successful.
+// The following case-insensitive strings are interpreted as boolean `true`:
+// "true", "t", "yes", "y", "1". The following case-insensitive strings
+// are interpreted as boolean `false`: "false", "f", "no", "n", "0". If any
+// errors are encountered, this function returns `false`, leaving `out` in an
+// unspecified state.
+ABSL_MUST_USE_RESULT bool SimpleAtob(absl::string_view str, bool* out);
 
 }  // namespace absl
 
@@ -81,14 +90,6 @@ bool safe_strto64_base(absl::string_view text, int64_t* value, int base);
 bool safe_strtou32_base(absl::string_view text, uint32_t* value, int base);
 bool safe_strtou64_base(absl::string_view text, uint64_t* value, int base);
 
-// These functions are intended for speed. All functions take an output buffer
-// as an argument and return a pointer to the last byte they wrote, which is the
-// terminating '\0'. At most `kFastToBufferSize` bytes are written.
-char* FastInt32ToBuffer(int32_t i, char* buffer);
-char* FastUInt32ToBuffer(uint32_t i, char* buffer);
-char* FastInt64ToBuffer(int64_t i, char* buffer);
-char* FastUInt64ToBuffer(uint64_t i, char* buffer);
-
 static const int kFastToBufferSize = 32;
 static const int kSixDigitsToBufferSize = 16;
 
@@ -100,6 +101,16 @@ static const int kSixDigitsToBufferSize = 16;
 // Required buffer size is `kSixDigitsToBufferSize`.
 size_t SixDigitsToBuffer(double d, char* buffer);
 
+// These functions are intended for speed. All functions take an output buffer
+// as an argument and return a pointer to the last byte they wrote, which is the
+// terminating '\0'. At most `kFastToBufferSize` bytes are written.
+char* FastIntToBuffer(int32_t, char*);
+char* FastIntToBuffer(uint32_t, char*);
+char* FastIntToBuffer(int64_t, char*);
+char* FastIntToBuffer(uint64_t, char*);
+
+// For enums and integer types that are not an exact match for the types above,
+// use templates to call the appropriate one of the four overloads above.
 template <typename int_type>
 char* FastIntToBuffer(int_type i, char* buffer) {
   static_assert(sizeof(i) <= 64 / 8,
@@ -109,30 +120,24 @@ char* FastIntToBuffer(int_type i, char* buffer) {
   // If one day something like std::is_signed<enum E> works, switch to it.
   if (static_cast<int_type>(1) - 2 < 0) {  // Signed
     if (sizeof(i) > 32 / 8) {           // 33-bit to 64-bit
-      return numbers_internal::FastInt64ToBuffer(i, buffer);
+      return FastIntToBuffer(static_cast<int64_t>(i), buffer);
     } else {  // 32-bit or less
-      return numbers_internal::FastInt32ToBuffer(i, buffer);
+      return FastIntToBuffer(static_cast<int32_t>(i), buffer);
     }
   } else {                     // Unsigned
     if (sizeof(i) > 32 / 8) {  // 33-bit to 64-bit
-      return numbers_internal::FastUInt64ToBuffer(i, buffer);
+      return FastIntToBuffer(static_cast<uint64_t>(i), buffer);
     } else {  // 32-bit or less
-      return numbers_internal::FastUInt32ToBuffer(i, buffer);
+      return FastIntToBuffer(static_cast<uint32_t>(i), buffer);
     }
   }
 }
 
-}  // namespace numbers_internal
-
-// SimpleAtoi()
-//
-// Converts a std::string to an integer, using `safe_strto?()` functions for actual
-// parsing, returning `true` if successful. The `safe_strto?()` functions apply
-// strict checking; the std::string must be a base-10 integer, optionally followed or
-// preceded by ASCII whitespace, with a value in the range of the corresponding
-// integer type.
+// Implementation of SimpleAtoi, generalized to support arbitrary base (used
+// with base different from 10 elsewhere in Abseil implementation).
 template <typename int_type>
-ABSL_MUST_USE_RESULT bool SimpleAtoi(absl::string_view s, int_type* out) {
+ABSL_MUST_USE_RESULT bool safe_strtoi_base(absl::string_view s, int_type* out,
+                                           int base) {
   static_assert(sizeof(*out) == 4 || sizeof(*out) == 8,
                 "SimpleAtoi works only with 32-bit or 64-bit integers.");
   static_assert(!std::is_floating_point<int_type>::value,
@@ -144,25 +149,39 @@ ABSL_MUST_USE_RESULT bool SimpleAtoi(absl::string_view s, int_type* out) {
   if (static_cast<int_type>(1) - 2 < 0) {  // Signed
     if (sizeof(*out) == 64 / 8) {       // 64-bit
       int64_t val;
-      parsed = numbers_internal::safe_strto64_base(s, &val, 10);
+      parsed = numbers_internal::safe_strto64_base(s, &val, base);
       *out = static_cast<int_type>(val);
     } else {  // 32-bit
       int32_t val;
-      parsed = numbers_internal::safe_strto32_base(s, &val, 10);
+      parsed = numbers_internal::safe_strto32_base(s, &val, base);
       *out = static_cast<int_type>(val);
     }
   } else {                         // Unsigned
     if (sizeof(*out) == 64 / 8) {  // 64-bit
       uint64_t val;
-      parsed = numbers_internal::safe_strtou64_base(s, &val, 10);
+      parsed = numbers_internal::safe_strtou64_base(s, &val, base);
       *out = static_cast<int_type>(val);
     } else {  // 32-bit
       uint32_t val;
-      parsed = numbers_internal::safe_strtou32_base(s, &val, 10);
+      parsed = numbers_internal::safe_strtou32_base(s, &val, base);
       *out = static_cast<int_type>(val);
     }
   }
   return parsed;
+}
+
+}  // namespace numbers_internal
+
+// SimpleAtoi()
+//
+// Converts a string to an integer, using `safe_strto?()` functions for actual
+// parsing, returning `true` if successful. The `safe_strto?()` functions apply
+// strict checking; the string must be a base-10 integer, optionally followed or
+// preceded by ASCII whitespace, with a value in the range of the corresponding
+// integer type.
+template <typename int_type>
+ABSL_MUST_USE_RESULT bool SimpleAtoi(absl::string_view s, int_type* out) {
+  return numbers_internal::safe_strtoi_base(s, out, 10);
 }
 
 }  // namespace absl

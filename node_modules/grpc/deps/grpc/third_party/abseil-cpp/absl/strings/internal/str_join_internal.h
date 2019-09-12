@@ -5,7 +5,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -31,13 +31,15 @@
 #ifndef ABSL_STRINGS_INTERNAL_STR_JOIN_INTERNAL_H_
 #define ABSL_STRINGS_INTERNAL_STR_JOIN_INTERNAL_H_
 
-#include <cassert>
+#include <cstring>
 #include <iterator>
 #include <memory>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 #include "absl/strings/internal/ostringstream.h"
+#include "absl/strings/internal/resize_uninitialized.h"
 #include "absl/strings/str_cat.h"
 
 namespace absl {
@@ -187,11 +189,11 @@ struct DefaultFormatter<std::unique_ptr<ValueType>>
 //
 
 // The main joining algorithm. This simply joins the elements in the given
-// iterator range, each separated by the given separator, into an output std::string,
+// iterator range, each separated by the given separator, into an output string,
 // and formats each element using the provided Formatter object.
 template <typename Iterator, typename Formatter>
 std::string JoinAlgorithm(Iterator start, Iterator end, absl::string_view s,
-                     Formatter&& f) {
+                          Formatter&& f) {
   std::string result;
   absl::string_view sep("");
   for (Iterator it = start; it != end; ++it) {
@@ -202,54 +204,49 @@ std::string JoinAlgorithm(Iterator start, Iterator end, absl::string_view s,
   return result;
 }
 
-// No-op placeholder for input iterators which can not be iterated over.
-template <typename Iterator>
-size_t GetResultSize(Iterator, Iterator, size_t, std::input_iterator_tag) {
-  return 0;
-}
-
-// Calculates space to reserve, if the iterator supports multiple passes.
-template <typename Iterator>
-size_t GetResultSize(Iterator it, Iterator end, size_t separator_size,
-                     std::forward_iterator_tag) {
-  assert(it != end);
-  size_t length = it->size();
-  while (++it != end) {
-    length += separator_size;
-    length += it->size();
-  }
-  return length;
-}
-
-// A joining algorithm that's optimized for an iterator range of std::string-like
-// objects that do not need any additional formatting. This is to optimize the
-// common case of joining, say, a std::vector<std::string> or a
+// A joining algorithm that's optimized for a forward iterator range of
+// string-like objects that do not need any additional formatting. This is to
+// optimize the common case of joining, say, a std::vector<string> or a
 // std::vector<absl::string_view>.
 //
 // This is an overload of the previous JoinAlgorithm() function. Here the
 // Formatter argument is of type NoFormatter. Since NoFormatter is an internal
 // type, this overload is only invoked when strings::Join() is called with a
-// range of std::string-like objects (e.g., std::string, absl::string_view), and an
+// range of string-like objects (e.g., std::string, absl::string_view), and an
 // explicit Formatter argument was NOT specified.
 //
 // The optimization is that the needed space will be reserved in the output
-// std::string to avoid the need to resize while appending. To do this, the iterator
+// string to avoid the need to resize while appending. To do this, the iterator
 // range will be traversed twice: once to calculate the total needed size, and
-// then again to copy the elements and delimiters to the output std::string.
-template <typename Iterator>
+// then again to copy the elements and delimiters to the output string.
+template <typename Iterator,
+          typename = typename std::enable_if<std::is_convertible<
+              typename std::iterator_traits<Iterator>::iterator_category,
+              std::forward_iterator_tag>::value>::type>
 std::string JoinAlgorithm(Iterator start, Iterator end, absl::string_view s,
-                     NoFormatter) {
+                          NoFormatter) {
   std::string result;
   if (start != end) {
-    typename std::iterator_traits<Iterator>::iterator_category iterator_tag;
-    result.reserve(GetResultSize(start, end, s.size(), iterator_tag));
+    // Sums size
+    size_t result_size = start->size();
+    for (Iterator it = start; ++it != end;) {
+      result_size += s.size();
+      result_size += it->size();
+    }
 
-    // Joins strings
-    absl::string_view sep("", 0);
-    for (Iterator it = start; it != end; ++it) {
-      result.append(sep.data(), sep.size());
-      result.append(it->data(), it->size());
-      sep = s;
+    if (result_size > 0) {
+      STLStringResizeUninitialized(&result, result_size);
+
+      // Joins strings
+      char* result_buf = &*result.begin();
+      memcpy(result_buf, start->data(), start->size());
+      result_buf += start->size();
+      for (Iterator it = start; ++it != end;) {
+        memcpy(result_buf, s.data(), s.size());
+        result_buf += s.size();
+        memcpy(result_buf, it->data(), it->size());
+        result_buf += it->size();
+      }
     }
   }
 
@@ -279,14 +276,15 @@ struct JoinTupleLoop<N, N> {
 
 template <typename... T, typename Formatter>
 std::string JoinAlgorithm(const std::tuple<T...>& tup, absl::string_view sep,
-                     Formatter&& fmt) {
+                          Formatter&& fmt) {
   std::string result;
   JoinTupleLoop<0, sizeof...(T)>()(&result, tup, sep, fmt);
   return result;
 }
 
 template <typename Iterator>
-std::string JoinRange(Iterator first, Iterator last, absl::string_view separator) {
+std::string JoinRange(Iterator first, Iterator last,
+                      absl::string_view separator) {
   // No formatter was explicitly given, so a default must be chosen.
   typedef typename std::iterator_traits<Iterator>::value_type ValueType;
   typedef typename DefaultFormatter<ValueType>::Type Formatter;
@@ -295,7 +293,7 @@ std::string JoinRange(Iterator first, Iterator last, absl::string_view separator
 
 template <typename Range, typename Formatter>
 std::string JoinRange(const Range& range, absl::string_view separator,
-                 Formatter&& fmt) {
+                      Formatter&& fmt) {
   using std::begin;
   using std::end;
   return JoinAlgorithm(begin(range), end(range), separator, fmt);

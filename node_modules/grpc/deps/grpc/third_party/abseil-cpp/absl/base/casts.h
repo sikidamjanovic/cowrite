@@ -5,7 +5,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,17 +20,33 @@
 // This header file defines casting templates to fit use cases not covered by
 // the standard casts provided in the C++ standard. As with all cast operations,
 // use these with caution and only if alternatives do not exist.
-//
 
 #ifndef ABSL_BASE_CASTS_H_
 #define ABSL_BASE_CASTS_H_
 
 #include <cstring>
+#include <memory>
 #include <type_traits>
+#include <utility>
 
 #include "absl/base/internal/identity.h"
+#include "absl/base/macros.h"
+#include "absl/meta/type_traits.h"
 
 namespace absl {
+
+namespace internal_casts {
+
+template <class Dest, class Source>
+struct is_bitcastable
+    : std::integral_constant<
+          bool,
+          sizeof(Dest) == sizeof(Source) &&
+              type_traits_internal::is_trivially_copyable<Source>::value &&
+              type_traits_internal::is_trivially_copyable<Dest>::value &&
+              std::is_default_constructible<Dest>::value> {};
+
+}  // namespace internal_casts
 
 // implicit_cast()
 //
@@ -82,7 +98,7 @@ namespace absl {
 //
 // Such implicit cast chaining may be useful within template logic.
 template <typename To>
-inline To implicit_cast(typename absl::internal::identity_t<To> to) {
+constexpr To implicit_cast(typename absl::internal::identity_t<To> to) {
   return to;
 }
 
@@ -122,11 +138,36 @@ inline To implicit_cast(typename absl::internal::identity_t<To> to) {
 // object in memory has one type, and a program accesses it with a different
 // type, the result is undefined behavior for most values of "different type".
 //
-// Such casting results is type punning: holding an object in memory of one type
+// Such casting results in type punning: holding an object in memory of one type
 // and reading its bits back using a different type. A `bit_cast()` avoids this
-// issue by implementating its casts using `memcpy()`, which avoids introducing
+// issue by implementing its casts using `memcpy()`, which avoids introducing
 // this undefined behavior.
-template <typename Dest, typename Source>
+//
+// NOTE: The requirements here are more strict than the bit_cast of standard
+// proposal p0476 due to the need for workarounds and lack of intrinsics.
+// Specifically, this implementation also requires `Dest` to be
+// default-constructible.
+template <
+    typename Dest, typename Source,
+    typename std::enable_if<internal_casts::is_bitcastable<Dest, Source>::value,
+                            int>::type = 0>
+inline Dest bit_cast(const Source& source) {
+  Dest dest;
+  memcpy(static_cast<void*>(std::addressof(dest)),
+         static_cast<const void*>(std::addressof(source)), sizeof(dest));
+  return dest;
+}
+
+// NOTE: This overload is only picked if the requirements of bit_cast are not
+// met. It is therefore UB, but is provided temporarily as previous versions of
+// this function template were unchecked. Do not use this in new code.
+template <
+    typename Dest, typename Source,
+    typename std::enable_if<
+        !internal_casts::is_bitcastable<Dest, Source>::value, int>::type = 0>
+ABSL_DEPRECATED(
+    "absl::bit_cast type requirements were violated. Update the types being "
+    "used such that they are the same size and are both TriviallyCopyable.")
 inline Dest bit_cast(const Source& source) {
   static_assert(sizeof(Dest) == sizeof(Source),
                 "Source and destination types should have equal sizes.");

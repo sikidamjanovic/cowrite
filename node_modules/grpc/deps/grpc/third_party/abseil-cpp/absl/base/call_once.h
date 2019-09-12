@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,6 +29,7 @@
 #include <atomic>
 #include <cstdint>
 #include <type_traits>
+#include <utility>
 
 #include "absl/base/internal/invoke.h"
 #include "absl/base/internal/low_level_scheduling.h"
@@ -36,6 +37,7 @@
 #include "absl/base/internal/scheduling_mode.h"
 #include "absl/base/internal/spinlock_wait.h"
 #include "absl/base/macros.h"
+#include "absl/base/optimization.h"
 #include "absl/base/port.h"
 
 namespace absl {
@@ -43,7 +45,6 @@ namespace absl {
 class once_flag;
 
 namespace base_internal {
-// Implementation detail.
 std::atomic<uint32_t>* ControlWord(absl::once_flag* flag);
 }  // namespace base_internal
 
@@ -134,7 +135,10 @@ enum {
   kOnceInit = 0,
   kOnceRunning = 0x65C2937B,
   kOnceWaiter = 0x05A308D2,
-  kOnceDone = 0x3F2D8AB0,
+  // A very small constant is chosen for kOnceDone so that it fit in a single
+  // compare with immediate instruction for most common ISAs.  This is verified
+  // for x86, POWER and ARM.
+  kOnceDone = 221,    // Random Number
 };
 
 template <typename Callable, typename... Args>
@@ -148,12 +152,8 @@ void CallOnceImpl(std::atomic<uint32_t>* control,
         old_control != kOnceRunning &&
         old_control != kOnceWaiter &&
         old_control != kOnceDone) {
-      ABSL_RAW_LOG(
-          FATAL,
-          "Unexpected value for control word: %d. Either the control word "
-          "has non-static storage duration (where GoogleOnceDynamic might "
-          "be appropriate), or there's been a memory corruption.",
-          old_control);
+      ABSL_RAW_LOG(FATAL, "Unexpected value for control word: 0x%lx",
+                   static_cast<unsigned long>(old_control));  // NOLINT
     }
   }
 #endif  // NDEBUG

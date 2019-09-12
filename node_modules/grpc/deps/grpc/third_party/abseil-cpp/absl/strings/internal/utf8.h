@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,18 +13,12 @@
 // limitations under the License.
 //
 // UTF8 utilities, implemented to reduce dependencies.
-//
-// If you need Unicode specific processing (for example being aware of
-// Unicode character boundaries, or knowledge of Unicode casing rules,
-// or various forms of equivalence and normalization), take a look at
-// files in i18n/utf8.
 
 #ifndef ABSL_STRINGS_INTERNAL_UTF8_H_
 #define ABSL_STRINGS_INTERNAL_UTF8_H_
 
 #include <cstddef>
 #include <cstdint>
-
 
 namespace absl {
 namespace strings_internal {

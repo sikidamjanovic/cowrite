@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//      https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,6 +59,18 @@ bool EqualImpl(InputIter1 first1, InputIter1 last1, InputIter2 first2,
          std::equal(first1, last1, first2, std::forward<Pred>(pred));
 }
 
+// When we are using our own internal predicate that just applies operator==, we
+// forward to the non-predicate form of std::equal. This enables an optimization
+// in libstdc++ that can result in std::memcmp being used for integer types.
+template <typename InputIter1, typename InputIter2>
+bool EqualImpl(InputIter1 first1, InputIter1 last1, InputIter2 first2,
+               InputIter2 last2, algorithm_internal::EqualTo /* unused */,
+               std::random_access_iterator_tag,
+               std::random_access_iterator_tag) {
+  return (last1 - first1 == last2 - first2) &&
+         std::equal(first1, last1, first2);
+}
+
 template <typename It>
 It RotateImpl(It first, It middle, It last, std::true_type) {
   return std::rotate(first, middle, last);
@@ -82,7 +94,7 @@ It RotateImpl(It first, It middle, It last, std::false_type) {
 // then the predicate is never invoked and the function returns false.
 //
 // This is a C++11-compatible implementation of C++14 `std::equal`.  See
-// http://en.cppreference.com/w/cpp/algorithm/equal for more information.
+// https://en.cppreference.com/w/cpp/algorithm/equal for more information.
 template <typename InputIter1, typename InputIter2, typename Pred>
 bool equal(InputIter1 first1, InputIter1 last1, InputIter2 first2,
            InputIter2 last2, Pred&& pred) {

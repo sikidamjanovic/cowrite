@@ -493,6 +493,13 @@ struct grpc_chttp2_transport {
   grpc_core::ContextList* cl = nullptr;
   grpc_core::RefCountedPtr<grpc_core::channelz::SocketNode> channelz_socket;
   uint32_t num_messages_in_next_write = 0;
+  /** The number of pending induced frames (SETTINGS_ACK, PINGS_ACK and
+   * RST_STREAM) in the outgoing buffer (t->qbuf). If this number goes beyond
+   * DEFAULT_MAX_PENDING_INDUCED_FRAMES, we pause reading new frames. We would
+   * only continue reading when we are able to write to the socket again,
+   * thereby reducing the number of induced frames. */
+  uint32_t num_pending_induced_frames = 0;
+  bool reading_paused_on_pending_induced_frames = false;
 };
 
 typedef enum {
@@ -745,13 +752,17 @@ void grpc_chttp2_act_on_flowctl_action(
 
 /********* End of Flow Control ***************/
 
-grpc_chttp2_stream* grpc_chttp2_parsing_lookup_stream(grpc_chttp2_transport* t,
-                                                      uint32_t id);
+inline grpc_chttp2_stream* grpc_chttp2_parsing_lookup_stream(
+    grpc_chttp2_transport* t, uint32_t id) {
+  return static_cast<grpc_chttp2_stream*>(
+      grpc_chttp2_stream_map_find(&t->stream_map, id));
+}
 grpc_chttp2_stream* grpc_chttp2_parsing_accept_stream(grpc_chttp2_transport* t,
                                                       uint32_t id);
 
 void grpc_chttp2_add_incoming_goaway(grpc_chttp2_transport* t,
                                      uint32_t goaway_error,
+                                     uint32_t last_stream_id,
                                      const grpc_slice& goaway_text);
 
 void grpc_chttp2_parsing_become_skip_parser(grpc_chttp2_transport* t);

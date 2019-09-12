@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -49,25 +49,6 @@
 #ifndef DYNAMIC_ANNOTATIONS_ENABLED
 # define DYNAMIC_ANNOTATIONS_ENABLED 0
 #endif
-
-#if defined(__native_client__)
-  #include "nacl/dynamic_annotations.h"
-
-  // Stub out the macros missing from the NaCl version.
-  #ifndef ANNOTATE_CONTIGUOUS_CONTAINER
-    #define ANNOTATE_CONTIGUOUS_CONTAINER(beg, end, old_mid, new_mid)
-  #endif
-  #ifndef ANNOTATE_RWLOCK_CREATE_STATIC
-    #define ANNOTATE_RWLOCK_CREATE_STATIC(lock)
-  #endif
-  #ifndef ADDRESS_SANITIZER_REDZONE
-    #define ADDRESS_SANITIZER_REDZONE(name)
-  #endif
-  #ifndef ANNOTATE_MEMORY_IS_UNINITIALIZED
-    #define ANNOTATE_MEMORY_IS_UNINITIALIZED(address, size)
-  #endif
-
-#else /* !__native_client__ */
 
 #if DYNAMIC_ANNOTATIONS_ENABLED != 0
 
@@ -158,6 +139,7 @@
   #define ANNOTATE_MEMORY_IS_INITIALIZED(address, size) /* empty */
   #define ANNOTATE_MEMORY_IS_UNINITIALIZED(address, size) /* empty */
 #endif  /* DYNAMIC_ANNOTATIONS_ENABLED || MEMORY_SANITIZER */
+
 /* TODO(delesley) -- Replace __CLANG_SUPPORT_DYN_ANNOTATION__ with the
    appropriate feature ID. */
 #if defined(__clang__) && (!defined(SWIG)) \
@@ -395,7 +377,7 @@ inline T ANNOTATE_UNPROTECTED_READ(const volatile T &x) { /* NOLINT */
   struct { char x[8] __attribute__ ((aligned (8))); } name
 #else
 #define ANNOTATE_CONTIGUOUS_CONTAINER(beg, end, old_mid, new_mid)
-#define ADDRESS_SANITIZER_REDZONE(name)
+#define ADDRESS_SANITIZER_REDZONE(name) static_assert(true, "")
 #endif  // ADDRESS_SANITIZER
 
 /* Undefine the macros intended only in this file. */
@@ -403,7 +385,5 @@ inline T ANNOTATE_UNPROTECTED_READ(const volatile T &x) { /* NOLINT */
 #undef ANNOTATIONS_ENABLED
 #undef ATTRIBUTE_IGNORE_READS_BEGIN
 #undef ATTRIBUTE_IGNORE_READS_END
-
-#endif /* !__native_client__ */
 
 #endif  /* ABSL_BASE_DYNAMIC_ANNOTATIONS_H_ */
