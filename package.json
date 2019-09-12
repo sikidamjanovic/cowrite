@@ -17,7 +17,7 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
