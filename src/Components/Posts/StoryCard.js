@@ -37,7 +37,6 @@ class StoryCard extends Component {
                         <Icon type="user" key="user" />,
                     ]}
                     hoverable={true}
-                    onClick={this.showModal}
                 >
                 <Meta
                     avatar={
@@ -56,7 +55,7 @@ class StoryCard extends Component {
                         </span>
                     }
                     description =  { 
-                        <div>
+                        <div onClick={this.showModal}>
                             <small>Comedy</small>
                             <br></br><br></br>
                             <span id="card-content">blah blah blah</span>

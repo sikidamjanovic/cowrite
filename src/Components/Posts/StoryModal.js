@@ -37,8 +37,7 @@ class StoryModal extends React.Component {
         const data = [
             {
                 author: 'Siki Damjanovic',
-                comment: 'blah blah blah',
-                selected: true
+                comment: 'blah blah blah'
             },
             {
                 author: 'Dan Di Cesare',
@@ -122,7 +121,6 @@ class StoryModal extends React.Component {
                         <StoryComment 
                             author={item.author}
                             comment={item.comment}
-                            selected={item.selected}
                         />
                     </li>
                     )}

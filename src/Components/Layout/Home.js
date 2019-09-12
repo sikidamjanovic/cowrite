@@ -51,10 +51,10 @@ class Home extends Component {
             <div>
             <div id="home">
                 <Row>
-                    <Col sm={24} md={4}>
+                    <Col xs={12} md={4}>
                         <Sidebar query={this.updateQuery}/>
                     </Col>
-                    <Col sm={22} md={18} push={1} pull={1} id="feed-container">
+                    <Col xs={12} sm={18} offset={1}  id="feed-container">
                         <Feed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
                     </Col>
                 </Row>

@@ -1,26 +1,9 @@
 import React, { Component } from 'react'
-import { Comment, Tooltip, Icon, Avatar, Tag } from 'antd'
+import { Comment, Tooltip, Icon, Avatar } from 'antd'
 
 class StoryComment extends Component {
-
-    isSelected(x){
-        if(x == true){
-            return {backgroundColor: '#fafafa'}
-        }
-    }
-
-    getTag(){
-        if(this.props.selected){
-            return(
-                <Tag color="orange" style={{ marginLeft: '10px' }}>
-                    <Icon type="star"/>
-                    Selected
-                </Tag>
-            )
-        }
-    }
-    
     render() {  
+
         const actions = [
             <span key="comment-basic-like">
                 <Tooltip title="Like">
@@ -35,7 +18,7 @@ class StoryComment extends Component {
         
         return (
             <Comment
-                author={<a>{this.props.author}{this.getTag()}</a>}
+                author={<a>{this.props.author}</a>}
                 actions={actions}
                 avatar={
                     <Avatar icon="user" />
@@ -48,7 +31,6 @@ class StoryComment extends Component {
                 datetime={
                     '3h Ago'
                 }
-                style={this.isSelected(this.props.selected)}
             />
         )
     }
