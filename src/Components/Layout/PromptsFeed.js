@@ -119,7 +119,6 @@ export default compose(
     firestoreConnect( props => {
 
         const { getAll, query, sortBy } = props
-        console.log(props)
 
         if(getAll == true){
             return [

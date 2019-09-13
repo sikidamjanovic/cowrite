@@ -11,7 +11,7 @@ const Nav = (props) => {
     const links = auth.uid ? <SignedInLinks auth={auth}/> : <SignedOutLinks/>;
     return (
         <div>
-            <Menu id="navBar" mode="horizontal" defaultSelectedKeys={['home']}>
+            <Menu id="navBar" mode="horizontal">
 
                 <Row className="nav-row">
                     <Col span={4} className="nav-col-left">

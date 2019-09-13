@@ -36,6 +36,7 @@ class StoryCard extends Component {
                         <Icon type="book" key="book" />,
                         <Icon type="user" key="user" />,
                     ]}
+                    onClick={this.showModal}
                     hoverable={true}
                 >
                 <Meta
@@ -55,7 +56,7 @@ class StoryCard extends Component {
                         </span>
                     }
                     description =  { 
-                        <div onClick={this.showModal}>
+                        <div>
                             <small>Comedy</small>
                             <br></br><br></br>
                             <span id="card-content">blah blah blah</span>
