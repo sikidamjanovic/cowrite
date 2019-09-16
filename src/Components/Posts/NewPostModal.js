@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, Icon, Form, Input, Select } from 'antd';
+import { Button, Modal, Icon, Form, Input, Select, message } from 'antd';
 import { connect } from 'react-redux'
 import { createPost } from '../../Store/Actions/postActions'
 
@@ -44,8 +44,18 @@ class NewPostModal extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         console.log(this.state);
-        this.props.createPost(this.state)
-        this.handleCancel()
+        this.validateForm(this.state)
+    }
+
+    validateForm(state){
+        if(state.title.length < 4 || state.content.length < 10){
+            return message.error('Title or content length is too short.')
+        }else if(state.genre.length == 0){
+            return message.error('Please select a category.')
+        }else{
+            this.props.createPost(state)
+            this.handleCancel()
+        }
     }
 
     render() {

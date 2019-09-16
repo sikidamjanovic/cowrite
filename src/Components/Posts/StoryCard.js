@@ -80,7 +80,7 @@ class StoryCard extends Component {
                     footer={null}
                     width={'80%'}
                     headerStyle={{ backgroundColor: 'red'}}
-                    style={{ top: 0, maxHeight: '100vh', overflow: 'auto', padding: 0 }}
+                    style={{ top: 0, maxHeight: '100vh', padding: 0 }}
                 >
                     <StoryModal/>
                 </Modal>

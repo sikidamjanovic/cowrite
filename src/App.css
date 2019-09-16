@@ -1,5 +1,3 @@
-@import '~antd/dist/antd.css';
-
 #home{
     min-height: 90vh;
 }
@@ -129,4 +127,22 @@
 #submit-chapter-button{
     margin-top: 10px;
     margin-right: 20px;
+}
+
+/* Following are theme overriders */
+
+.ant-card-actions{
+    background: rgba(0,0,0,0.3);
+}
+
+.ant-menu-item-selected{
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.ant-menu-item-selected > a, .ant-menu-submenu-selected{
+    color: white !important;
+}
+
+#card-content{
+    color: white;
 }

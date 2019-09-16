@@ -19,13 +19,13 @@ class Prompt extends Component {
             if(diff > 12){
                 return(
                     <Tooltip placement="topLeft" title="The time left until this prompt possibly becomes a story">
-                        <Tag color="blue">{diff + 'h Left'}</Tag>
+                        <Tag color="#006d75">{diff + 'h Left'}</Tag>
                     </Tooltip>
                 )
             }else if(diff > 4){
-                return <Tag color="volcano">{diff + 'h Left'}</Tag>
+                return <Tag color="#faad14">{diff + 'h Left'}</Tag>
             }else{
-                return <Tag color="red">{diff + 'h Left'}</Tag>
+                return <Tag color="#cf1322">{diff + 'h Left'}</Tag>
             }
         }else{
             return <Tag>No Time</Tag>

@@ -2,11 +2,12 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import Home from './Components/Layout/Home'
 import Nav from './Components/Layout/Nav'
-import { BackTop } from 'antd';
+import { BackTop, Layout } from 'antd';
 import './App.css'
 
 const App = () => (
     <Router>
+        <Layout>
         <div>
             <Nav/>
             <BackTop/>
@@ -21,6 +22,7 @@ const App = () => (
             <Route path="/prompts/category/SciFi" component={Home}/>
             <Route path="/stories/category/Comedy" component={Home}/>
         </div>
+        </Layout>
     </Router>
 )
 

@@ -1,6 +1,6 @@
 import { getFirestore } from "redux-firestore";
 import { firestore } from "firebase";
-import { notification } from 'antd'
+import { message } from 'antd'
 
 export const createPost = (post) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
@@ -23,10 +23,6 @@ export const createPost = (post) => {
         }).catch((err) => {
             dispatch({ type: 'CREATE_PROJECT_ERROR', err })
         })
-        notification.open({
-            message: 'Prompt Posted!',
-            description: 'I bet its really great man...',
-            duration: 2
-        })
+        message.success('Your prompt has been posted!')
     } 
 }
