@@ -94,7 +94,7 @@ class StoryModal extends React.Component {
                     bordered={false}
                     expandIcon={({ isActive }) => <Icon type="plus" rotate={isActive ? 90 : 0} />}
                 >
-                    <Panel style={{border: 'red'}}header="Submit Chapter 5" key="1">
+                    <Panel header="Submit Chapter 5" key="1">
                         <SubmitChapter/>
                     </Panel>
                 </Collapse>

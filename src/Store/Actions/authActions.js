@@ -2,7 +2,7 @@ import { firestore } from "firebase";
 import { responsiveArray } from "antd/lib/_util/responsiveObserve";
 import { getFirestore } from "redux-firestore";
 import { relativeTimeRounding } from "moment";
-import { notification } from 'antd'
+import { notification, message } from 'antd'
 
 export const signIn = (credentials) => {
     return (dispatch, getState, {getFirebase}) => {
@@ -13,11 +13,7 @@ export const signIn = (credentials) => {
             credentials.password
         ).then(() => {
             dispatch({ type: 'LOGIN_SUCCESS'});
-            notification.open({
-                message: 'Logged in successfully!',
-                description: 'Happy posting.',
-                duration: 2
-            })
+            message.success('Logged In Successfully')
         }).catch((err) => {
             dispatch({ type: 'LOGIN_ERROR', err });
         })
@@ -30,11 +26,7 @@ export const signOut = () => {
         firebase.auth().signOut().then(() => {
             dispatch({ type: 'SIGNOUT_SUCCESS' });
         })
-        notification.open({
-            message: 'Signed Out Succesfully',
-            description: 'Why the fuck you signing out tho',
-            duration: 2
-        })
+        message.success('Signed Out Successfully')
     }
 }
 
@@ -72,7 +64,7 @@ export const signUp = (newUser) => {
                     )
                 }).then(() => {
                     dispatch({ type: 'SIGNUP_SUCCESS'})
-                    
+                    message.success('Signed Up Successfully')
                 }).catch(err => {
                     dispatch({ type: 'SIGNUP_ERROR', err})
                 })

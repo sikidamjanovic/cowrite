@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Card, Icon, Avatar, Tag, Popover, Tooltip } from 'antd';
+import { Card, Icon, Avatar, Tag, Popover, Tooltip, message } from 'antd';
 import '../../App.css'
 import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
@@ -9,23 +9,49 @@ class Prompt extends Component {
 
     constructor(props){
         super(props)
+        this.state = {
+            likes: [],
+            amountOfLikes: '',
+            userLiked: false
+        }
         this.like = this.like.bind(this)
+        this.userLiked = this.userLiked.bind(this)
+        this.getLikes = this.getLikes.bind(this)
+    }
+
+    componentDidMount(){
+        this.getLikes()
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.auth.uid !== this.props.auth.uid){
+            this.getLikes()
+        }
     }
 
     getTime(){
         var postedTime = this.props.time
         if(postedTime){
             const diff = this.differenceInHours(postedTime.toDate(), new Date())
+            const tooltipTitle = "The time left until this prompt possibly becomes a story"
             if(diff > 12){
                 return(
-                    <Tooltip placement="topLeft" title="The time left until this prompt possibly becomes a story">
+                    <Tooltip title={tooltipTitle}>
                         <Tag color="#006d75">{diff + 'h Left'}</Tag>
                     </Tooltip>
                 )
             }else if(diff > 4){
-                return <Tag color="#faad14">{diff + 'h Left'}</Tag>
+                return(
+                    <Tooltip title={tooltipTitle}>
+                        <Tag color="#faad14">{diff + 'h Left'}</Tag>
+                    </Tooltip>
+                )
             }else{
-                return <Tag color="#cf1322">{diff + 'h Left'}</Tag>
+                return(
+                    <Tooltip title={tooltipTitle}>
+                        <Tag color="#cf1322">{diff + 'h Left'}</Tag>
+                    </Tooltip>
+                )
             }
         }else{
             return <Tag>No Time</Tag>
@@ -36,13 +62,83 @@ class Prompt extends Component {
         return Math.round(48 - Math.abs(postedTime - currentTime) / 36e5)
     }
 
+    getLikes(){
+        getFirestore().collection('posts').doc(this.props.id).collection('likes').get()
+        .then(querySnapshot => {
+            const likes = []
+            querySnapshot.forEach(function(doc){
+                likes.push({
+                    user: doc.data()    
+                })
+            })
+            this.setState({
+                likes: likes,
+                amountOfLikes: likes.length
+            })
+            this.userLiked()
+        })
+        .catch(function(error){
+            console.log('Error: ' + error)
+        })
+    }
+
+    userLiked(){
+        const likes = this.state.likes
+        for (let i = 0; i < likes.length; i++) {
+            if(likes[i].user.uid == this.props.auth.uid){
+                this.setState({
+                    userLiked: true
+                })
+            }else{
+                this.setState({
+                    userLiked: false
+                })
+            }
+        }
+    }
+
+    renderHeart(){
+        if(this.state.userLiked){
+            return(
+                <Icon 
+                    type="heart"
+                    theme="filled"
+                    size="large"
+                    key="heart" 
+                    style={{ color:'#cf1322' }}
+                />
+            )
+        }else{
+            return(
+                <Icon 
+                    type="heart" 
+                    key="heart" 
+                    style={{ color:'white' }}
+                />
+            )
+        }
+    }
+
     like(){
         if (this.props.auth.isEmpty === false) {
-            console.log(this.props.auth.displayName)
-            getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).set({
-                uid: this.props.auth.uid,
-                postId: this.props.id
-            })
+            if(this.state.userLiked == false){
+                this.setState({
+                    userLiked: true,
+                    amountOfLikes: this.state.amountOfLikes + 1
+                })
+                getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).set({
+                    uid: this.props.auth.uid,
+                    postId: this.props.id
+                })
+            }else{
+                this.setState({
+                    userLiked: false,
+                    amountOfLikes: this.state.amountOfLikes - 1
+                })
+                getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).delete()
+            }
+        }else{
+            message.warning('Please login or sign up to like prompts')
         } 
     }
 
@@ -51,9 +147,23 @@ class Prompt extends Component {
         return (
             <Card
                 actions={[
-                    <button id="likebtn" onClick= {this.like}><Icon type="heart" key="heart"/></button>,
-                    <Icon type="book" key="book" />,
-                    <Icon type="user" key="user" />,
+                    <button id="cardActionBtn" onClick= {this.like}>
+                        {this.renderHeart()}
+                        <span id="likes">
+                            {this.state.amountOfLikes}
+                        </span>
+                    </button>,
+                    <button id="cardActionBtn">
+                        <Icon type="book" key="book" />
+                    </button>,
+                    <button id="cardActionBtn">
+                        <Icon type="user" key="user" />
+                    </button>,
+                    <Tooltip title="Report this prompt">
+                        <button id="cardActionBtn">
+                            <Icon type="warning" key="warning" />
+                        </button>
+                    </Tooltip>
                 ]}
             >
                 <Meta
