@@ -4,11 +4,12 @@ import StoryCard from '../Posts/StoryCard'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
+import Prompt from '../Posts/Prompt'
 
 class UserProfile extends Component {
 
     isOwnProfile(){
-        if(this.props.isOwnProfile){
+        if(this.props.isOwnProfile && this.props.liked){
             return(
                 <div>
                     <PageHeader 
@@ -19,20 +20,29 @@ class UserProfile extends Component {
                     <PageHeader 
                         title="Your Posts"
                     />
-                    <StoryCard/>
+                    {this.renderLikedPosts()}
                     <PageHeader 
                         title="Likes"
                     />
-                    <StoryCard/>
                     <PageHeader 
                         title="Saved"
                     />
-                    <StoryCard/>
                 </div>
             )
         }else{
             return <p>Nah</p>
         }
+    }
+
+    renderLikedPosts(){
+        this.props.liked.map(function(item, i){
+            return(
+                <Prompt 
+                    key={item.liked[i].id}
+                    id={item.liked[i].id}
+                />
+            )
+        })
     }
 
     numberOfPosts(){

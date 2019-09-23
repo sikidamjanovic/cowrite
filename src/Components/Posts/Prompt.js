@@ -4,6 +4,8 @@ import '../../App.css'
 import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
 import { firestore } from "firebase";
+import { compose } from 'redux'
+import { firestoreConnect } from 'react-redux-firebase'
 
 class Prompt extends Component {
 
@@ -63,7 +65,7 @@ class Prompt extends Component {
     }
 
     getLikes(){
-        getFirestore().collection('posts').doc(this.props.id).collection('likes').get()
+        getFirestore().collection('posts').doc(this.props.post[0].id).collection('likes').get()
         .then(querySnapshot => {
             const likes = []
             querySnapshot.forEach(function(doc){
@@ -132,12 +134,7 @@ class Prompt extends Component {
                 })
                 getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').doc().set({
                     type: 'prompt',
-                    postId: this.props.id,
-                    author: this.props.author,
-                    content: this.props.content,
-                    genre: this.props.genre,
-                    title: this.props.title,
-                    time: this.props.time
+                    postId: this.props.post[0].id
                 })
             }else{
                 this.setState({
@@ -161,64 +158,77 @@ class Prompt extends Component {
 
     render() { 
         const { Meta } = Card;
-        return (
-            <Card
-                actions={[
-                    <button id="cardActionBtn" onClick= {this.like}>
-                        {this.renderHeart()}
-                        <span id="likes">
-                            {this.state.amountOfLikes}
-                        </span>
-                    </button>,
-                    <button id="cardActionBtn">
-                        <Icon type="book" key="book" />
-                    </button>,
-                    <button id="cardActionBtn">
-                        <Icon type="user" key="user" />
-                    </button>,
-                    <Tooltip title="Report this prompt">
-                        <button id="cardActionBtn">
-                            <Icon type="warning" key="warning" />
-                        </button>
-                    </Tooltip>
-                ]}
-            >
-                <Meta
-                    avatar={
-                        <span>
-                            <Popover content={this.props.author} title="">
-                                <Avatar icon="user" />
-                            </Popover>
-                        </span>
-                    }
-                    title = {
-                        <span id="title-container">
-                            <span id="card-title">{this.props.title}</span>
-                            <Tag>Prompt</Tag>
-                            {this.getTime()}
-                        </span>
-                    }
-                    description =  { 
-                        <div>
-                            <small>{ this.props.genre }</small>
-                            <br></br><br></br>
-                            <span id="card-content">{ this.props.content }</span>
-                            <br></br>
-                        </div>
-                    }
-                />
-            </Card>
+        const post = this.props.post[0]
 
-        );
+        if(this.props.post){
+            return (
+                <Card
+                    actions={[
+                        <button id="cardActionBtn" onClick= {this.like}>
+                            {this.renderHeart()}
+                            <span id="likes">
+                                {this.state.amountOfLikes}
+                            </span>
+                        </button>,
+                        <button id="cardActionBtn">
+                            <Icon type="book" key="book" />
+                        </button>,
+                        <button id="cardActionBtn">
+                            <Icon type="user" key="user" />
+                        </button>,
+                        <Tooltip title="Report this prompt">
+                            <button id="cardActionBtn">
+                                <Icon type="warning" key="warning" />
+                            </button>
+                        </Tooltip>
+                    ]}
+                >
+                    <Meta
+                        avatar={
+                            <span>
+                                <Popover content={post.author} title="">
+                                    <Avatar icon="user" />
+                                </Popover>
+                            </span>
+                        }
+                        title = {
+                            <span id="title-container">
+                                <span id="card-title">{post.title}</span>
+                                <Tag>Prompt</Tag>
+                                {this.getTime()}
+                            </span>
+                        }
+                        description =  { 
+                            <div>
+                                <small>{ post.genre }</small>
+                                <br></br><br></br>
+                                <span id="card-content">{ post.content }</span>
+                                <br></br>
+                            </div>
+                        }
+                    />
+                </Card>
+            );
+        }else{
+            return <p>Loading</p>
+        }
+        
     }
 }
 
 const mapStateToProps = (state, props) => {
     return {
-        posts: state.firestore.ordered.posts,
+        post: state.firestore.ordered.posts,
         auth: state.firebase.auth
     }
 }
 
-
-export default connect(mapStateToProps)(Prompt);
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect( props => {
+        return [{ 
+            collection: 'posts',
+            doc: props.id
+        }]
+    })
+)(Prompt)
