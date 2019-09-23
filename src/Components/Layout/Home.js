@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import PromptsFeed from '../Layout/PromptsFeed'
 import StoriesFeed from '../Layout/StoriesFeed'
 import Sidebar from '../Layout/Sidebar'
+import UserProfile from '../Layout/UserProfile'
 import { Row, Col } from 'antd';
 import '../../App.css'
 import Footer from '../Layout/Footer'
+import { connect } from 'react-redux';
 
 class Home extends Component {
 
@@ -19,6 +21,7 @@ class Home extends Component {
     }
 
     componentDidMount(){
+        console.log(this.props)
         this.getQuery()
         this.getAll()
     }
@@ -48,6 +51,8 @@ class Home extends Component {
     showRelevantFeed(){
         if(window.location.pathname.slice(1,8) == 'prompts'){
             return <PromptsFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
+        }else if(window.location.pathname.slice(1,8) == 'account'){
+            return <UserProfile auth={this.props.auth} isOwnProfile={true}/>
         }else{
             return <StoriesFeed/>
         }
@@ -59,7 +64,7 @@ class Home extends Component {
             <div id="home">
                 <Row>
                     <Col xs={12} md={4}>
-                        <Sidebar query={this.updateQuery}/>
+                        <Sidebar auth={this.props.auth} query={this.updateQuery}/>
                     </Col>
                     <Col xs={12} sm={18} offset={1}  id="feed-container">
                         {this.showRelevantFeed()}
@@ -72,4 +77,10 @@ class Home extends Component {
     }
 }
 
-export default Home
+const mapStateToProps = (state) => {
+    return {
+        auth: state.firebase.auth
+    }
+}
+
+export default connect(mapStateToProps)(Home);

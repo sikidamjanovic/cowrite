@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 
 const Nav = (props) => {
     const { auth } = props;
-    console.log(auth);
     const links = auth.uid ? <SignedInLinks auth={auth}/> : <SignedOutLinks/>;
     return (
         <div>
@@ -16,7 +15,7 @@ const Nav = (props) => {
                 <Row className="nav-row">
                     <Col span={4} className="nav-col-left">
                         <Menu.Item key="app">
-                            <h1 id="logo">coauthor</h1>
+                            <h1 id="logo">cowrite</h1>
                         </Menu.Item>
                     </Col>
 

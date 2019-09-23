@@ -130,12 +130,29 @@ class Prompt extends Component {
                     uid: this.props.auth.uid,
                     postId: this.props.id
                 })
+                getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').doc().set({
+                    type: 'prompt',
+                    postId: this.props.id,
+                    author: this.props.author,
+                    content: this.props.content,
+                    genre: this.props.genre,
+                    title: this.props.title,
+                    time: this.props.time
+                })
             }else{
                 this.setState({
                     userLiked: false,
                     amountOfLikes: this.state.amountOfLikes - 1
                 })
+                // Delete user from posts 'likes' collection
                 getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).delete()
+                // Delete post from users 'liked' collection
+                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').where('postId','==',this.props.id)
+                delete_query.get().then(function(querySnapshot){
+                    querySnapshot.forEach(function(doc){
+                        doc.ref.delete();
+                    })
+                })
             }
         }else{
             message.warning('Please login or sign up to like prompts')

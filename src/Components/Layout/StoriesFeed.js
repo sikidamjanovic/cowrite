@@ -1,8 +1,18 @@
 import React, { Component } from 'react'
-import { Row, Breadcrumb, Select } from 'antd'
+import { Row, Col, Breadcrumb, Select } from 'antd'
 import StoryCard from '../Posts/StoryCard'
+import '../../App.css'
 
 class StoriesFeed extends Component {
+
+    getStories(){
+        return(
+            <Col id="prompt">
+                <StoryCard/>
+            </Col>
+        )
+    }
+
     render() {
         const { Option } = Select;
         return (
@@ -33,7 +43,7 @@ class StoriesFeed extends Component {
                             </Select>
                         </div>
                     </div>
-                    <StoryCard/>
+                    {this.getStories()}
                 </Row>
             </div>
         );

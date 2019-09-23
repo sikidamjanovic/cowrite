@@ -32,9 +32,17 @@ class StoryCard extends Component {
             <div>
                 <Card
                     actions={[
-                        <button id="likebtn"><Icon type="heart" key="heart"/></button>,
-                        <Icon type="book" key="book" />,
-                        <Icon type="user" key="user" />,
+                        <button id="cardActionBtn">
+                            <Icon type="book" key="book" />
+                        </button>,
+                        <button id="cardActionBtn">
+                            <Icon type="user" key="user" />
+                        </button>,
+                        <Tooltip title="Report this prompt">
+                            <button id="cardActionBtn">
+                                <Icon type="warning" key="warning" />
+                            </button>
+                        </Tooltip>
                     ]}
                     onClick={this.showModal}
                     hoverable={true}
@@ -52,7 +60,7 @@ class StoryCard extends Component {
                             <span id="card-title">Story Test</span>
                             <Tag>Story</Tag>
                             <Tag>4/5 Chapters</Tag>
-                            <Tag color="blue">24h Left</Tag>
+                            <Tag color="#006d75">24h Left</Tag>
                         </span>
                     }
                     description =  { 

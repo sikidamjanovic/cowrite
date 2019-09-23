@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Menu, Dropdown, Icon, Button, Avatar } from 'antd';
+import { NavLink, withRouter } from 'react-router-dom'
 
 class AccountDropdown extends Component {
     
@@ -9,6 +10,12 @@ class AccountDropdown extends Component {
             <Menu>
                 <Menu.Item key="0" onClick={this.props.signOut}>
                     Sign Out
+                </Menu.Item>
+                <Menu.Item>
+                    <NavLink to={{
+                        pathname: "/account/"
+                    }}/>
+                    Profile
                 </Menu.Item>
             </Menu>
         )

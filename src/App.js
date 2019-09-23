@@ -21,6 +21,7 @@ const App = () => (
             <Route path="/prompts/category/Romance" component={Home}/>
             <Route path="/prompts/category/SciFi" component={Home}/>
             <Route path="/stories/category/Comedy" component={Home}/>
+            <Route path="/account/:id" component={Home}/>
         </div>
         </Layout>
     </Router>

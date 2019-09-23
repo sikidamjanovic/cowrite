@@ -56,6 +56,10 @@ export const signUp = (newUser) => {
                         firestore.collection('users').doc(newUser.username).set({
                             uid: resp.user.uid
                         }),
+                        firestore.collection('users').doc(newUser.username).collection('liked').doc().add({
+                            type: 'inital',
+                            postId: 'initial'
+                        }),
                         firebase.auth().currentUser.sendEmailVerification().then(function() {
                             //email sent, look for emailVerified 
                         }).catch(function(err) {

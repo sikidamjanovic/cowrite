@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import Prompt from '../Posts/Prompt'
-import { Row, Col, Select, Breadcrumb, Icon, Spin } from 'antd';
+import { Row, Col, Select, Breadcrumb, Icon, Spin, Button } from 'antd';
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
+import PromptsFeedHeader from '../Layout/PromptsFeedHeader'
 import '../../App.css'
 
 class PromptsFeed extends Component {
@@ -70,6 +71,7 @@ class PromptsFeed extends Component {
         return (
             <div>
                 <Row>
+                    <PromptsFeedHeader/>
                     <div id="feed-header">
                         <div id="breadcrumb-container">
                             <Breadcrumb>
