@@ -6,15 +6,37 @@ import { GiDramaMasks } from 'react-icons/gi'
 import '../../App.css'
 
 class Sidebar extends Component {
+
+    constructor(props){
+        super(props)
+        this.state = {
+            width: 0
+        }
+        this.updateWidth = this.updateWidth.bind(this)
+    }
+
+    componentDidMount(){
+        this.updateWidth();
+        window.addEventListener('resize', this.updateWidth);
+    }
+
+    updateWidth() {
+        this.setState({ width: window.innerWidth });
+    }
+
     render() { 
         const { SubMenu } = Menu;
         return (
             <Menu
                 onClick={this.handleClick}
-                style={{ width: '100%', height: '100vh' }}
-                defaultOpenKeys={['sub1', 'sub2']}
+                style={this.state.width > 768 ? { height: '100vh' } : {
+                    position: 'fixed',
+                    width: '100%',
+                    left: '0',
+                    zIndex: 100
+                }}
                 selectedKeys={window.location.pathname}
-                mode="inline"
+                mode={this.state.width < 768 ? 'horizontal' : 'inline'}
                 id="sidebar"
             >
                 <SubMenu

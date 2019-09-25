@@ -14,16 +14,13 @@ MAIN COMPONENT STYLING
     justify-content: center;
     align-items: center;
     height: 100px;
-    margin-left: 16.6%;
-    margin-top: 10vh;
+    padding-top: 20px;
     font-family: 'Lato';
     background-color: #171F22
 }
 
 #sidebar{
-    padding-top: 10vh;
-    position: fixed;
-    width: 16.6% !important;
+    padding-top: 50px;
 }
 
 /* 
@@ -43,7 +40,7 @@ MAIN COMPONENT STYLING
 
 .nav-col-right{
     display: flex;
-    justify-content: flex-end
+    justify-content: center
 }
 
 .nav-link{
@@ -57,12 +54,26 @@ MAIN COMPONENT STYLING
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100;
-    margin-bottom: 10vh;
+    z-index: 101;
+}
+
+@media screen and (max-width: 768px) {
+    #logo {
+      height: 0px;
+    }
+}
+
+@media screen and (max-width: 576px){
+    #sidebar{
+        padding-top: 100px;
+    }
+    #feed-container{
+        margin-top: 150px !important;
+    }
 }
 
 #logo{
-    font-family: 'Lato';
+    height: 20px;
     margin-bottom: 0;
 }
 
@@ -86,14 +97,8 @@ MAIN COMPONENT STYLING
 
 #feed-header-container {
     position: relative;
+    height: 200px;
     margin-bottom: 50px;
-}
-
-#feed-header-text{
-    left: 72px;
-    position:absolute;
-    top: 40px;
-    width: 100%
 }
 
 #feed-header-text h1{
@@ -111,12 +116,21 @@ MAIN COMPONENT STYLING
     margin-right: 20px;
 }
 
+.feed-header-top-posts{
+    border: 2px solid #171f22;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #breadcrumb-container{
     margin-right: 20px;
 }
 
 #feed-container{
-    margin-top: 10vh;
+    margin-top: 100px;
 }
 
 /* 

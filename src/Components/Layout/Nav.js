@@ -4,6 +4,7 @@ import '../../App.css'
 import SignedInLinks from '../Auth/SignedInLinks';
 import SignedOutLinks from '../Auth/SignedOutLinks';
 import { connect } from 'react-redux';
+import logo from '../../img/logo.png'
 
 const Nav = (props) => {
     const { auth } = props;
@@ -13,16 +14,16 @@ const Nav = (props) => {
             <Menu id="navBar" mode="horizontal">
 
                 <Row className="nav-row">
-                    <Col span={4} className="nav-col-left">
+                    <Col xs={24} sm={6} className="nav-col-left">
                         <Menu.Item key="app">
-                            <h1 id="logo">cowrite</h1>
+                            <img id="logo" src={logo} alt="logo"/>
                         </Menu.Item>
                     </Col>
 
-                    <Col span={10}>
+                    <Col xs={0} sm={4}>
                     </Col>
 
-                    <Col span={8} offset={1} className="nav-col-right">
+                    <Col xs={22} sm={10} offset={1} className="nav-col-right">
                         { links }
                     </Col>
                 </Row>

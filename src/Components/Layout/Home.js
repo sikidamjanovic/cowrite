@@ -21,7 +21,6 @@ class Home extends Component {
     }
 
     componentDidMount(){
-        console.log(this.props)
         this.getQuery()
         this.getAll()
     }
@@ -63,10 +62,10 @@ class Home extends Component {
             <div>
             <div id="home">
                 <Row>
-                    <Col xs={12} md={4}>
+                    <Col xs={24} md={4}>
                         <Sidebar auth={this.props.auth} query={this.updateQuery}/>
                     </Col>
-                    <Col xs={12} sm={18} offset={1}  id="feed-container">
+                    <Col xs={22} md={18} offset={1}  id="feed-container">
                         {this.showRelevantFeed()}
                     </Col>
                 </Row>
