@@ -36,6 +36,7 @@ class Sidebar extends Component {
                     zIndex: 100
                 }}
                 selectedKeys={window.location.pathname}
+                //openKeys={this.state.width < 768 ? ['sub1', 'sub2', 'sub3'] : ['']}
                 mode={this.state.width < 768 ? 'horizontal' : 'inline'}
                 id="sidebar"
             >
