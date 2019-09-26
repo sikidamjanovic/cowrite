@@ -11,6 +11,7 @@ class NewPostModal extends React.Component {
             title: '',
             content: '',
             genre: '',
+            likes: [],
             visible: false
         }
         this.handleCancel = this.handleCancel.bind(this)

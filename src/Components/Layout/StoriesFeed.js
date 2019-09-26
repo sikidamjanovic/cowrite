@@ -1,16 +1,69 @@
 import React, { Component } from 'react'
-import { Row, Col, Breadcrumb, Select } from 'antd'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { firestoreConnect } from 'react-redux-firebase'
+import { Row, Col, Breadcrumb, Select, Spin } from 'antd'
 import StoryCard from '../Posts/StoryCard'
 import '../../App.css'
 
 class StoriesFeed extends Component {
 
+    constructor(props){
+        super(props)
+        this.state={
+            sort: "new",
+            loaded: false
+        }
+        this.handleSort = this.handleSort.bind(this)
+    }
+
+    handleSort(value){
+        return this.props.sort(value)
+    }
+
+    componentDidMount(){
+        if(!this.props.stories){
+            this.setState({
+                loaded: false
+            })
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.stories !== this.props.stories){
+            this.setState({
+                loaded: true
+            })
+        }
+    }
+
     getStories(){
-        return(
-            <Col id="prompt">
-                <StoryCard/>
-            </Col>
-        )
+        const { stories } = this.props;
+        //if (!auth.uid) return <redirect to= '/signin'/> //Use for actions that the user cant complete unless they are signed in
+        if(this.state.loaded){
+            return(
+                stories.map((post,i) =>
+                    <Col id="prompt">
+                        <StoryCard 
+                            key={post.id} 
+                            id={post.id} 
+                            title={post.title} 
+                            genre={post.genre}
+                            content={post.prompt}
+                            author={post.author}
+                            time={post.createdAt}
+                            currentChapter={post.currentChapter}
+                        />
+                    </Col> 
+                )
+            )
+        }else{
+            return(
+                <div style={{ display: 'flex', marginTop: '100px', justifyContent: 'center'}}>
+                    <Spin size="large"/>
+                </div>
+            )
+        }
     }
 
     render() {
@@ -50,4 +103,16 @@ class StoriesFeed extends Component {
     }
 }
 
-export default StoriesFeed;
+const mapStateToProps = (state, props) => {
+    return {
+        stories: state.firestore.ordered.stories,
+        auth: state.firebase.auth
+    }
+}
+
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect( props => {
+            return [{ collection: 'stories'}]
+    })
+)(StoriesFeed)

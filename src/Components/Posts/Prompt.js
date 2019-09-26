@@ -4,6 +4,7 @@ import '../../App.css'
 import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
 import { firestore } from "firebase";
+var firebase = require('firebase');
 
 class Prompt extends Component {
 
@@ -11,7 +12,7 @@ class Prompt extends Component {
         super(props)
         this.state = {
             likes: [],
-            amountOfLikes: '',
+            amountOfLikes: 0,
             userLiked: false
         }
         this.like = this.like.bind(this)
@@ -63,29 +64,27 @@ class Prompt extends Component {
     }
 
     getLikes(){
-        getFirestore().collection('posts').doc(this.props.id).collection('likes').get()
-        .then(querySnapshot => {
-            const likes = []
-            querySnapshot.forEach(function(doc){
-                likes.push({
-                    user: doc.data()    
+        getFirestore().collection('posts').doc(this.props.id).get()
+        .then((doc) => {
+            if(doc.exists){
+                console.log('DOC DATA:', doc.data())
+                this.setState({
+                     amountOfLikes: doc.data().likes.length,
+                     likes: doc.data().likes
                 })
-            })
-            this.setState({
-                likes: likes,
-                amountOfLikes: likes.length
-            })
-            this.userLiked()
-        })
-        .catch(function(error){
-            console.log('Error: ' + error)
+                this.userLiked()
+            }else{
+                console.log('No Such Document')
+            }
+        }).catch(function(error){
+            console.log(error)
         })
     }
 
     userLiked(){
         const likes = this.state.likes
         for (let i = 0; i < likes.length; i++) {
-            if(likes[i].user.uid == this.props.auth.uid){
+            if(likes[i].uid == this.props.auth.uid){
                 this.setState({
                     userLiked: true
                 })
@@ -126,9 +125,12 @@ class Prompt extends Component {
                     userLiked: true,
                     amountOfLikes: this.state.amountOfLikes + 1
                 })
-                getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).set({
-                    uid: this.props.auth.uid,
-                    postId: this.props.id
+                getFirestore().collection('posts').doc(this.props.id).update({
+                    likes: firebase.firestore.FieldValue.arrayUnion(
+                        {
+                            uid: this.props.auth.uid
+                        }
+                    )
                 })
                 getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').doc().set({
                     type: 'prompt',
@@ -145,7 +147,13 @@ class Prompt extends Component {
                     amountOfLikes: this.state.amountOfLikes - 1
                 })
                 // Delete user from posts 'likes' collection
-                getFirestore().collection('posts').doc(this.props.id).collection('likes').doc(this.props.auth.displayName).delete()
+                getFirestore().collection('posts').doc(this.props.id).update({
+                    likes: firebase.firestore.FieldValue.arrayRemove(
+                        {
+                            uid: this.props.auth.uid
+                        }
+                    )
+                })
                 // Delete post from users 'liked' collection
                 var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').where('postId','==',this.props.id)
                 delete_query.get().then(function(querySnapshot){

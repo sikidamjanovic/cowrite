@@ -1,26 +1,28 @@
-//import { getFirestore } from "redux-firestore";
 const functions = require('firebase-functions');
 const admin = require('firebase-admin')
 admin.initializeApp(functions.config().firebase);
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
- exports.helloWorld = functions.https.onRequest((request, response) => {
- response.send("Hello from Firebase!");
-});
+const db = admin.firestore()
 
-const createStory = (story => {
+const createStory = ((story, id )=> {
     return admin.firestore().collection('stories')
         .add(story)
-        .then(doc => console.log('Story Added', doc))
+        .then(
+            db.collection('notifications').doc().set({
+                message: story.title + ' converted to a story!',
+                post: id,
+                time: new Date()
+            }),
+            db.collection('posts').doc(id).delete()
+        )
 })
 
-exports.convertToStory = functions.firestore
-    .document('posts/{postId}')
-    .onUpdate((change, context) => {
-        data = change.after.data()
+const evaluateLikes = ((data, id) => {
+    // like threshold in this case is 2
+    // TODO: Add another parameter for time
+    if(data.likes.length >= 1){
         story = {
+            promptId: id,
             author: data.author,
             prompt: data.content,
             genre: data.genre,
@@ -30,6 +32,17 @@ exports.convertToStory = functions.firestore
             currentChapter: 1,
             submissions: []
         }
-        return createStory(story)
+        return createStory(story, id)
+    }else{
+        return console.log('Not Enough Likes For Story')
+    }
+})
+
+exports.convertToStory = functions.firestore
+    .document('posts/{postId}')
+    .onWrite((change, context) => {
+        const changed = change.after.data()
+        const id = change.after.id
+        return evaluateLikes(changed, id)
 })
 

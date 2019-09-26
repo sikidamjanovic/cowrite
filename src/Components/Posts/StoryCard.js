@@ -57,17 +57,17 @@ class StoryCard extends Component {
                     }
                     title = {
                         <span id="title-container">
-                            <span id="card-title">Story Test</span>
+                            <span id="card-title">{this.props.title}</span>
                             <Tag>Story</Tag>
-                            <Tag>4/5 Chapters</Tag>
+                            <Tag>{this.props.currentChapter}/5 Chapters</Tag>
                             <Tag color="#006d75">24h Left</Tag>
                         </span>
                     }
                     description =  { 
                         <div>
-                            <small>Comedy</small>
+                            <small>{this.props.genre}</small>
                             <br></br><br></br>
-                            <span id="card-content">blah blah blah</span>
+                            <span id="card-content">{this.props.content}</span>
                             <br></br>
                         </div>
                     }
