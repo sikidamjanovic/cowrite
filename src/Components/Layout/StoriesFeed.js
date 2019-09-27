@@ -53,6 +53,8 @@ class StoriesFeed extends Component {
                             author={post.author}
                             time={post.createdAt}
                             currentChapter={post.currentChapter}
+                            chapters={post.chapters}
+                            submissions={post.submissions}
                         />
                     </Col> 
                 )

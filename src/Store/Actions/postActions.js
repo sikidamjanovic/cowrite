@@ -1,5 +1,6 @@
 import { getFirestore } from "redux-firestore";
-import { firestore } from "firebase";
+import * as firebase from "firebase";
+import 'firebase/firestore'
 import { message } from 'antd'
 
 export const createPost = (post) => {
@@ -8,7 +9,6 @@ export const createPost = (post) => {
         const firestore = getFirestore()
         console.log(post)
         var today = new Date();
-
         firestore.collection('posts').add({ 
             ...post,
             author: getFirebase().auth().currentUser.displayName,
@@ -25,4 +25,23 @@ export const createPost = (post) => {
         })
         message.success('Your prompt has been posted!')
     } 
+}
+
+export const submitChapter = (submission) => {
+    return (dispatch, getState, { getFirebase, getFirestore }) => {
+        const firestore = getFirestore()
+        var today = new Date();
+        firestore.collection('stories').doc(submission.id).update("submissions", firebase.firestore.FieldValue.arrayUnion({
+            ...submission,
+            author: getFirebase().auth().currentUser.displayName,
+            createdAt: new Date(),
+            time: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' - '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds(),
+        }))
+        message.success('Your chapter has been submitted!')
+        .then(() => {
+            dispatch({ type: 'SUBMIT_CHAPTER', submission})
+        }).catch((err) => {
+            dispatch({ type: 'SUBMIT_CHAPTER_ERROR', err })
+        })
+    }
 }

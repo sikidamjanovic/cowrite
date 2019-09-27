@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Icon, Avatar, Tag, Popover, Modal, Tooltip } from 'antd';
+import { Card, Icon, Avatar, Tag, Popover, Modal, Tooltip, Button } from 'antd';
 import StoryModal from '../Posts/StoryModal'
 import '../../App.css'
 
@@ -31,7 +31,14 @@ class StoryCard extends Component {
         return (
             <div>
                 <Card
-                    actions={[
+                    actions={[                        
+                        <button id="cardActionBtn">
+                            <Icon type="plus" key="plus"/>
+                            Follow
+                        </button>,
+                        <button id="cardActionBtn">
+                            <Icon type="heart" key="heart" />
+                        </button>,
                         <button id="cardActionBtn">
                             <Icon type="book" key="book" />
                         </button>,
@@ -59,7 +66,7 @@ class StoryCard extends Component {
                         <span id="title-container">
                             <span id="card-title">{this.props.title}</span>
                             <Tag>Story</Tag>
-                            <Tag>{this.props.currentChapter}/5 Chapters</Tag>
+                            <Tag>{this.props.currentChapter}/4 Chapters</Tag>
                             <Tag color="#006d75">24h Left</Tag>
                         </span>
                     }
@@ -77,10 +84,13 @@ class StoryCard extends Component {
                     title={
                         <span>
                             <span style={{ marginRight: '20px' }}>
-                                The Title of The Story
+                                {this.props.title}
                             </span>
-                            <Tag>1 Chapter Left</Tag>
-                            <Tag>#4 in Comedy</Tag>
+                            <Tag>{4 - this.props.currentChapter} Chapters Left</Tag>
+                            <Button>
+                                <Icon type="plus"/>
+                                Follow
+                            </Button>
                         </span>
                     }
                     visible={this.state.visible}
@@ -90,7 +100,16 @@ class StoryCard extends Component {
                     headerStyle={{ backgroundColor: 'red'}}
                     style={{ top: 0, maxHeight: '100vh', padding: 0 }}
                 >
-                    <StoryModal/>
+                    <StoryModal
+                        id = {this.props.id}
+                        author = {this.props.author}
+                        genre = {this.props.genre}
+                        currentChapter = {this.props.currentChapter}
+                        chapters = {this.props.chapters}
+                        prompt = {this.props.content}
+                        time = {this.props.time}
+                        submissions = {this.props.submissions}
+                    />
                 </Modal>
             </div>
         );

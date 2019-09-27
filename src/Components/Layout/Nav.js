@@ -4,6 +4,7 @@ import '../../App.css'
 import SignedInLinks from '../Auth/SignedInLinks';
 import SignedOutLinks from '../Auth/SignedOutLinks';
 import { connect } from 'react-redux';
+import { NavLink, withRouter } from 'react-router-dom'
 import logo from '../../img/logo.png'
 
 const Nav = (props) => {
@@ -16,7 +17,11 @@ const Nav = (props) => {
                 <Row className="nav-row">
                     <Col xs={24} sm={6} className="nav-col-left">
                         <Menu.Item key="app">
-                            <img id="logo" src={logo} alt="logo"/>
+                            <NavLink to={{
+                                pathname: "/"
+                            }}>
+                                <img id="logo" src={logo} alt="logo"/>
+                            </NavLink>
                         </Menu.Item>
                     </Col>
 

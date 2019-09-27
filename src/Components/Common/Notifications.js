@@ -19,7 +19,7 @@ class Notifications extends Component {
             return(
                 notification.success({
                     duration: 5,
-                    message: notifications[notifications.length - 1].message,
+                    message: notifications[0].message,
                     description: this.getButton()
                 })
             )
