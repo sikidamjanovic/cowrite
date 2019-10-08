@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import Home from './Components/Layout/Home'
 import Nav from './Components/Layout/Nav'
+import StoryModal from './Components/Posts/StoryModal'
 import { BackTop, Layout } from 'antd';
 import './App.css'
 
@@ -20,8 +21,15 @@ const App = () => (
             <Route path="/prompts/category/Drama" component={Home}/>
             <Route path="/prompts/category/Romance" component={Home}/>
             <Route path="/prompts/category/SciFi" component={Home}/>
+
+            <Route path="/stories/category/all" component={Home}/>
             <Route path="/stories/category/Comedy" component={Home}/>
+            <Route path="/stories/category/Drama" component={Home}/>
+            <Route path="/stories/category/Romance" component={Home}/>
+            <Route path="/stories/category/SciFi" component={Home}/>
+            
             <Route path="/account/:id" component={Home}/>
+            <Route path="/story/:id" component={StoryModal}/>
         </div>
         </Layout>
     </Router>

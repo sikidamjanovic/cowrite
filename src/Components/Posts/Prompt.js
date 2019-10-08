@@ -17,17 +17,12 @@ class Prompt extends Component {
         }
         this.like = this.like.bind(this)
         this.userLiked = this.userLiked.bind(this)
-        this.getLikes = this.getLikes.bind(this)
     }
 
     componentDidMount(){
-        this.getLikes()
-    }
-
-    componentDidUpdate(prevProps, prevState){
-        if(prevProps.auth.uid !== this.props.auth.uid){
-            this.getLikes()
-        }
+        this.setState({
+            amountOfLikes: this.props.amountOfLikes
+        })
     }
 
     getTime(){
@@ -63,26 +58,8 @@ class Prompt extends Component {
         return Math.round(48 - Math.abs(postedTime - currentTime) / 36e5)
     }
 
-    getLikes(){
-        getFirestore().collection('posts').doc(this.props.id).get()
-        .then((doc) => {
-            if(doc.exists){
-                console.log('DOC DATA:', doc.data())
-                this.setState({
-                     amountOfLikes: doc.data().likes.length,
-                     likes: doc.data().likes
-                })
-                this.userLiked()
-            }else{
-                console.log('No Such Document')
-            }
-        }).catch(function(error){
-            console.log(error)
-        })
-    }
-
     userLiked(){
-        const likes = this.state.likes
+        const likes = this.props.likes
         for (let i = 0; i < likes.length; i++) {
             if(likes[i].uid == this.props.auth.uid){
                 this.setState({

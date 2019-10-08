@@ -39,13 +39,13 @@ class StoriesFeed extends Component {
 
     getStories(){
         const { stories } = this.props;
-        //if (!auth.uid) return <redirect to= '/signin'/> //Use for actions that the user cant complete unless they are signed in
         if(this.state.loaded){
             return(
                 stories.map((post,i) =>
                     <Col id="prompt">
                         <StoryCard 
                             key={post.id} 
+                            uid={this.props.auth.uid}
                             id={post.id} 
                             title={post.title} 
                             genre={post.genre}
@@ -54,15 +54,14 @@ class StoriesFeed extends Component {
                             time={post.createdAt}
                             currentChapter={post.currentChapter}
                             chapters={post.chapters}
-                            submissions={post.submissions}
                         />
                     </Col> 
                 )
             )
         }else{
             return(
-                <div style={{ display: 'flex', marginTop: '100px', justifyContent: 'center'}}>
-                    <Spin size="large"/>
+                <div style={{ display: 'flex', marginTop: '25%', justifyContent: 'center'}}>
+                    <Spin size='large'/>
                 </div>
             )
         }
@@ -115,6 +114,23 @@ const mapStateToProps = (state, props) => {
 export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
-            return [{ collection: 'stories'}]
+        
+        const { getAll, sortBy } = props
+        var rawPath = window.location.pathname.split('/')
+        var query = rawPath.pop()
+
+        if(getAll == true){
+            return [
+                { collection: 'stories',
+                  orderBy: [sortBy, 'desc']
+                }
+            ]
+        }else{
+            return [{ 
+                collection: 'stories', 
+                orderBy: [sortBy, 'desc'],
+                where: ["genre", "==", query] 
+            }]
+        }
     })
 )(StoriesFeed)

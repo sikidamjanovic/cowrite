@@ -39,8 +39,7 @@ class PromptsFeed extends Component {
     }
 
     getPrompts(){
-        const { posts, auth } = this.props;
-        //if (!auth.uid) return <redirect to= '/signin'/> //Use for actions that the user cant complete unless they are signed in
+        const { posts } = this.props;
         if(this.state.loaded){
             return(
                 posts.map((post,i) =>
@@ -53,6 +52,8 @@ class PromptsFeed extends Component {
                                 content={post.content}
                                 author={post.author}
                                 time={post.createdAt}
+                                likes={post.likes}
+                                amountOfLikes={post.likes.length}
                             />
                         </Col> 
                 )
@@ -60,7 +61,7 @@ class PromptsFeed extends Component {
         }else{
             return(
                 <div style={{ display: 'flex', marginTop: '100px', justifyContent: 'center'}}>
-                    <Spin size="large"/>
+                    <Spin size='large'/>
                 </div>
             )
         }

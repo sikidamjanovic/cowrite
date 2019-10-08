@@ -30,13 +30,12 @@ export const createPost = (post) => {
 export const submitChapter = (submission) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
         const firestore = getFirestore()
-        var today = new Date();
-        firestore.collection('stories').doc(submission.id).update("submissions", firebase.firestore.FieldValue.arrayUnion({
+        firestore.collection('stories').doc(submission.postId).collection('submissions').doc().set({
             ...submission,
+            likes: [],
             author: getFirebase().auth().currentUser.displayName,
-            createdAt: new Date(),
-            time: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' - '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds(),
-        }))
+            time: new Date()
+        })
         message.success('Your chapter has been submitted!')
         .then(() => {
             dispatch({ type: 'SUBMIT_CHAPTER', submission})

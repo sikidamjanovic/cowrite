@@ -1,14 +1,63 @@
 import React, { Component } from 'react'
 import StoryComment from '../Posts/StoryComment'
-import { List, Select } from 'antd'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { firestoreConnect } from 'react-redux-firebase'
+import { List, Select, Spin } from 'antd'
+
 
 class Comments extends Component {
 
-    componentDidMount(){
-        if(this.props.submissions){
-            console.log('loaded')
+    constructor(props){
+        super(props)
+        this.state = {
+            loaded: false,
+            submissions: []
+        }
+    }
+
+    componentDidUpdate(prevState, prevProps){
+        if(this.state.loaded !== this.props.loaded || prevState.submissions !== this.props.submissions){
+            this.setState({
+                loaded: true,
+                submissions: this.props.submissions
+            })
+        }
+    }
+
+    getComments(){
+        if(this.state.loaded && this.state.submissions.length > 0){
+            return(
+                <List
+                    className="comment-list"
+                    header={this.getCommentSort()}
+                    itemLayout="horizontal"
+                    dataSource={this.getSubmissions()}
+                    renderItem={item => (
+                        <li>
+                            <StoryComment 
+                                id={item.id}
+                                postId={item.postId}
+                                uid={this.props.auth.uid}
+                                author={item.author}
+                                comment={item.content}
+                                likes={item.likes}
+                                time={item.time}
+                            />
+                        </li>
+                    )}
+                />
+            )
         }else{
-            console.log('not loaded')
+            return(
+                <List
+                    className="comment-list"
+                    header={this.getCommentSort()}
+                    itemLayout="horizontal"
+                    dataSource={[]} 
+                    locale={{ emptyText: <p>No Submissions</p> }}
+                />
+            )
         }
     }
 
@@ -26,38 +75,47 @@ class Comments extends Component {
     }
 
     getSubmissions(){
-
         const subs = []
-
-        for (let i = 0; i < this.props.submissions.length; i++) {
+        for (let i = 0; i < this.state.submissions.length; i++) {
             subs.push({
-                author: this.props.submissions[i].author,
-                content: this.props.submissions[i].content
+                postId: this.state.submissions[i].postId,
+                id: this.props.auth.uid,
+                author: this.state.submissions[i].author,
+                content: this.state.submissions[i].content,
+                likes: this.state.submissions[i].likes,
+                time: this.state.submissions[i].time.toDate()
             })
         }
-
         return subs
     }
 
     render() {
         return (
-            <List
-                className="comment-list"
-                header={this.getCommentSort()}
-                itemLayout="horizontal"
-                dataSource={this.getSubmissions()}
-                renderItem={item => (
-                    <li>
-                        <StoryComment 
-                            author={item.author}
-                            title={item.title}
-                            comment={item.content}
-                        />
-                    </li>
-                )}
-            />
+            <div>
+                {this.getComments()}
+            </div>
         );
     }
 }
 
-export default Comments;
+const mapStateToProps = (state, props) => {
+    return {
+        submissions: state.firestore.ordered.submissions,
+        auth: state.firebase.auth,
+        loaded: true
+    }
+}
+
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect(props => {
+        return [
+          {
+            collection: 'stories',
+            doc: props.id,
+            subcollections: [{ collection: 'submissions'}],
+            storeAs: 'submissions'
+          }
+        ];
+    })
+)(Comments)

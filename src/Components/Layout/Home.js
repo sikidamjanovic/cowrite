@@ -34,7 +34,7 @@ class Home extends Component {
     }
 
     getAll(){
-        if(window.location.pathname.substr(-3) == 'all'){
+        if(window.location.pathname.substr(-3) === 'all'){
             this.setState({
                 getAll: true
             })
@@ -53,7 +53,7 @@ class Home extends Component {
         }else if(window.location.pathname.slice(1,8) == 'account'){
             return <UserProfile auth={this.props.auth} isOwnProfile={true}/>
         }else{
-            return <StoriesFeed/>
+            return <StoriesFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
         }
     }    
 

@@ -1,58 +1,126 @@
-import React, { Fragment } from 'react';
-import Comments from '../Posts/Comments'
-import SubmitChapter from '../Posts/SubmitChapter'
-import { BackTop, Collapse, Radio, Select, Icon} from 'antd';
-import '../../App.css'
+import React, { Component } from 'react'
+import StoryModalContent from './StoryModalContent'
+import { Modal, Button, Icon, Tag } from 'antd';
+import { getFirestore } from 'redux-firestore'
 
-class StoryModal extends React.Component {
+class StoryModal extends Component {
 
     constructor(props){
         super(props)
-        this.state={
-            chapter: 1
+        this.state = {
+            visible: true,
+            loaded: false,
+            error: false
         }
+        this.handleCancel = this.handleCancel.bind(this)
+        this.showModal = this.showModal.bind(this)
+        this.goBack = this.goBack.bind(this);
     }
 
-    onChange(e) {
-        console.log(`radio checked:${e.target.value}`);
+    componentDidMount(){
+
+        var that = this;
+        var rawPath = window.location.pathname.split('/')
+        var storyId = rawPath.pop()
+
+        getFirestore().collection('stories').doc(storyId).get()
+        .then(function(doc){
+            that.setState({
+                data: doc.data()
+            })
+            console.log('HERE', storyId)
+            console.log('HEY!!!', doc.data())
+        }).catch(function(error){
+            that.setState({
+                error: true
+            })
+        })
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.data !== this.state.data){
+            this.setState({
+                loaded: true
+            })
+        }    
+    }
+     
+    goBack(){
+        // CHANGE THIS TO DOMAIN URL BEFORE DEPLOYING
+        if(document.referrer.substring(7,12) == 'local'){
+            this.props.history.goBack();
+        }else{
+            window.location.href = 'http://localhost:3000/stories/category/' + this.state.data.genre;
+        }
+    }     
+
+    showModal(){
+        this.setState({
+            visible: true
+        })
+    }
+
+    handleCancel(){
+        this.setState({ visible: false }, () => {
+            console.log(this.state.visible);
+        });
+        this.goBack()
     }
 
     render() {
+        if(this.state.loaded){
 
-        const { Panel } = Collapse; 
+            var data = this.state.data
+            var rawPath = window.location.pathname.split('/')
+            var storyId = rawPath.pop()
 
-        return (
-            <div>
-                <BackTop/>
-                <p>{this.props.prompt}</p>
-                <br></br>
-                <Collapse 
-                    bordered={false}
-                    expandIcon={({ isActive }) => <Icon type="plus" rotate={isActive ? 90 : 0} />}
+            return (
+                <Modal
+                    title={
+                        <span>
+                            <span style={{ marginRight: '20px' }}>
+                                {data.title}
+                            </span>
+                            <Tag>{4 - data.currentChapter + ' Chapters Left'}</Tag>
+                            <Button>
+                                <Icon type="plus"/>
+                                Follow
+                            </Button>
+                        </span>
+                    }
+                    visible={this.state.visible}
+                    onCancel={this.handleCancel}
+                    footer={null}
+                    width={'80%'}
+                    style={{ top: 0, maxHeight: '100vh', padding: 0 }}
                 >
-                    <Panel header="Submit Chapter 5" key="1">
-                        <SubmitChapter
-                            id={this.props.id}
-                        />
-                    </Panel>
-                </Collapse>
-                <br></br>
-                <br></br>
-                <small>Chapters</small>
-                <br></br>
-                <br></br>
-                <Radio.Group onChange={this.onChange} defaultValue="4" size="large" buttonStyle="solid">
-                    <Radio.Button style={{marginRight: '10px'}} value="1">1</Radio.Button>
-                    <Radio.Button style={{marginRight: '10px'}}  value="2">2</Radio.Button>
-                    <Radio.Button style={{marginRight: '10px'}}  value="3">3</Radio.Button>
-                    <Radio.Button style={{marginRight: '10px'}}  value="4">4</Radio.Button>
-                </Radio.Group>
-                <br></br>
-                <br></br>
-                <Comments submissions={this.props.submissions}/>
-            </div>
-    );
-  }
+    
+                    <StoryModalContent
+                        id = {storyId}
+                        // uid = {this.props.location.state.uid}
+                        author = {data.author}
+                        genre = {data.genre}
+                        currentChapter = {data.currentChapter}
+                        chapters = {data.chapters}
+                        prompt = {data.prompt}
+                        time = {data.time}
+                    />      
+                </Modal>
+            );
+        }else{
+            return(
+                <Modal 
+                    visible={this.state.visible}
+                    onCancel={this.handleCancel} 
+                    width={'80%'} 
+                    footer={null} 
+                    style={{ top: 0 }}
+                >
+                    <div style={{ height: '100vh' }}></div>
+                </Modal>
+            )
+        }
+    }
 }
 
-export default StoryModal
+export default StoryModal;

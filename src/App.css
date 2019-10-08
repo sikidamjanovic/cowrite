@@ -21,6 +21,7 @@ MAIN COMPONENT STYLING
 
 #sidebar{
     padding-top: 50px;
+    width: 16.6%;
 }
 
 /* 
@@ -60,6 +61,9 @@ MAIN COMPONENT STYLING
 @media screen and (max-width: 768px) {
     #logo {
       height: 0px;
+    }
+    #sidebar{
+        width: 100%;
     }
 }
 
@@ -262,4 +266,25 @@ MAIN COMPONENT STYLING
 
 .ant-collapse-content-box{
     padding: 0 !important;
+}
+
+.ant-skeleton-title, .ant-skeleton-paragraph > li{
+    background: #111717 !important;
+    color:#111717 !important;
+}
+
+.ant-select-dropdown-menu-item{
+    background-color: none !important;
+}
+
+.ant-select-dropdown-menu-item-active{
+    background: #111717 !important;
+}
+
+.ant-select-dropdown-menu-item-selected{
+    background-color: #006d75 !important;
+}
+
+.ant-collapse-item-active, .ant-collapse-item{
+    border-bottom: none !important;
 }

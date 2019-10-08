@@ -21,6 +21,7 @@
     "react-redux": "^5.1.1",
     "react-redux-firebase": "^2.1.8",
     "react-router-dom": "^5.0.1",
+    "react-router-scroll-memory": "^2.0.3",
     "react-scripts": "^3.1.1",
     "redux": "^4.0.4",
     "redux-firestore": "^0.5.7",

@@ -29,10 +29,8 @@ const evaluateLikes = ((data, id) => {
             prompt: data.content,
             genre: data.genre,
             title: data.title,
-            time: data.time,
-            chapters: [],
-            currentChapter: 1,
-            submissions: []
+            createdAt: new Date(),
+            currentChapter: 1
         }
         return createStory(story, id)
     }else{
@@ -59,7 +57,7 @@ const createStory = ((story, id )=> {
 
 // Scheduled function test
 
-exports.scheduledFunction =
-functions.pubsub.schedule('every 5 seconds').onRun((context) => {
-    console.log('This will be run every 5 seconds!');
-})
+// exports.scheduledFunction =
+// functions.pubsub.schedule('every 5 seconds').onRun((context) => {
+//     console.log('This will be run every 5 seconds!');
+// })

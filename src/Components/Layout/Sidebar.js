@@ -29,14 +29,16 @@ class Sidebar extends Component {
         return (
             <Menu
                 onClick={this.handleClick}
-                style={this.state.width > 768 ? { height: '100vh' } : {
+                style={this.state.width > 768 ? { 
+                    height: '100vh',
                     position: 'fixed',
-                    width: '100%',
+                    left: 0
+                } : {
+                    position: 'fixed',
                     left: '0',
                     zIndex: 100
                 }}
                 selectedKeys={window.location.pathname}
-                //openKeys={this.state.width < 768 ? ['sub1', 'sub2', 'sub3'] : ['']}
                 mode={this.state.width < 768 ? 'horizontal' : 'inline'}
                 id="sidebar"
             >
@@ -116,6 +118,16 @@ class Sidebar extends Component {
                     }
                 >
                 <Menu.ItemGroup key="g4" title="Categories">
+                    <Menu.Item key="/stories/category/all">
+                        <NavLink to={{
+                            pathname: "/stories/category/all",
+                            state: {
+                                query: 'all'
+                            }
+                        }}/>
+                        <FaList style={styles.IconStyle}/>
+                        All
+                    </Menu.Item>
                     <Menu.Item key="/stories/category/Comedy">
                         <NavLink to={{
                             pathname: "/stories/category/Comedy",
@@ -136,8 +148,26 @@ class Sidebar extends Component {
                         <GiDramaMasks style={styles.IconStyle}/>
                         Drama
                     </Menu.Item>
-                    <Menu.Item key="13">Romance</Menu.Item>
-                    <Menu.Item key="14">Sci-Fi</Menu.Item>
+                    <Menu.Item key="/stories/category/Romance">
+                        <NavLink to={{
+                            pathname: "/stories/category/Romance",
+                            state: {
+                                query: 'Romance'
+                            }
+                        }}/>
+                        <FaHeart style={styles.IconStyle}/>
+                        Romance
+                    </Menu.Item>
+                    <Menu.Item key="/stories/category/SciFi">
+                        <NavLink to={{
+                            pathname: "/stories/category/SciFi",
+                            state: {
+                                query: 'SciFi'
+                            }
+                        }}/>
+                        <FaRobot style={styles.IconStyle}/>
+                        SciFi
+                    </Menu.Item>
                 </Menu.ItemGroup>
                 </SubMenu>
 
