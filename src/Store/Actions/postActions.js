@@ -33,6 +33,7 @@ export const submitChapter = (submission) => {
         firestore.collection('stories').doc(submission.postId).collection('submissions').doc().set({
             ...submission,
             likes: [],
+            likeCount: 0,
             author: getFirebase().auth().currentUser.displayName,
             time: new Date()
         })

@@ -67,6 +67,7 @@ class Comments extends Component {
                                 author={item.author}
                                 comment={item.content}
                                 likes={item.likes}
+                                likeCount={item.likeCount}
                                 time={item.time}
                             />
                         </li>
@@ -97,7 +98,7 @@ class Comments extends Component {
                     showArrow={false}
                 >
                     <Option value="time">New</Option>
-                    <Option value="likes">Top</Option>
+                    <Option value="likeCount">Top</Option>
                 </Select>
                 <Button style={{ marginLeft: '5px' }} onClick={this.handleSortOrder}>
                     {this.renderSortArrow()}
@@ -116,6 +117,7 @@ class Comments extends Component {
                 author: this.state.submissions[i].author,
                 content: this.state.submissions[i].content,
                 likes: this.state.submissions[i].likes,
+                likeCount: this.state.submissions[i].likeCount,
                 time: this.state.submissions[i].time.toDate()
             })
         }

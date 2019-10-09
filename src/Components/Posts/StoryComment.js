@@ -15,6 +15,17 @@ class StoryComment extends Component {
         this.userLiked = this.userLiked.bind(this)
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.id !== this.props.id){
+            this.setState({
+                amountOfLikes : 0,
+                userLiked: false
+            })
+            this.getLikeAmount()
+            this.userLiked()    
+        }
+    }
+
     componentDidMount(){
         this.getLikeAmount()
         this.userLiked()
@@ -75,7 +86,7 @@ class StoryComment extends Component {
 
     getLikeAmount(){
         this.setState({
-            amountOfLikes: this.props.likes.length
+            amountOfLikes: this.props.likeCount
         })
     }
 
@@ -92,7 +103,8 @@ class StoryComment extends Component {
                         {
                             uid: this.props.uid
                         }
-                    )
+                    ),
+                    likeCount: firebase.firestore.FieldValue.increment(1)
                 })
                 message.success('Comment Liked!')
             }else{
@@ -106,7 +118,8 @@ class StoryComment extends Component {
                         {
                             uid: this.props.uid
                         }
-                    )
+                    ),
+                    likeCount: firebase.firestore.FieldValue.increment(-1)
                 })
             }
         }else{
