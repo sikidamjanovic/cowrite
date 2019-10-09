@@ -3,7 +3,7 @@ import StoryComment from '../Posts/StoryComment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
-import { List, Select, Spin } from 'antd'
+import { List, Select, Button, Icon } from 'antd'
 
 
 class Comments extends Component {
@@ -12,8 +12,11 @@ class Comments extends Component {
         super(props)
         this.state = {
             loaded: false,
-            submissions: []
-        }
+            submissions: [],
+            sortOrder: 'desc'
+        }        
+        this.handleSort = this.handleSort.bind(this)
+        this.handleSortOrder = this.handleSortOrder.bind(this)
     }
 
     componentDidUpdate(prevState, prevProps){
@@ -22,6 +25,28 @@ class Comments extends Component {
                 loaded: true,
                 submissions: this.props.submissions
             })
+        }
+    }
+
+    handleSort(value){
+        return this.props.updateSort(value)
+    }
+
+    handleSortOrder(){
+        var order = this.props.sortOrder
+        if(order == 'desc'){
+            return this.props.updateSortOrder('asc')
+        }else{
+            return this.props.updateSortOrder('desc')
+        }
+    }
+    
+    renderSortArrow(){
+        var order = this.props.sortOrder
+        if(order == 'desc'){
+            return <Icon type="down"/>
+        }else{
+            return <Icon type="up"/>
         }
     }
 
@@ -65,11 +90,18 @@ class Comments extends Component {
         const { Option } = Select;
         return(
             <div>
-                <Select defaultValue="new" style={{ width: 80 }}>
-                    <Option value="new">New</Option>
-                    <Option value="hot">Hot</Option>
-                    <Option value="top">Top</Option>
+                <Select 
+                    defaultValue="time" 
+                    style={{ width: 80 }} 
+                    onChange={this.handleSort}
+                    showArrow={false}
+                >
+                    <Option value="time">New</Option>
+                    <Option value="likes">Top</Option>
                 </Select>
+                <Button style={{ marginLeft: '5px' }} onClick={this.handleSortOrder}>
+                    {this.renderSortArrow()}
+                </Button>
             </div>
         )
     }
@@ -79,7 +111,8 @@ class Comments extends Component {
         for (let i = 0; i < this.state.submissions.length; i++) {
             subs.push({
                 postId: this.state.submissions[i].postId,
-                id: this.props.auth.uid,
+                uid: this.props.auth.uid,
+                id: this.state.submissions[i].id,
                 author: this.state.submissions[i].author,
                 content: this.state.submissions[i].content,
                 likes: this.state.submissions[i].likes,
@@ -109,13 +142,12 @@ const mapStateToProps = (state, props) => {
 export default compose(
     connect(mapStateToProps),
     firestoreConnect(props => {
-        return [
-          {
+        return [{
             collection: 'stories',
             doc: props.id,
             subcollections: [{ collection: 'submissions'}],
+            orderBy: [props.sort, props.sortOrder],
             storeAs: 'submissions'
-          }
-        ];
+        }];
     })
 )(Comments)

@@ -59,7 +59,7 @@ class StoryComment extends Component {
                     theme="filled"
                     size="large"
                     key="heart" 
-                    style={{ color:'#cf1322' }}
+                    style={{ color:'#fa541c' }}
                 />
             )
         }else{
@@ -81,7 +81,7 @@ class StoryComment extends Component {
 
     like(){
         if (this.props.uid) {
-            if(this.state.userLiked === false){
+            if(this.state.userLiked == false){
                 this.setState({
                     userLiked: true,
                     amountOfLikes: this.state.amountOfLikes + 1

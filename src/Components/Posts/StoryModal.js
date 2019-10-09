@@ -46,12 +46,12 @@ class StoryModal extends Component {
     }
      
     goBack(){
-        // CHANGE THIS TO DOMAIN URL BEFORE DEPLOYING
-        if(document.referrer.substring(7,12) == 'local'){
-            this.props.history.goBack();
-        }else{
-            window.location.href = 'http://localhost:3000/stories/category/' + this.state.data.genre;
-        }
+        // if(document.referrer.substring(0,7) == 'cowrite'){
+        //     this.props.history.goBack();
+        // }else{
+        //     window.location.href = 'cowrite.io/stories/category/' + this.state.data.genre;
+        // }
+        this.props.history.goBack();
     }     
 
     showModal(){
@@ -91,7 +91,7 @@ class StoryModal extends Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null}
-                    width={'80%'}
+                    width={'90%'}
                     style={{ top: 0, maxHeight: '100vh', padding: 0 }}
                 >
     
@@ -112,7 +112,7 @@ class StoryModal extends Component {
                 <Modal 
                     visible={this.state.visible}
                     onCancel={this.handleCancel} 
-                    width={'80%'} 
+                    width={'90%'} 
                     footer={null} 
                     style={{ top: 0 }}
                 >

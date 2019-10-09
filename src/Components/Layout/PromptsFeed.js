@@ -41,23 +41,27 @@ class PromptsFeed extends Component {
     getPrompts(){
         const { posts } = this.props;
         if(this.state.loaded){
-            return(
-                posts.map((post,i) =>
-                        <Col id="prompt">
-                            <Prompt 
-                                key={post.id} 
-                                id={post.id} 
-                                title={post.title} 
-                                genre={post.genre}
-                                content={post.content}
-                                author={post.author}
-                                time={post.createdAt}
-                                likes={post.likes}
-                                amountOfLikes={post.likes.length}
-                            />
-                        </Col> 
+            if(this.props.posts.length > 0){
+                return(
+                    posts.map((post,i) =>
+                            <Col id="prompt">
+                                <Prompt 
+                                    key={post.id} 
+                                    id={post.id} 
+                                    title={post.title} 
+                                    genre={post.genre}
+                                    content={post.content}
+                                    author={post.author}
+                                    time={post.createdAt}
+                                    likes={post.likes}
+                                    amountOfLikes={post.likes.length}
+                                />
+                            </Col> 
+                    )
                 )
-            )
+            }else{
+                return <p>No Posts</p>
+            }
         }else{
             return(
                 <div style={{ display: 'flex', marginTop: '100px', justifyContent: 'center'}}>

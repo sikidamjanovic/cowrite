@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Button, Divider, Form } from 'antd';
+import { Input, Button, Divider, Form, message } from 'antd';
 import { connect } from 'react-redux'
 import { submitChapter } from '../../Store/Actions/postActions'
 
@@ -9,7 +9,8 @@ class SubmitChapter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            content: ''
+            content: '',
+            remainingCharacters: 2000
         }
     }
 
@@ -20,6 +21,12 @@ class SubmitChapter extends Component {
     }
 
     handleChange = (e) => {
+        if(e.target.id == 'content'){
+            var content = e.target.value.toString()
+            this.setState({
+                remainingCharacters: 2000 - content.length
+            })
+        }
         this.setState({
             [e.target.id]: e.target.value
         })
@@ -27,8 +34,11 @@ class SubmitChapter extends Component {
 
     handleSubmit = (e) =>{
         e.preventDefault();
-        console.log(this.state);
-        this.props.submitChapter(this.state)
+        if(this.state.remainingCharacters > 0){
+            this.props.submitChapter(this.state)
+        }else{
+            message.error('Chapter is too long.')
+        }
     }
 
     render() { 
@@ -41,10 +51,26 @@ class SubmitChapter extends Component {
                         className="submit-chapter-input"
                         onChange={this.handleChange}
                         placeholder="Content"
-                        autosize={{ minRows: 3, maxRows: 10 }}
+                        autosize={{ minRows: 3, maxRows: 15 }}
                     />
                 </Form.Item>
-
+                <span 
+                    style={
+                        this.state.remainingCharacters < 0 
+                            ? 
+                            { 
+                                color: '#fa541c', 
+                                opacity: 0.5
+                            } 
+                            : 
+                            { 
+                                opacity: 0.5 
+                            }
+                    }
+                >
+                    <small>{this.state.remainingCharacters} characters left</small>
+                </span>
+                <br></br>
                 <Button 
                     type="primary"
                     id="submit-chapter-button"

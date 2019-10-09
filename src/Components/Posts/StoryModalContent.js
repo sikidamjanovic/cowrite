@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
-import { BackTop, Collapse, Radio, Icon} from 'antd';
+import { Collapse, Radio, Icon} from 'antd';
 import '../../App.css'
 
 class StoryModalContent extends React.Component {
@@ -9,8 +9,12 @@ class StoryModalContent extends React.Component {
     constructor(props){
         super(props)
         this.state={
-            chapter: 1
+            chapter: 1,
+            sort: 'time',
+            sortOrder: 'desc'
         }
+        this.updateCommentSort = this.updateCommentSort.bind(this)
+        this.updateCommentSortOrder = this.updateCommentSortOrder.bind(this)
     }
 
     onChange(e) {
@@ -30,6 +34,19 @@ class StoryModalContent extends React.Component {
         )
     }
 
+    updateCommentSort(value){
+        this.setState({
+            sort: value,
+            sortOrder: 'desc'
+        })
+    }
+
+    updateCommentSortOrder(order){
+        this.setState({
+            sortOrder: order
+        })
+    }
+
     render() {
 
         const { Panel } = Collapse; 
@@ -42,7 +59,7 @@ class StoryModalContent extends React.Component {
                     bordered={false}
                     expandIcon={({ isActive }) => <Icon type="plus" rotate={isActive ? 90 : 0} />}
                 >
-                    <Panel header="Submit Chapter 5" key="1">
+                    <Panel header={"Submit Chapter " + parseInt(this.props.currentChapter)} key="1">
                         <SubmitChapter
                             id={this.props.id}
                         />
@@ -59,6 +76,10 @@ class StoryModalContent extends React.Component {
                 <Comments 
                     id={this.props.id} 
                     uid={this.props.uid}
+                    sort={this.state.sort}
+                    sortOrder={this.state.sortOrder}
+                    updateSort={this.updateCommentSort}
+                    updateSortOrder={this.updateCommentSortOrder}
                 />
             </div>
     );
