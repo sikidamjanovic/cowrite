@@ -36,7 +36,11 @@ class StoryComment extends Component {
         var currentTime = new Date()
         var diff = currentTime - postedTime
         var hours = diff / 1000 / 60 / 60
-        if(hours < 1){
+
+        if(hours >= 24){
+            return(Math.round(hours / 24) + ' days ago')
+        }
+        else if(hours < 1){
             if(hours < 0.016){
                 return 'now'
             }else{

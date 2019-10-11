@@ -21,17 +21,9 @@ class Sidebar extends Component {
     }
 
     updateWidth() {
-        if(window.innerWidth > 768){
-            this.setState({ 
-                width: window.innerWidth,
-                openKeys: ['sub1', 'sub2']
-            });
-        }else{
-            this.setState({ 
-                width: window.innerWidth,
-                openKeys: ['']
-            });
-        }
+        this.setState({ 
+            width: window.innerWidth
+        })
     }
 
     render() { 
@@ -48,7 +40,7 @@ class Sidebar extends Component {
                     left: '0',
                     zIndex: 100
                 }}
-                openKeys={this.state.openKeys}
+                {...(this.state.width > 768 ? {openKeys: ['sub1', 'sub2']} : {})}
                 selectedKeys={window.location.pathname}
                 mode={this.state.width < 768 ? 'horizontal' : 'inline'}
                 id="sidebar"

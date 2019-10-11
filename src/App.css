@@ -288,3 +288,7 @@ MAIN COMPONENT STYLING
 .ant-collapse-item-active, .ant-collapse-item{
     border-bottom: none !important;
 }
+
+.ant-menu-submenu-arrow::after,.ant-menu-submenu-arrow::before {
+    background-image: none !important
+}
