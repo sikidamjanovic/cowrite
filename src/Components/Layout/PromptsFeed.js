@@ -60,7 +60,11 @@ class PromptsFeed extends Component {
                     )
                 )
             }else{
-                return <p>No Posts</p>
+                return(
+                    <div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <p>No Posts :(</p>
+                    </div>
+                )
             }
         }else{
             return(

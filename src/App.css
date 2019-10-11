@@ -26,6 +26,31 @@ MAIN COMPONENT STYLING
 
 /* 
 ------------------
+SCROLL STYLING
+------------------
+*/
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: #171717; 
+}
+   
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #006d75; 
+}
+  
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #006d75; 
+}
+/* 
+------------------
 ** NAV STYLING ***
 ------------------
 */
@@ -41,7 +66,7 @@ MAIN COMPONENT STYLING
 
 .nav-col-right{
     display: flex;
-    justify-content: center
+    justify-content: flex-end;
 }
 
 .nav-link{
@@ -77,7 +102,7 @@ MAIN COMPONENT STYLING
 }
 
 #logo{
-    height: 20px;
+    height: 15px;
     margin-bottom: 0;
 }
 

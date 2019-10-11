@@ -34,13 +34,15 @@ class Sidebar extends Component {
                 style={this.state.width > 768 ? { 
                     height: '100vh',
                     position: 'fixed',
+                    overflowY: 'scroll',
+                    overflowX: 'hidden',
                     left: 0
                 } : {
                     position: 'fixed',
                     left: '0',
                     zIndex: 100
                 }}
-                {...(this.state.width > 768 ? {openKeys: ['sub1', 'sub2']} : {})}
+                {...(this.state.width > 768 ? {openKeys: ['sub1', 'sub2', 'sub3']} : {})}
                 selectedKeys={window.location.pathname}
                 mode={this.state.width < 768 ? 'horizontal' : 'inline'}
                 id="sidebar"
@@ -180,8 +182,7 @@ class Sidebar extends Component {
                     key="sub3"
                     title={
                         <span>
-                        <Icon type="edit" />
-                        <span>Other</span>
+                            Other
                         </span>
                     }
                 >

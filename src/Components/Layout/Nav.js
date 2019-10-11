@@ -15,7 +15,7 @@ const Nav = (props) => {
             <Menu id="navBar" mode="horizontal">
 
                 <Row className="nav-row">
-                    <Col xs={24} sm={6} className="nav-col-left">
+                    <Col xs={24} md={4} className="nav-col-left">
                         <Menu.Item key="app">
                             <NavLink to={{
                                 pathname: "/"
@@ -25,10 +25,7 @@ const Nav = (props) => {
                         </Menu.Item>
                     </Col>
 
-                    <Col xs={0} sm={4}>
-                    </Col>
-
-                    <Col xs={22} sm={10} offset={1} className="nav-col-right">
+                    <Col xs={22} md={18} offset={1} className="nav-col-right">
                         { links }
                     </Col>
                 </Row>
