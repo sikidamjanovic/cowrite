@@ -40,24 +40,35 @@ class StoriesFeed extends Component {
     getStories(){
         const { stories } = this.props;
         if(this.state.loaded){
-            return(
-                stories.map((post,i) =>
-                    <Col id="prompt">
-                        <StoryCard 
-                            key={post.id} 
-                            uid={this.props.auth.uid}
-                            id={post.id} 
-                            title={post.title} 
-                            genre={post.genre}
-                            content={post.prompt}
-                            author={post.author}
-                            time={post.createdAt}
-                            currentChapter={post.currentChapter}
-                            chapters={post.chapters}
-                        />
-                    </Col> 
+            if(this.props.stories.length > 0){
+                return(
+                    stories.map((post,i) =>
+                        <Col id="prompt">
+                            <StoryCard 
+                                key={post.id} 
+                                uid={this.props.auth.uid}
+                                id={post.id} 
+                                title={post.title} 
+                                genre={post.genre}
+                                content={post.prompt}
+                                author={post.author}
+                                time={post.createdAt}
+                                currentChapter={post.currentChapter}
+                                chapters={post.chapters}
+                            />
+                        </Col> 
+                    )
                 )
-            )
+            }else{
+                return(
+                    <div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <p style={{ textAlign: 'center' }}>
+                            No stories found :( <br></br>
+                            Like prompts to help convert them into stories!
+                        </p>
+                    </div>
+                )
+            }
         }else{
             return(
                 <div style={{ display: 'flex', marginTop: '25%', justifyContent: 'center'}}>
@@ -115,9 +126,7 @@ export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
         
-        const { getAll, sortBy } = props
-        var rawPath = window.location.pathname.split('/')
-        var query = rawPath.pop()
+        const { getAll, sortBy, query } = props
 
         if(getAll == true){
             return [

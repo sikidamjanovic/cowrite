@@ -3,7 +3,6 @@ import { Card, Icon, Avatar, Tag, Popover, Tooltip, message } from 'antd';
 import '../../App.css'
 import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
-import { firestore } from "firebase";
 var firebase = require('firebase');
 
 class Prompt extends Component {
@@ -28,34 +27,43 @@ class Prompt extends Component {
     getTime(){
         var postedTime = this.props.time
         if(postedTime){
-            const diff = this.differenceInHours(postedTime.toDate(), new Date())
-            const tooltipTitle = "The time left until this prompt possibly becomes a story"
-            if(diff > 12){
-                return(
-                    <Tooltip title={tooltipTitle}>
-                        <Tag color="#006d75">{diff + 'h Left'}</Tag>
-                    </Tooltip>
-                )
-            }else if(diff > 4){
-                return(
-                    <Tooltip title={tooltipTitle}>
-                        <Tag color="#faad14">{diff + 'h Left'}</Tag>
-                    </Tooltip>
-                )
-            }else{
-                return(
-                    <Tooltip title={tooltipTitle}>
-                        <Tag color="#cf1322">{diff + 'h Left'}</Tag>
-                    </Tooltip>
-                )
-            }
-        }else{
-            return <Tag>No Time</Tag>
-        }
-    }
 
-    differenceInHours(postedTime, currentTime){
-        return Math.round(48 - Math.abs(postedTime - currentTime) / 36e5)
+            var diffHours = Math.abs(new Date() - postedTime.toDate()) / 36e5;
+            var diffMinutes = diffHours * 60
+            var hoursLeft = 48 - diffHours
+            const tooltipTitle = "The time left until this prompt possibly becomes a story"
+            
+            console.log(diffHours)
+
+            if(hoursLeft > 12){
+                return(
+                    <Tooltip title={tooltipTitle}>
+                        <Tag color="#006d75">{Math.round(hoursLeft) + 'h Left'}</Tag>
+                    </Tooltip>
+                )
+            }else if(hoursLeft > 4){
+                return(
+                    <Tooltip title={tooltipTitle}>
+                        <Tag color="#faad14">{Math.round(hoursLeft) + 'h Left'}</Tag>
+                    </Tooltip>
+                )
+            }else if(hoursLeft > 1){
+                return(
+                    <Tooltip title={tooltipTitle}>
+                        <Tag color="#cf1322">{Math.round(hoursLeft) + 'h Left'}</Tag>
+                    </Tooltip>
+                )
+            }else if(hoursLeft <= 1) {
+                return(
+                    <Tooltip title={tooltipTitle}>
+                        <Tag color="#cf1322">{60 - Math.round(diffMinutes) + 'min Left'}</Tag>
+                    </Tooltip>
+                )
+            }else if(diffMinutes <= 0){
+                //Delete prompt after time runs out
+                getFirestore().collection('posts').doc(this.props.id).delete()
+            }
+        }
     }
 
     userLiked(){

@@ -15,15 +15,17 @@ const Nav = (props) => {
             <Menu id="navBar" mode="horizontal">
 
                 <Row className="nav-row">
-                    <Col xs={24} md={4} className="nav-col-left">
-                        <Menu.Item key="app">
-                            <NavLink to={{
-                                pathname: "/"
-                            }}>
-                                <img id="logo" src={logo} alt="logo"/>
-                            </NavLink>
-                        </Menu.Item>
-                    </Col>
+                    <NavLink to={{
+                        pathname: "/"
+                    }}> 
+                        <Col xs={24} md={4} className="nav-col-left">
+                            <Menu.Item key="app">
+    
+                                    <img id="logo" src={logo} alt="logo"/>
+
+                            </Menu.Item>
+                        </Col>
+                    </NavLink>
 
                     <Col xs={22} md={18} offset={1} className="nav-col-right">
                         { links }

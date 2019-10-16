@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Particles from 'react-particles-js'
 import { Button, Row, Col } from 'antd'
+import HelpModal from '../Common/HelpModal'
+import NewPostModal from '../Posts/NewPostModal'
 
 class PromptsFeedHeader extends Component {
     render() {
@@ -11,23 +13,12 @@ class PromptsFeedHeader extends Component {
                         <h1>PROMPTS</h1>
                         <h4>Story ideas created and voted on by users.</h4>
                     </div>
-                    <div>
-                        <Button id="feed-header-button" type="primary">Post a Prompt</Button>
-                        <Button id="feed-header-button" type="primary">?</Button>
+                    <div style={{ display: 'flex', flexDirection: 'row '}}>
+                        <NewPostModal title="New Prompt" />
+                        <HelpModal/>
                     </div>
                 </Col>
                 <Col md={14} style={{height: '100%'}}>
-                    {/* <Row style={{height: '100%'}}>
-                        <Col md={8} className="feed-header-top-posts">
-                            Top 1
-                        </Col>
-                        <Col md={8} className="feed-header-top-posts">
-                            Top 2
-                        </Col>
-                        <Col md={8} className="feed-header-top-posts">
-                            Top 3
-                        </Col>
-                    </Row> */}
                 </Col>
             </Row>
         );

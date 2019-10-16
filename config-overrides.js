@@ -21,7 +21,7 @@ module.exports = override(
             '@border-color-base': 'rgba(0, 0, 0, 0.3)',
             '@border-color-split': 'rgba(0, 0, 0, 0.3)',
             '@heading-color': '#E3E3E3',
-            '@text-color': '#E3E3E3',
+            '@text-color': 'rgba(255, 255, 255, 0.8)',
             '@text-color-secondary': 'fade(#fff, 65%)',
             '@table-selected-row-bg': '#3a3a3a',
             '@table-expanded-row-bg': '#3b3b3b',

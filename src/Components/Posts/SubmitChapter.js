@@ -10,7 +10,7 @@ class SubmitChapter extends Component {
         super(props);
         this.state = {
             content: '',
-            remainingCharacters: 2000
+            remainingCharacters: 4000
         }
     }
 
@@ -50,7 +50,6 @@ class SubmitChapter extends Component {
                         id="content"
                         className="submit-chapter-input"
                         onChange={this.handleChange}
-                        placeholder="Content"
                         autosize={{ minRows: 3, maxRows: 15 }}
                     />
                 </Form.Item>
@@ -72,14 +71,13 @@ class SubmitChapter extends Component {
                 </span>
                 <br></br>
                 <Button 
-                    type="primary"
+                    type="default"
                     id="submit-chapter-button"
                     htmlType="submit"
                 >
-                    Submit Chapter
+                    Submit
                 </Button>
                 </Form>
-                <Divider/>
             </div>
         );
     }

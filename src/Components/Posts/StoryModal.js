@@ -76,28 +76,16 @@ class StoryModal extends Component {
 
             return (
                 <Modal
-                    title={
-                        <span>
-                            <span style={{ marginRight: '20px' }}>
-                                {data.title}
-                            </span>
-                            <Tag>{4 - data.currentChapter + ' Chapters Left'}</Tag>
-                            <Button>
-                                <Icon type="plus"/>
-                                Follow
-                            </Button>
-                        </span>
-                    }
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null}
-                    width={'90%'}
-                    style={{ top: 0, maxHeight: '100vh', padding: 0 }}
+                    width={'60%'}
+                    style={{ top: 0, padding: 0 }}
                 >
-    
                     <StoryModalContent
                         id = {storyId}
                         // uid = {this.props.location.state.uid}
+                        title = {data.title}
                         author = {data.author}
                         genre = {data.genre}
                         currentChapter = {data.currentChapter}
@@ -112,11 +100,10 @@ class StoryModal extends Component {
                 <Modal 
                     visible={this.state.visible}
                     onCancel={this.handleCancel} 
-                    width={'90%'} 
+                    width={'60%'} 
                     footer={null} 
                     style={{ top: 0 }}
                 >
-                    <div style={{ height: '100vh' }}></div>
                 </Modal>
             )
         }

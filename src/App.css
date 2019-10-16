@@ -33,21 +33,24 @@ SCROLL STYLING
 /* width */
 ::-webkit-scrollbar {
     width: 5px;
+    opacity: 0.2;
   }
   
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #171717; 
+    background: #17171700;
 }
    
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #006d75; 
+    background: #ffffff1f; 
+    opacity: 0.2;
 }
   
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #006d75; 
+    opacity: 0.2;
 }
 /* 
 ------------------
@@ -228,8 +231,7 @@ SCROLL STYLING
 
 .ant-collapse-header{
     width: 180px;
-    border: 1px solid #d9d9d9;
-    color: rgba(0, 0, 0, 0.65) !important;
+    background-color: #171f22!important;
     border-radius: 4px !important; 
 }
 
@@ -244,6 +246,11 @@ SCROLL STYLING
 #submit-chapter-button{
     margin-top: 20px;
     margin-right: 20px;
+}
+
+.modal-buttons button{
+    padding: 0;
+    margin-right: 30px;
 }
 
 /* 
@@ -263,8 +270,27 @@ SCROLL STYLING
 ------------------
 */
 
+#comments{
+    background-color: #111717;
+    padding: 24px;
+}
+
 .ant-card-actions{
     background: rgba(0,0,0,0.3);
+}
+
+.modal-body{
+    background-color: #111717;
+    border-top: 1px solid rgb(16, 17, 19);
+    padding: 24px;
+}
+
+.ant-modal-body{
+    padding: 0 !important;
+}
+
+.ant-list-split, .ant-list-header{
+    border-bottom: none !important;
 }
 
 .ant-menu-item-selected{
@@ -312,8 +338,17 @@ SCROLL STYLING
 
 .ant-collapse-item-active, .ant-collapse-item{
     border-bottom: none !important;
+    background-color: #111717;
 }
 
 .ant-menu-submenu-arrow::after,.ant-menu-submenu-arrow::before {
     background-image: none !important
+}
+
+.ant-btn-link{
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.ant-menu-item, .ant-menu-submenu-title{
+    font-weight: bold;
 }

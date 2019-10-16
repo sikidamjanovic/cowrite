@@ -3,7 +3,7 @@ import StoryComment from '../Posts/StoryComment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
-import { List, Select, Button, Icon } from 'antd'
+import { List, Select, Button, Icon, Divider } from 'antd'
 
 
 class Comments extends Component {
@@ -25,6 +25,7 @@ class Comments extends Component {
                 loaded: true,
                 submissions: this.props.submissions
             })
+            return this.props.updateUid(this.props.auth.uid)
         }
     }
 
@@ -90,10 +91,11 @@ class Comments extends Component {
     getCommentSort(){
         const { Option } = Select;
         return(
-            <div>
+            <div style={{marginBottom: '20px'}}>
+                {this.state.submissions.length + ' Submissions'}
                 <Select 
                     defaultValue="time" 
-                    style={{ width: 80 }} 
+                    style={{ width: 80, marginLeft: '20px'}} 
                     onChange={this.handleSort}
                     showArrow={false}
                 >
@@ -103,6 +105,7 @@ class Comments extends Component {
                 <Button style={{ marginLeft: '5px' }} onClick={this.handleSortOrder}>
                     {this.renderSortArrow()}
                 </Button>
+                <Divider/>
             </div>
         )
     }
@@ -126,7 +129,7 @@ class Comments extends Component {
 
     render() {
         return (
-            <div>
+            <div id="comments">
                 {this.getComments()}
             </div>
         );

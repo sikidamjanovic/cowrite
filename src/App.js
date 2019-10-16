@@ -14,19 +14,21 @@ const App = () => (
             <BackTop/>
             {/* Redirect user to prompts during inital load */}
             <Route exact path="/" render={() => (
-                <Redirect to="/prompts/category/all"/>
+                <Redirect to="/prompts/all"/>
             )}/>
-            <Route path="/prompts/category/all" component={Home}/>
-            <Route path="/prompts/category/Comedy" component={Home}/>
-            <Route path="/prompts/category/Drama" component={Home}/>
-            <Route path="/prompts/category/Romance" component={Home}/>
-            <Route path="/prompts/category/SciFi" component={Home}/>
+            <Route path="/prompts/all" component={Home}/>
+            <Route path="/prompts/comedy" component={Home}/>
+            <Route path="/prompts/horror" component={Home}/>
+            <Route path="/prompts/fantasy" component={Home}/>
+            <Route path="/prompts/romance" component={Home}/>
+            <Route path="/prompts/scifi" component={Home}/>
 
-            <Route path="/stories/category/all" component={Home}/>
-            <Route path="/stories/category/Comedy" component={Home}/>
-            <Route path="/stories/category/Drama" component={Home}/>
-            <Route path="/stories/category/Romance" component={Home}/>
-            <Route path="/stories/category/SciFi" component={Home}/>
+            <Route path="/stories/all" component={Home}/>
+            <Route path="/stories/comedy" component={Home}/>
+            <Route path="/stories/horror" component={Home}/>
+            <Route path="/stories/fantasy" component={Home}/>
+            <Route path="/stories/romance" component={Home}/>
+            <Route path="/stories/scifi" component={Home}/>
             
             <Route path="/account/:id" component={Home}/>
             <Route path="/story/:id" component={StoryModal}/>

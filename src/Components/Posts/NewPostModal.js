@@ -71,7 +71,7 @@ class NewPostModal extends React.Component {
                     type="primary"
                 >
                     <Icon type="plus"/>    
-                    New Prompt
+                    {this.props.title}
                 </Button>
                 <Modal
                     title="New Prompt"
@@ -81,6 +81,7 @@ class NewPostModal extends React.Component {
                 >
 
                 {/* **** MODAL DETAILS (FORM) ****/}
+                <div style={{ padding: '24px'}}>
                     <Form onSubmit={this.handleSubmit} className="login-form">
                         <Form.Item>
                             <Input
@@ -94,7 +95,7 @@ class NewPostModal extends React.Component {
                                 id="content" 
                                 onChange={this.handleChange}
                                 rows={5}
-                                placeholder="Content"
+                                placeholder="Prompt"
                             />
                         </Form.Item>
                         <Form.Item>
@@ -109,7 +110,8 @@ class NewPostModal extends React.Component {
                                 }
                             >
                                 <Option value="Comedy">Comedy</Option>
-                                <Option value="Drama">Drama</Option>
+                                <Option value="Horror">Horror</Option>
+                                <Option value="Fantasy">Fantasy</Option>
                                 <Option value="Romance">Romance</Option>
                                 <Option value="SciFi">Sci-Fi</Option>
                             </Select>
@@ -119,9 +121,8 @@ class NewPostModal extends React.Component {
                             Post Prompt
                         </Button>
                     </Form>
-                
+                </div>
                 </Modal>
-
             </div>
     );
   }

@@ -6,6 +6,7 @@ import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import PromptsFeedHeader from '../Layout/PromptsFeedHeader'
 import '../../App.css'
+import NewPostModal from '../Posts/NewPostModal';
 
 class PromptsFeed extends Component {
 
@@ -62,7 +63,10 @@ class PromptsFeed extends Component {
             }else{
                 return(
                     <div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                        <p>No Posts :(</p>
+                        <p style={{ textAlign: 'center' }}>
+                            No prompts found :( <br></br><br></br>
+                            <NewPostModal title='Post your own prompt!'/>
+                        </p>
                     </div>
                 )
             }

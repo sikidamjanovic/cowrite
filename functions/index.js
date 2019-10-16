@@ -39,25 +39,12 @@ const evaluateLikes = ((data, id) => {
 })
 
 /*
-    1. Create a notification for all users that the post has been converted
-    2. Delete the original prompt (now a story)
+    Delete the original prompt (now a story)
 */
 const createStory = ((story, id )=> {
     return admin.firestore().collection('stories')
         .add(story)
         .then(
-            db.collection('notifications').doc().set({
-                message: story.title + ' converted to a story!',
-                post: id,
-                time: new Date().toString()
-            }),
             db.collection('posts').doc(id).delete()
         )
 })
-
-// Scheduled function test
-
-// exports.scheduledFunction =
-// functions.pubsub.schedule('every 5 seconds').onRun((context) => {
-//     console.log('This will be run every 5 seconds!');
-// })

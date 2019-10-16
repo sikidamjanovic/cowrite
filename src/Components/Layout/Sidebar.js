@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Menu, Icon } from 'antd';
+import { Menu, Icon, Divider } from 'antd';
 import { NavLink, withRouter } from 'react-router-dom'
 import { FaLaughSquint, FaHeart, FaRobot, FaList } from 'react-icons/fa'
-import { GiDramaMasks } from 'react-icons/gi'
+import { GiShardSword, GiRaiseZombie} from 'react-icons/gi'
 import '../../App.css'
 
 class Sidebar extends Component {
@@ -36,6 +36,7 @@ class Sidebar extends Component {
                     position: 'fixed',
                     overflowY: 'scroll',
                     overflowX: 'hidden',
+                    top: 15,
                     left: 0
                 } : {
                     position: 'fixed',
@@ -56,19 +57,17 @@ class Sidebar extends Component {
                         </span>
                     }
                 >
-
-                <Menu.ItemGroup key="g2" title="Categories">
-                    <Menu.Item key="/prompts/category/all">
+                    <Menu.Item key="/prompts/all">
                         <NavLink to={{
-                            pathname: "/prompts/category/all"
+                            pathname: "/prompts/all"
                         }}>
                             <FaList style={styles.IconStyle}/>
                             All
                         </NavLink>
                     </Menu.Item>
-                    <Menu.Item key="/prompts/category/Comedy">
+                    <Menu.Item key="/prompts/comedy">
                         <NavLink to={{
-                            pathname: "/prompts/category/Comedy",
+                            pathname: "/prompts/comedy",
                             state: {
                                 query: 'Comedy'
                             }
@@ -77,39 +76,56 @@ class Sidebar extends Component {
                             Comedy
                         </NavLink>
                     </Menu.Item>
-                    <Menu.Item key="/prompts/category/Drama">
+                    <Menu.Item key="/prompts/horror">
                         <NavLink to={{
-                            pathname: "/prompts/category/Drama",
+                            pathname: "/prompts/horror",
                             state: {
-                                query: 'Drama'
+                                query: 'Horror'
                             }
                         }}/>
-                        <GiDramaMasks style={styles.IconStyle}/>
-                        Drama
+                        <GiRaiseZombie style={styles.IconStyle}/>
+                        Horror
                     </Menu.Item>
-                    <Menu.Item key="/prompts/category/Romance">
+                    <Menu.Item key="/prompts/fantasy">
                         <NavLink to={{
-                            pathname: "/prompts/category/Romance",
+                            pathname: "/prompts/fantasy",
+                            state: {
+                                query: 'Fantasy'
+                            }
+                        }}/>
+                        <GiShardSword 
+                            style={styles.IconStyle}
+                        />
+                        Fantasy
+                    </Menu.Item>
+                    <Menu.Item key="/prompts/romance">
+                        <NavLink to={{
+                            pathname: "/prompts/romance",
                             state: {
                                 query: 'Romance'
                             }
                         }}/>
-                        <FaHeart style={styles.IconStyle}/>
+                        <FaHeart 
+                            style={styles.IconStyle}
+                        />
                         Romance
                     </Menu.Item>
-                    <Menu.Item key="/prompts/category/SciFi">
+                    <Menu.Item key="/prompts/scifi">
                         <NavLink to={{
-                            pathname: "/prompts/category/SciFi",
+                            pathname: "/prompts/scifi",
                             state: {
                                 query: 'SciFi'
                             }
                         }}/>
-                        <FaRobot style={styles.IconStyle}/>
+                        <FaRobot 
+                            style={styles.IconStyle} 
+                        />
                         SciFi
                     </Menu.Item>
-                </Menu.ItemGroup>
 
                 </SubMenu>
+
+                <Divider/>
 
                 {/* STORIES PART OF SIDEBAR*/}
 
@@ -122,10 +138,9 @@ class Sidebar extends Component {
                         </span>
                     }
                 >
-                <Menu.ItemGroup key="g4" title="Categories">
-                    <Menu.Item key="/stories/category/all">
+                    <Menu.Item key="/stories/all">
                         <NavLink to={{
-                            pathname: "/stories/category/all",
+                            pathname: "/stories/all",
                             state: {
                                 query: 'all'
                             }
@@ -133,39 +148,57 @@ class Sidebar extends Component {
                         <FaList style={styles.IconStyle}/>
                         All
                     </Menu.Item>
-                    <Menu.Item key="/stories/category/Comedy">
+                    <Menu.Item key="/stories/comedy">
                         <NavLink to={{
-                            pathname: "/stories/category/Comedy",
+                            pathname: "/stories/comedy",
                             state: {
                                 query: 'Comedy'
                             }
                         }}/>
-                        <FaLaughSquint style={styles.IconStyle}/>
+                        <FaLaughSquint               
+                            style={styles.IconStyle}
+                        />
                         Comedy
                     </Menu.Item>
-                    <Menu.Item key="/stories/category/Drama">
+                    <Menu.Item key="/stories/horror">
                         <NavLink to={{
-                            pathname: "/stories/category/Drama",
+                            pathname: "/stories/horror",
                             state: {
-                                query: 'Drama'
+                                query: 'Horror'
                             }
                         }}/>
-                        <GiDramaMasks style={styles.IconStyle}/>
-                        Drama
+                        <GiRaiseZombie 
+                            style={styles.IconStyle}
+                        />
+                        Horror
                     </Menu.Item>
-                    <Menu.Item key="/stories/category/Romance">
+                    <Menu.Item key="/stories/fantasy">
                         <NavLink to={{
-                            pathname: "/stories/category/Romance",
+                            pathname: "/stories/fantasy",
+                            state: {
+                                query: 'Fantasy'
+                            }
+                        }}/>
+                        <GiShardSword 
+                            style={styles.IconStyle}
+                        />
+                        Fantasy
+                    </Menu.Item>
+                    <Menu.Item key="/stories/romance">
+                        <NavLink to={{
+                            pathname: "/stories/romance",
                             state: {
                                 query: 'Romance'
                             }
                         }}/>
-                        <FaHeart style={styles.IconStyle}/>
+                        <FaHeart 
+                            style={styles.IconStyle}
+                        />
                         Romance
                     </Menu.Item>
-                    <Menu.Item key="/stories/category/SciFi">
+                    <Menu.Item key="/stories/scifi">
                         <NavLink to={{
-                            pathname: "/stories/category/SciFi",
+                            pathname: "/stories/scifi",
                             state: {
                                 query: 'SciFi'
                             }
@@ -173,43 +206,8 @@ class Sidebar extends Component {
                         <FaRobot style={styles.IconStyle}/>
                         SciFi
                     </Menu.Item>
-                </Menu.ItemGroup>
+                    
                 </SubMenu>
-
-                {/* OTHER PART OF SIDEBAR*/}
-
-                <SubMenu
-                    key="sub3"
-                    title={
-                        <span>
-                            Other
-                        </span>
-                    }
-                >
-                <Menu.ItemGroup key="g5">
-                    <Menu.Item key="/account">
-                        <NavLink to={{
-                            pathname: "/account/" + this.props.auth.displayName,
-                            state: {
-                                query: 'acount'
-                            }
-                        }}/>
-                        <FaLaughSquint style={styles.IconStyle}/>
-                        Account
-                    </Menu.Item>
-                    <Menu.Item key="/about">
-                        <NavLink to={{
-                            pathname: "/about",
-                            state: {
-                                query: 'about'
-                            }
-                        }}/>
-                        <FaLaughSquint style={styles.IconStyle}/>
-                        About
-                    </Menu.Item>
-                </Menu.ItemGroup>
-                </SubMenu>
-
 
             </Menu>        
         );
@@ -218,7 +216,8 @@ class Sidebar extends Component {
 
 const styles = {
     IconStyle: {
-        marginRight: '20px'
+        marginRight: '20px',
+        fontSize: '1.2em'
     }
 }
  
