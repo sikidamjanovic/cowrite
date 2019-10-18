@@ -92,6 +92,7 @@ class StoryModal extends Component {
                         prompt = {data.prompt}
                         time = {data.time}
                         likes = {data.likes}
+                        saves = {data.saves}
                     />      
                 </Modal>
             );

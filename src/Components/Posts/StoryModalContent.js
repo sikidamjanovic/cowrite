@@ -18,7 +18,8 @@ class StoryModalContent extends React.Component {
             uid: '',
             likes: [],
             amountOfLikes: 0,
-            userLiked: false
+            userLiked: false,
+            userSaved: false
         }
         this.updateCommentSort = this.updateCommentSort.bind(this)
         this.updateCommentSortOrder = this.updateCommentSortOrder.bind(this)
@@ -26,6 +27,8 @@ class StoryModalContent extends React.Component {
         this.openSubmitPanel = this.openSubmitPanel.bind(this)
         this.like = this.like.bind(this)
         this.userLiked = this.userLiked.bind(this)
+        this.save = this.save.bind(this)
+        this.userSaved = this.userSaved.bind(this)
     }
 
     componentDidMount(){
@@ -33,6 +36,7 @@ class StoryModalContent extends React.Component {
             amountOfLikes: this.props.likes.length
         })
         this.userLiked()
+        this.userSaved()
     }
 
     onChange(e) {
@@ -178,6 +182,90 @@ class StoryModalContent extends React.Component {
         }
     }
 
+    save(){
+        if (this.props.auth.isEmpty == false) {
+            if(this.state.userSaved == false){
+                this.setState({
+                    userSaved: true
+                })
+                getFirestore().collection('stories').doc(this.props.id).update({
+                    saves: firebase.firestore.FieldValue.arrayUnion(
+                        {
+                            uid: this.props.auth.uid
+                        }
+                    )
+                })
+                getFirestore().collection('users').doc(this.props.auth.displayName).collection('saved').doc().set({
+                    type: 'story',
+                    postId: this.props.id,
+                    author: this.props.author,
+                    content: this.props.prompt,
+                    genre: this.props.genre,
+                    title: this.props.title
+                })
+                message.success('Story saved!')
+            }else{
+                this.setState({
+                    userSaved: false
+                })
+                // Delete user from posts 'likes' collection
+                getFirestore().collection('stories').doc(this.props.id).update({
+                    saves: firebase.firestore.FieldValue.arrayRemove(
+                        {
+                            uid: this.props.auth.uid
+                        }
+                    )
+                })
+                // Delete post from users 'liked' collection
+                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('saved').where('postId','==',this.props.id)
+                delete_query.get().then(function(querySnapshot){
+                    querySnapshot.forEach(function(doc){
+                        doc.ref.delete();
+                    })
+                })
+            }
+        }else{
+            message.warning('Please login or sign up to save stories.')
+        } 
+    }
+
+    userSaved(){
+        const saves = this.props.saves
+        for (let i = 0; i < saves.length; i++) {
+            if(saves[i].uid === this.props.auth.uid){
+                this.setState({
+                    userSaved: true
+                })
+            }else{
+                this.setState({
+                    userSaved: false
+                })
+            }
+        }
+    }
+
+    renderSaveIcon(){
+        if(this.state.userSaved){
+            return(
+                <Icon 
+                    type="save"
+                    theme="filled"
+                    size="large"
+                    key="save" 
+                    style={{ color:'rgba(255, 255, 255, 0.4)' }}
+                />
+            )
+        }else{
+            return(
+                <Icon 
+                    type="save" 
+                    key="save" 
+                    style={{ color:'rgba(255, 255, 255, 0.4)' }}
+                />
+            )
+        }
+    }
+
     render() { 
 
         return (
@@ -210,9 +298,11 @@ class StoryModalContent extends React.Component {
                             </span>
                         </Button>
 
-                        <Button type="link">
-                            <Icon type="save"/>
-                            <small style={{ marginLeft: '5px' }}>  Save</small>
+                        <Button type="link" onClick={this.save}>
+                            {this.renderSaveIcon()}
+                            <small style={{ marginLeft: '5px' }}>
+                                {this.state.userSaved ? ' Saved' : 'Save'}
+                            </small>
                         </Button>
 
                         <Button type="link">

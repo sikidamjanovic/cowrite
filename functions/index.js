@@ -32,7 +32,8 @@ const evaluateLikes = ((data, id) => {
             createdAt: new Date(),
             currentChapter: 1,
             likes: [],
-            likeCount: 0
+            likeCount: 0,
+            saves: []
         }
         return createStory(story, id)
     }else{

@@ -56,6 +56,7 @@ class StoriesFeed extends Component {
                                 currentChapter={post.currentChapter}
                                 chapters={post.chapters}
                                 likes={post.likes}
+                                saves={post.saves}
                             />
                         </Col> 
                     )

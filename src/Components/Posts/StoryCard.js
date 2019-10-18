@@ -12,10 +12,13 @@ class StoryCard extends Component {
         this.state = {
             likes: [],
             amountOfLikes: 0,
-            userLiked: false
+            userLiked: false,
+            userSaved: false
         }
         this.like = this.like.bind(this)
+        this.save = this.save.bind(this)
         this.userLiked = this.userLiked.bind(this)
+        this.userSaved = this.userSaved.bind(this)
     }
 
     componentDidMount(){
@@ -23,6 +26,7 @@ class StoryCard extends Component {
             amountOfLikes: this.props.likes.length
         })
         this.userLiked()
+        this.userSaved()
     }
 
     like(){
@@ -49,6 +53,7 @@ class StoryCard extends Component {
                     title: this.props.title,
                     time: this.props.time
                 })
+                message.success('Story liked!')
             }else{
                 this.setState({
                     userLiked: false,
@@ -74,6 +79,69 @@ class StoryCard extends Component {
         }else{
             message.warning('Please login or sign up to like prompts')
         } 
+    }
+
+    save(){
+        if (this.props.auth.isEmpty === false) {
+            if(this.state.userSaved === false){
+                this.setState({
+                    userSaved: true
+                })
+                getFirestore().collection('stories').doc(this.props.id).update({
+                    saves: firebase.firestore.FieldValue.arrayUnion(
+                        {
+                            uid: this.props.auth.uid
+                        }
+                    )
+                })
+                getFirestore().collection('users').doc(this.props.auth.displayName).collection('saved').doc().set({
+                    type: 'story',
+                    postId: this.props.id,
+                    author: this.props.author,
+                    content: this.props.content,
+                    genre: this.props.genre,
+                    title: this.props.title,
+                    time: this.props.time
+                })
+                message.success('Story saved!')
+            }else{
+                this.setState({
+                    userSaved: false
+                })
+                // Delete user from posts 'likes' collection
+                getFirestore().collection('stories').doc(this.props.id).update({
+                    saves: firebase.firestore.FieldValue.arrayRemove(
+                        {
+                            uid: this.props.auth.uid
+                        }
+                    )
+                })
+                // Delete post from users 'liked' collection
+                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('saved').where('postId','==',this.props.id)
+                delete_query.get().then(function(querySnapshot){
+                    querySnapshot.forEach(function(doc){
+                        doc.ref.delete();
+                    })
+                })
+            }
+        }else{
+            message.warning('Please login or sign up to save stories.')
+        } 
+    }
+
+    userSaved(){
+        const saves = this.props.saves
+        for (let i = 0; i < saves.length; i++) {
+            if(saves[i].uid === this.props.auth.uid){
+                this.setState({
+                    userSaved: true
+                })
+            }else{
+                this.setState({
+                    userSaved: false
+                })
+            }
+        }
     }
 
     userLiked(){
@@ -113,6 +181,28 @@ class StoryCard extends Component {
         }
     }
 
+    renderSaveIcon(){
+        if(this.state.userSaved){
+            return(
+                <Icon 
+                    type="save"
+                    theme="filled"
+                    size="large"
+                    key="save" 
+                    style={{ color:'white' }}
+                />
+            )
+        }else{
+            return(
+                <Icon 
+                    type="save" 
+                    key="save" 
+                    style={{ color:'white' }}
+                />
+            )
+        }
+    }
+
     render() {
         const { Meta } = Card;
         return (
@@ -124,8 +214,8 @@ class StoryCard extends Component {
                                     {this.state.amountOfLikes}
                                 </span>
                             </button>,
-                            <button id="cardActionBtn">
-                                <Icon type="book" key="book" />
+                            <button id="cardActionBtn" onClick={this.save}>
+                                {this.renderSaveIcon()}
                             </button>,
                             <Tooltip title="Report this prompt">
                                 <button id="cardActionBtn">
