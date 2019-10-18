@@ -30,7 +30,9 @@ const evaluateLikes = ((data, id) => {
             genre: data.genre,
             title: data.title,
             createdAt: new Date(),
-            currentChapter: 1
+            currentChapter: 1,
+            likes: [],
+            likeCount: 0
         }
         return createStory(story, id)
     }else{

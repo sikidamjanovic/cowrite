@@ -18,7 +18,7 @@ const Nav = (props) => {
                     <NavLink to={{
                         pathname: "/"
                     }}> 
-                        <Col xs={24} md={4} className="nav-col-left">
+                        <Col xs={24} md={3} className="nav-col-left">
                             <Menu.Item key="app">
     
                                     <img id="logo" src={logo} alt="logo"/>
@@ -27,7 +27,7 @@ const Nav = (props) => {
                         </Col>
                     </NavLink>
 
-                    <Col xs={22} md={18} offset={1} className="nav-col-right">
+                    <Col xs={22} md={19} offset={1} className="nav-col-right">
                         { links }
                     </Col>
                 </Row>

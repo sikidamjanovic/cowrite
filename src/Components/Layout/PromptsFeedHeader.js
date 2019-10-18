@@ -10,12 +10,18 @@ class PromptsFeedHeader extends Component {
             <Row type="flex" align="middle" id="feed-header-container">
                 <Col md={10}>
                     <div id="feed-header-text">
-                        <h1>PROMPTS</h1>
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '10px'}}>
+                            <h1 style={{ marginRight: '10px', marginBottom: 0}}>PROMPTS</h1>
+                            <HelpModal/>
+                        </div>
                         <h4>Story ideas created and voted on by users.</h4>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'row '}}>
-                        <NewPostModal title="New Prompt" />
-                        <HelpModal/>
+                        {this.props.loggedIn ? 
+                            <NewPostModal title="New Prompt" />   
+                            :
+                            ''
+                        }
                     </div>
                 </Col>
                 <Col md={14} style={{height: '100%'}}>

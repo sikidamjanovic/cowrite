@@ -46,7 +46,7 @@ class StoriesFeed extends Component {
                         <Col id="prompt">
                             <StoryCard 
                                 key={post.id} 
-                                uid={this.props.auth.uid}
+                                auth={this.props.auth}
                                 id={post.id} 
                                 title={post.title} 
                                 genre={post.genre}
@@ -55,6 +55,7 @@ class StoriesFeed extends Component {
                                 time={post.createdAt}
                                 currentChapter={post.currentChapter}
                                 chapters={post.chapters}
+                                likes={post.likes}
                             />
                         </Col> 
                     )

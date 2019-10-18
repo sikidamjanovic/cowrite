@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import StoryModalContent from './StoryModalContent'
 import { Modal, Button, Icon, Tag } from 'antd';
+import { connect } from 'react-redux'
 import { getFirestore } from 'redux-firestore'
 
 class StoryModal extends Component {
@@ -28,8 +29,6 @@ class StoryModal extends Component {
             that.setState({
                 data: doc.data()
             })
-            console.log('HERE', storyId)
-            console.log('HEY!!!', doc.data())
         }).catch(function(error){
             that.setState({
                 error: true
@@ -66,7 +65,7 @@ class StoryModal extends Component {
         });
         this.goBack()
     }
-
+    
     render() {
         if(this.state.loaded){
 
@@ -84,7 +83,7 @@ class StoryModal extends Component {
                 >
                     <StoryModalContent
                         id = {storyId}
-                        // uid = {this.props.location.state.uid}
+                        auth = {this.props.auth}
                         title = {data.title}
                         author = {data.author}
                         genre = {data.genre}
@@ -92,6 +91,7 @@ class StoryModal extends Component {
                         chapters = {data.chapters}
                         prompt = {data.prompt}
                         time = {data.time}
+                        likes = {data.likes}
                     />      
                 </Modal>
             );
@@ -110,4 +110,11 @@ class StoryModal extends Component {
     }
 }
 
-export default StoryModal;
+const mapStateToProps = (state, props) => {
+    return {
+        auth: state.firebase.auth
+    }
+}
+
+
+export default connect(mapStateToProps)(StoryModal);

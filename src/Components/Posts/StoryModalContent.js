@@ -1,8 +1,11 @@
 import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
-import { Radio, Button, Icon, Tag, Divider} from 'antd';
+import { Radio, Button, Icon, Tag, Divider, message} from 'antd';
+import { getFirestore } from "redux-firestore";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import '../../App.css'
+var firebase = require('firebase');
 
 class StoryModalContent extends React.Component {
 
@@ -12,12 +15,24 @@ class StoryModalContent extends React.Component {
             chapter: 1,
             sort: 'time',
             sortOrder: 'desc',
-            uid: ''
+            uid: '',
+            likes: [],
+            amountOfLikes: 0,
+            userLiked: false
         }
         this.updateCommentSort = this.updateCommentSort.bind(this)
         this.updateCommentSortOrder = this.updateCommentSortOrder.bind(this)
         this.updateUid = this.updateUid.bind(this)
         this.openSubmitPanel = this.openSubmitPanel.bind(this)
+        this.like = this.like.bind(this)
+        this.userLiked = this.userLiked.bind(this)
+    }
+
+    componentDidMount(){
+        this.setState({
+            amountOfLikes: this.props.likes.length
+        })
+        this.userLiked()
     }
 
     onChange(e) {
@@ -75,6 +90,94 @@ class StoryModalContent extends React.Component {
         }
     }
 
+    like(){
+        if (this.props.auth.isEmpty === false) {
+            if(this.state.userLiked == false){
+                this.setState({
+                    userLiked: true,
+                    amountOfLikes: this.state.amountOfLikes + 1
+                })
+                getFirestore().collection('stories').doc(this.props.id).update({
+                    likes: firebase.firestore.FieldValue.arrayUnion(
+                        {
+                            uid: this.props.auth.uid
+                        }
+                    ),
+                    likeCount: firebase.firestore.FieldValue.increment(1)
+                })
+                getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').doc().set({
+                    type: 'story',
+                    postId: this.props.id,
+                    author: this.props.author,
+                    content: this.props.prompt,
+                    genre: this.props.genre,
+                    title: this.props.title
+                })
+                message.success('Story Liked!')
+            }else{
+                this.setState({
+                    userLiked: false,
+                    amountOfLikes: this.state.amountOfLikes - 1
+                })
+                // Delete user from posts 'likes' collection
+                getFirestore().collection('stories').doc(this.props.id).update({
+                    likes: firebase.firestore.FieldValue.arrayRemove(
+                        {
+                            uid: this.props.auth.uid
+                        }
+                    ),
+                    likeCount: firebase.firestore.FieldValue.increment(-1)
+                })
+                // Delete post from users 'liked' collection
+                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').where('postId','==',this.props.id)
+                delete_query.get().then(function(querySnapshot){
+                    querySnapshot.forEach(function(doc){
+                        doc.ref.delete();
+                    })
+                })
+            }
+        }else{
+            message.warning('Please login or sign up to like prompts')
+        } 
+    }
+
+    userLiked(){
+        const likes = this.props.likes
+        for (let i = 0; i < likes.length; i++) {
+            if(likes[i].uid === this.props.auth.uid){
+                this.setState({
+                    userLiked: true
+                })
+            }else{
+                this.setState({
+                    userLiked: false
+                })
+            }
+        }
+    }
+
+    renderHeart(){
+        if(this.state.userLiked){
+            return(
+                <Icon 
+                    type="heart"
+                    theme="filled"
+                    size="large"
+                    key="heart" 
+                    style={{ color:'#cf1322' }}
+                />
+            )
+        }else{
+            return(
+                <Icon 
+                    type="heart" 
+                    key="heart" 
+                    style={{ color:'white' }}
+                />
+            )
+        }
+    }
+
     render() { 
 
         return (
@@ -100,14 +203,11 @@ class StoryModalContent extends React.Component {
                             Submit Chapter
                         </Button>
 
-                        <Button type="link">
-                            <Icon type="heart"></Icon>
-                            <small style={{ marginLeft: '5px' }}> Like</small>
-                        </Button>
-
-                        <Button type="link">
-                            <Icon type="plus-circle"/>
-                            <small style={{ marginLeft: '5px' }}>  Follow</small>
+                        <Button type="link" onClick={this.like}>
+                            {this.renderHeart()}
+                            <span id="likes">
+                                {this.state.amountOfLikes}
+                            </span>
                         </Button>
 
                         <Button type="link">
@@ -120,10 +220,14 @@ class StoryModalContent extends React.Component {
                             <small style={{ marginLeft: '5px' }}>  Report</small>
                         </Button>
 
-                        <Button type="link">
-                            <Icon type="share-alt"/>
-                            <small style={{ marginLeft: '5px' }}>  Share</small>
-                        </Button>
+                        <CopyToClipboard text={window.location.href}
+                            onCopy={() => message.success('Link copied to clipboard')}
+                        >
+                            <Button type="link">
+                                <Icon type="share-alt"/>
+                                <small style={{ marginLeft: '5px' }}>  Share</small>
+                            </Button>
+                        </CopyToClipboard>
                     </div>
 
                     {this.renderSubmitHeader()}

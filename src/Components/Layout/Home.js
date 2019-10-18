@@ -50,7 +50,7 @@ class Home extends Component {
     showRelevantFeed(){
         if(window.location.pathname.slice(1,8) == 'prompts'){
             return <PromptsFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
-        }else if(window.location.pathname.slice(1,8) == 'account'){
+        }else if(window.location.pathname.slice(1,8) == 'profile'){
             return <UserProfile auth={this.props.auth} isOwnProfile={true}/>
         }else{
             return <StoriesFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
@@ -62,10 +62,10 @@ class Home extends Component {
             <div>
             <div id="home">
                 <Row>
-                    <Col xs={24} md={4}>
+                    <Col xs={24} md={3}>
                         <Sidebar auth={this.props.auth} query={this.updateQuery}/>
                     </Col>
-                    <Col xs={22} md={18} offset={1}  id="feed-container">
+                    <Col xs={22} md={19} offset={1}  id="feed-container">
                         {this.showRelevantFeed()}
                     </Col>
                 </Row>

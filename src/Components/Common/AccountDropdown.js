@@ -13,9 +13,10 @@ class AccountDropdown extends Component {
                 </Menu.Item>
                 <Menu.Item>
                     <NavLink to={{
-                        pathname: "/account/"
-                    }}/>
-                    Profile
+                        pathname: "/profile"
+                    }}>
+                        Profile
+                    </NavLink>
                 </Menu.Item>
             </Menu>
         )

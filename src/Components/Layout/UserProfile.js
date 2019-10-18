@@ -7,6 +7,12 @@ import { firestoreConnect } from 'react-redux-firebase'
 
 class UserProfile extends Component {
 
+    // getProfilePic(){
+    //     // const firebase = useFirebase()
+    //     console.log('cunt: ', firebase)
+    //     return({size: 'large', src: 'https://avatars1.githubusercontent.com/u/8186664?s=460&v=4'})
+    // }
+
     isOwnProfile(){
         if(this.props.isOwnProfile){
             return(
@@ -14,7 +20,7 @@ class UserProfile extends Component {
                     <PageHeader 
                         title={this.props.auth.displayName}
                         subTitle={this.numberOfPosts()}
-                        avatar={{ size: 'large', src: 'https://avatars1.githubusercontent.com/u/8186664?s=460&v=4' }}
+                        avatar={this.getProfilePic()}
                     />
                     <PageHeader 
                         title="Your Posts"

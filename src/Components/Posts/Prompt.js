@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Card, Icon, Avatar, Tag, Popover, Tooltip, message } from 'antd';
 import '../../App.css'
 import { connect } from 'react-redux'
@@ -22,6 +22,7 @@ class Prompt extends Component {
         this.setState({
             amountOfLikes: this.props.amountOfLikes
         })
+        this.userLiked()
     }
 
     getTime(){
@@ -29,11 +30,9 @@ class Prompt extends Component {
         if(postedTime){
 
             var diffHours = Math.abs(new Date() - postedTime.toDate()) / 36e5;
-            var diffMinutes = diffHours * 60
             var hoursLeft = 48 - diffHours
+            var minutesLeft = hoursLeft * 60
             const tooltipTitle = "The time left until this prompt possibly becomes a story"
-            
-            console.log(diffHours)
 
             if(hoursLeft > 12){
                 return(
@@ -53,13 +52,13 @@ class Prompt extends Component {
                         <Tag color="#cf1322">{Math.round(hoursLeft) + 'h Left'}</Tag>
                     </Tooltip>
                 )
-            }else if(hoursLeft <= 1) {
+            }else if(hoursLeft > 0) {
                 return(
                     <Tooltip title={tooltipTitle}>
-                        <Tag color="#cf1322">{60 - Math.round(diffMinutes) + 'min Left'}</Tag>
+                        <Tag color="#cf1322">{60 - Math.round(minutesLeft) + 'min Left'}</Tag>
                     </Tooltip>
                 )
-            }else if(diffMinutes <= 0){
+            }else if(minutesLeft <= 0){
                 //Delete prompt after time runs out
                 getFirestore().collection('posts').doc(this.props.id).delete()
             }
@@ -69,7 +68,7 @@ class Prompt extends Component {
     userLiked(){
         const likes = this.props.likes
         for (let i = 0; i < likes.length; i++) {
-            if(likes[i].uid == this.props.auth.uid){
+            if(likes[i].uid == this.props.uid){
                 this.setState({
                     userLiked: true
                 })

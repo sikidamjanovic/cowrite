@@ -65,7 +65,7 @@ class PromptsFeed extends Component {
                     <div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                         <p style={{ textAlign: 'center' }}>
                             No prompts found :( <br></br><br></br>
-                            <NewPostModal title='Post your own prompt!'/>
+                            {this.props.auth.isEmpty ? '' : <NewPostModal title='Post your own prompt!'/>}
                         </p>
                     </div>
                 )
@@ -84,7 +84,7 @@ class PromptsFeed extends Component {
         return (
             <div>
                 <Row>
-                    <PromptsFeedHeader/>
+                    <PromptsFeedHeader loggedIn={this.props.auth.isEmpty ? false : true}/>
                     <div id="feed-header">
                         <div id="breadcrumb-container">
                             <Breadcrumb>
