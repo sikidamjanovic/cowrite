@@ -25,7 +25,7 @@ class Comments extends Component {
                 loaded: true,
                 submissions: this.props.submissions
             })
-            return this.props.updateUid(this.props.auth.uid)
+            return this.props.getSubmissions(this.props.auth.uid, this.props.submissions)
         }
     }
 
@@ -151,6 +151,9 @@ export default compose(
             collection: 'stories',
             doc: props.id,
             subcollections: [{ collection: 'submissions'}],
+            where: [
+                ['chapter', '==', props.chapter]
+            ],
             orderBy: [props.sort, props.sortOrder],
             storeAs: 'submissions'
         }];

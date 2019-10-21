@@ -16,7 +16,8 @@ class SubmitChapter extends Component {
 
     componentDidMount(){
         this.setState({
-            postId: this.props.id
+            postId: this.props.id,
+            chapter: this.props.chapter
         })
     }
 

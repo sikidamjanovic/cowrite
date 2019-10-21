@@ -19,12 +19,16 @@ class StoryModalContent extends React.Component {
             likes: [],
             amountOfLikes: 0,
             userLiked: false,
-            userSaved: false
+            userSaved: false,
+            submissions: [],
+            selectedChapter: 1
         }
+        this.getSelectedChapter = this.getSelectedChapter.bind(this)
         this.updateCommentSort = this.updateCommentSort.bind(this)
         this.updateCommentSortOrder = this.updateCommentSortOrder.bind(this)
-        this.updateUid = this.updateUid.bind(this)
+        this.getSubmissions = this.getSubmissions.bind(this)
         this.openSubmitPanel = this.openSubmitPanel.bind(this)
+        this.onChange = this.onChange.bind(this)
         this.like = this.like.bind(this)
         this.userLiked = this.userLiked.bind(this)
         this.save = this.save.bind(this)
@@ -40,8 +44,36 @@ class StoryModalContent extends React.Component {
         this.getDisabledRadios()
     }
 
+    componentDidUpdate(prevProps, prevState){
+        if(prevState.submissions !== this.state.submissions){
+            this.getTopSubmission()
+        }
+    }
+
     onChange(e) {
-        console.log(`radio checked:${e.target.value}`);
+        this.getSelectedChapter(e.target.value)
+    }
+
+    getSelectedChapter(chapter){
+        this.setState({
+            selectedChapter: chapter
+        })
+    }
+
+    getComments(){
+        return(
+            <Comments
+                id={this.props.id}
+                uid={this.state.uid}
+                chapter={this.state.selectedChapter}
+                sort={this.state.sort}
+                sortOrder={this.state.sortOrder}
+                updateSort={this.updateCommentSort}
+                updateSortOrder={this.updateCommentSortOrder}
+                submissions={this.state.submissions}
+                getSubmissions={this.getSubmissions}
+            />
+        )
     }
 
     getEnabledRadios(){
@@ -70,7 +102,7 @@ class StoryModalContent extends React.Component {
 
             disabled.push(
                 <Tooltip title={'Chapter ' + i + ' submissions start on ' + submissionDate}>
-                    <Radio.Button style={{marginRight: '10px'}} disabled={true} value={i}>{i}</Radio.Button>
+                    <Radio.Button style={{marginRight: '10px'}} disabled={false} value={i}>{i}</Radio.Button>
                 </Tooltip>
             )
         }
@@ -100,10 +132,42 @@ class StoryModalContent extends React.Component {
         })
     }
 
-    updateUid(uid){
+    getSubmissions(uid, submissions){
         this.setState({
-            uid: uid 
+            uid: uid,
+            submissions: submissions
         })
+    }
+
+    getTopSubmission(){
+        var submissions = this.state.submissions
+        var equalAmountOfLikes = []
+
+        // Sort submissions by like count
+        submissions.sort(function(a, b){
+            return b.likeCount - a.likeCount
+        })
+        // If top likes are equal, push to array
+        if(submissions.length > 1){
+            for (let i = 0; i < submissions.length; i++) {
+                if(submissions[i].likeCount === submissions[i+1].likeCount){
+                    equalAmountOfLikes.push(submissions[i])
+                    equalAmountOfLikes.push(submissions[i+1])
+                }else{
+                    break
+                }
+            }
+        }
+        // If there is equal likes, sort by newest submission, if not return top liked
+        if(equalAmountOfLikes.length > 0){
+            equalAmountOfLikes.sort(function(a,b){
+                return b.time.toDate() - a.time.toDate()
+            })
+            return equalAmountOfLikes[0]
+        }else{
+            return submissions[0]
+        }
+
     }
 
     openSubmitPanel(){
@@ -117,6 +181,7 @@ class StoryModalContent extends React.Component {
             return(
                 <SubmitChapter
                     id={this.props.id}
+                    chapter={this.props.currentChapter}
                 />
             )
         }
@@ -395,15 +460,9 @@ class StoryModalContent extends React.Component {
                     <br></br><br></br>
                     {this.renderChapterRadios()}
                 </div>
-                <Comments 
-                    id={this.props.id}
-                    uid={this.state.uid}
-                    updateUid={this.updateUid}
-                    sort={this.state.sort}
-                    sortOrder={this.state.sortOrder}
-                    updateSort={this.updateCommentSort}
-                    updateSortOrder={this.updateCommentSortOrder}
-                />
+
+                {this.getComments()}
+
             </div>
     );
   }
