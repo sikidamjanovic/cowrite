@@ -165,9 +165,6 @@ class Prompt extends Component {
                     <button id="cardActionBtn">
                         <Icon type="book" key="book" />
                     </button>,
-                    <button id="cardActionBtn">
-                        <Icon type="user" key="user" />
-                    </button>,
                     <Tooltip title="Report this prompt">
                         <button id="cardActionBtn">
                             <Icon type="warning" key="warning" />

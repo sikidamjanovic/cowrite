@@ -90,7 +90,10 @@ class StoryModal extends Component {
                         currentChapter = {data.currentChapter}
                         chapters = {data.chapters}
                         prompt = {data.prompt}
-                        time = {data.time}
+                        createdAt = {data.createdAt}
+                        chapter2 = {data.chapter2}
+                        chapter3 = {data.chapter3}
+                        chapter4 = {data.chapter4}
                         likes = {data.likes}
                         saves = {data.saves}
                     />      

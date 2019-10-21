@@ -1,7 +1,7 @@
 import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
-import { Radio, Button, Icon, Tag, Divider, message} from 'antd';
+import { Radio, Button, Icon, Tag, Divider, message, Tooltip} from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import '../../App.css'
@@ -37,24 +37,52 @@ class StoryModalContent extends React.Component {
         })
         this.userLiked()
         this.userSaved()
+        this.getDisabledRadios()
     }
 
     onChange(e) {
         console.log(`radio checked:${e.target.value}`);
     }
 
+    getEnabledRadios(){
+        var current = this.props.currentChapter
+        var enabled = []
+        for (let i = 1; i <= current; i++) {
+            enabled.push(<Radio.Button style={{marginRight: '10px'}} value={i}>{i}</Radio.Button>)
+        }
+        return enabled
+    }
+
+    getDisabledRadios(){
+        var current = this.props.currentChapter
+        var disabled = []
+        var submissionDate = ''
+
+        for (let i = current + 1; i <= 4; i++) {
+
+            if(i == 2){
+                submissionDate = this.props.chapter2.toDate()
+            }else if(i == 3){
+                submissionDate = this.props.chapter3.toDate()
+            }else if(i == 4){
+                submissionDate = this.props.chapter4.toDate()
+            }
+
+            disabled.push(
+                <Tooltip title={'Chapter ' + i + ' submissions start on ' + submissionDate}>
+                    <Radio.Button style={{marginRight: '10px'}} disabled={true} value={i}>{i}</Radio.Button>
+                </Tooltip>
+            )
+        }
+        return disabled
+    }
+
     renderChapterRadios(){
         var current = this.props.currentChapter
-        var map = new Array(current).fill(null).map( (x,i) => i + 1 )
-        const buttons = map.map((i) => 
-            <Radio.Button style={{marginRight: '10px'}} value='1'>{i}</Radio.Button>
-        );
         return(
-            <Radio.Group onChange={this.onChange} defaultValue={current.toString()} size="large" buttonStyle="solid">
-                {buttons}
-                <Radio.Button style={{marginRight: '10px'}} disabled={true} value='2'>2</Radio.Button>
-                <Radio.Button style={{marginRight: '10px'}} disabled={true} value='3'>3</Radio.Button>
-                <Radio.Button style={{marginRight: '10px'}} disabled={true} value='4'>4</Radio.Button>
+            <Radio.Group onChange={this.onChange} defaultValue={current} size="large" buttonStyle="solid">
+                {this.getEnabledRadios()}
+                {this.getDisabledRadios()}
             </Radio.Group>
         )
     }
@@ -176,7 +204,7 @@ class StoryModalContent extends React.Component {
                 <Icon 
                     type="heart" 
                     key="heart" 
-                    style={{ color:'white' }}
+                    style={{ color:'rgba(255, 255, 255, 0.4)' }}
                 />
             )
         }
@@ -266,6 +294,38 @@ class StoryModalContent extends React.Component {
         }
     }
 
+    timeLeftForSubmission(){
+        var currentChapter = this.props.currentChapter
+        var currentTime = new Date() 
+        var diffHours = String
+
+        if(currentChapter === 1){
+            diffHours = Math.abs(currentTime - this.props.createdAt.toDate()) / 36e5
+        }else if(currentChapter === 2){
+            diffHours = Math.abs(currentTime - this.props.chapter2.toDate()) / 36e5
+        }else if(currentChapter === 3){
+            diffHours = Math.abs(currentTime - this.props.chapter3.toDate()) / 36e5
+        }else if(currentChapter === 4){
+            diffHours = Math.abs(currentTime - this.props.chapter4.toDate()) / 36e5
+        }
+
+        var hoursLeft = 48 - diffHours
+        var minutesLeft = hoursLeft * 60
+
+        if(hoursLeft > 12){
+            return <Tag color='#171f22'>{Math.round(hoursLeft) + 'h Left'}</Tag>
+        }else if(hoursLeft > 4){
+            return <Tag color='#171f22'>{Math.round(hoursLeft) + 'h Left'}</Tag>
+        }else if(hoursLeft > 1){
+            return <Tag color="#cf1322">{Math.round(hoursLeft) + 'h Left'}</Tag>
+        }else if(hoursLeft > 0) {
+            return <Tag color="#cf1322">{60 - Math.round(minutesLeft) + 'min Left'}</Tag>
+        }else if(minutesLeft <= 0){
+            // TODO: convert to next chapter
+        }
+
+    }
+
     render() { 
 
         return (
@@ -323,12 +383,15 @@ class StoryModalContent extends React.Component {
                     {this.renderSubmitHeader()}
                     <Divider/>
                     <small>Chapters </small>
+
                     <Tag 
-                        style={{ marginLeft: '10px' }}
+                        style={{ marginLeft: '10px', marginRight: '10px' }}
                         color='#171f22'
                     >
-                        3 left
+                        {(4 - this.props.currentChapter) + ' left'}
                     </Tag>
+                    
+                    {this.timeLeftForSubmission()}
                     <br></br><br></br>
                     {this.renderChapterRadios()}
                 </div>
