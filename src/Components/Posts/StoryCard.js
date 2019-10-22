@@ -13,12 +13,14 @@ class StoryCard extends Component {
             likes: [],
             amountOfLikes: 0,
             userLiked: false,
-            userSaved: false
+            userSaved: false,
+            photoURL: null
         }
         this.like = this.like.bind(this)
         this.save = this.save.bind(this)
         this.userLiked = this.userLiked.bind(this)
         this.userSaved = this.userSaved.bind(this)
+        this.getAvatar = this.getAvatar.bind(this)
     }
 
     componentDidMount(){
@@ -27,6 +29,7 @@ class StoryCard extends Component {
         })
         this.userLiked()
         this.userSaved()
+        this.getAvatar()
     }
 
     like(){
@@ -207,11 +210,26 @@ class StoryCard extends Component {
     }
 
     getAvatar(){
-        if(this.props.authorPic !== null){
-            return <Avatar src={this.props.authorPic}/>
-        }else{
-            return <Avatar icon="user"/>
-        }
+        var that = this
+        getFirestore().collection('users').doc(this.props.author).get()
+        .then(function(doc) {
+            if (doc.exists) {
+                if(doc.data().photoURL !== null){
+                    that.setState({
+                        photoURL: doc.data().photoURL
+                    })
+                }else{
+                    that.setState({
+                        photoURL: null
+                    })
+                }
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
     }
 
     render() {
@@ -246,7 +264,11 @@ class StoryCard extends Component {
                             avatar={
                                 <span>
                                     <Popover content={this.props.author} title="">
-                                        {this.getAvatar()}
+                                        {this.state.photoURL !== 'null' ?
+                                            <Avatar src={this.state.photoURL}/>
+                                        :
+                                            <Avatar icon="user"/>
+                                        }
                                     </Popover>
                                 </span>
                             }

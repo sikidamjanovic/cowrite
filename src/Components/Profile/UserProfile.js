@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Input,  Radio, Avatar, Row, Col, message } from 'antd'
 import ProfilePostFeed from '../Profile/ProfilePostFeed'
+import { getFirestore } from "redux-firestore";
 var firebase = require('firebase');
 
 class UserProfile extends Component {
@@ -48,6 +49,9 @@ class UserProfile extends Component {
                     photoURL: downloadURL
                 }).then(function() {
                     message.success('Display Pic Successfully Changed!')
+                    getFirestore().collection('users').doc(userName).update({
+                        photoURL: downloadURL
+                    })
                     .then(function(){
                         window.location.reload()
                     })
