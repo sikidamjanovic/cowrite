@@ -78,7 +78,6 @@ class StoryModal extends Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null}
-                    width={'60%'}
                     style={{ top: 0, padding: 0 }}
                 >
                     <StoryModalContent
@@ -86,6 +85,7 @@ class StoryModal extends Component {
                         auth = {this.props.auth}
                         title = {data.title}
                         author = {data.author}
+                        authorPic = {data.authorPic}
                         genre = {data.genre}
                         currentChapter = {data.currentChapter}
                         chapters = {data.chapters}
@@ -96,6 +96,7 @@ class StoryModal extends Component {
                         chapter4 = {data.chapter4}
                         likes = {data.likes}
                         saves = {data.saves}
+                        selectedChapters = {data.selectedChapters}
                     />      
                 </Modal>
             );
@@ -103,10 +104,9 @@ class StoryModal extends Component {
             return(
                 <Modal 
                     visible={this.state.visible}
-                    onCancel={this.handleCancel} 
-                    width={'60%'} 
+                    onCancel={this.handleCancel}
                     footer={null} 
-                    style={{ top: 0 }}
+                    style={{ top: 0, minHeight: '100vh'}}
                 >
                 </Modal>
             )

@@ -1,7 +1,8 @@
 import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
-import { Radio, Button, Icon, Tag, Divider, message, Tooltip} from 'antd';
+import StoryComment from '../Posts/StoryComment'
+import { Radio, Button, Icon, Tag, Divider, message, Tooltip, BackTop, Avatar} from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import '../../App.css'
@@ -21,7 +22,7 @@ class StoryModalContent extends React.Component {
             userLiked: false,
             userSaved: false,
             submissions: [],
-            selectedChapter: 1
+            submissionsLoaded: false
         }
         this.getSelectedChapter = this.getSelectedChapter.bind(this)
         this.updateCommentSort = this.updateCommentSort.bind(this)
@@ -37,7 +38,9 @@ class StoryModalContent extends React.Component {
 
     componentDidMount(){
         this.setState({
-            amountOfLikes: this.props.likes.length
+            amountOfLikes: this.props.likes.length,
+            currentChapter: this.props.currentChapter,
+            selectedChapter: this.props.currentChapter
         })
         this.userLiked()
         this.userSaved()
@@ -46,7 +49,9 @@ class StoryModalContent extends React.Component {
 
     componentDidUpdate(prevProps, prevState){
         if(prevState.submissions !== this.state.submissions){
-            this.getTopSubmission()
+            this.setState({
+                submissionsLoaded: true
+            })
         }
     }
 
@@ -61,26 +66,50 @@ class StoryModalContent extends React.Component {
     }
 
     getComments(){
-        return(
-            <Comments
-                id={this.props.id}
-                uid={this.state.uid}
-                chapter={this.state.selectedChapter}
-                sort={this.state.sort}
-                sortOrder={this.state.sortOrder}
-                updateSort={this.updateCommentSort}
-                updateSortOrder={this.updateCommentSortOrder}
-                submissions={this.state.submissions}
-                getSubmissions={this.getSubmissions}
-            />
-        )
+
+        var selected = this.props.selectedChapters
+        var current = this.state.currentChapter
+
+        if(current){
+            if(this.state.selectedChapter < current){
+                return (
+                    <StoryComment 
+                        id={selected[current-1].id}
+                        postId={selected[current-1].postId}
+                        uid={this.props.auth.uid}
+                        author={selected[current-1].author}
+                        comment={selected[current-1].content}
+                        likes={selected[current-1].likes}
+                        likeCount={selected[current-1].likeCount}
+                        selected={true}
+                    />
+                )
+            }else{
+                return(
+                    <Comments
+                        id={this.props.id}
+                        uid={this.state.uid}
+                        chapter={this.state.selectedChapter}
+                        sort={this.state.sort}
+                        sortOrder={this.state.sortOrder}
+                        updateSort={this.updateCommentSort}
+                        updateSortOrder={this.updateCommentSortOrder}
+                        submissions={this.state.submissions}
+                        getSubmissions={this.getSubmissions}
+                    />
+                )
+            }
+        }else{
+            return <p>Loadin</p>
+        }
+    
     }
 
     getEnabledRadios(){
         var current = this.props.currentChapter
         var enabled = []
         for (let i = 1; i <= current; i++) {
-            enabled.push(<Radio.Button style={{marginRight: '10px'}} value={i}>{i}</Radio.Button>)
+            enabled.push(<Radio.Button style={{marginRight: '10px', border: '2px solid #006d75'}} value={i}>{i}</Radio.Button>)
         }
         return enabled
     }
@@ -93,20 +122,33 @@ class StoryModalContent extends React.Component {
         for (let i = current + 1; i <= 4; i++) {
 
             if(i == 2){
-                submissionDate = this.props.chapter2.toDate()
+                submissionDate = this.timeUntilNextChapter(this.props.chapter2.toDate())
             }else if(i == 3){
-                submissionDate = this.props.chapter3.toDate()
+                submissionDate = this.timeUntilNextChapter(this.props.chapter3.toDate())
             }else if(i == 4){
-                submissionDate = this.props.chapter4.toDate()
+                submissionDate = this.timeUntilNextChapter(this.props.chapter4.toDate())
             }
 
             disabled.push(
-                <Tooltip title={'Chapter ' + i + ' submissions start on ' + submissionDate}>
-                    <Radio.Button style={{marginRight: '10px'}} disabled={false} value={i}>{i}</Radio.Button>
+                <Tooltip title={'Chapter ' + i + ' submission starts in ' + submissionDate}>
+                    <Radio.Button style={{marginRight: '10px'}} disabled={true} value={i}>{i}</Radio.Button>
                 </Tooltip>
             )
         }
         return disabled
+    }
+
+    timeUntilNextChapter(nextChapterDate){
+        var now = new Date()
+        var diffMin = nextChapterDate - now / 1000
+        var diffHours = Math.abs(now - nextChapterDate) / 36e5
+        if(diffHours > 24){
+            return Math.round(diffHours / 24)  + ' days'
+        }else if(diffHours < 24){
+            return Math.round(diffHours) + ' hours'
+        }else if(diffHours < 1 && diffHours > 0){
+            return Math.round(diffMin) + ' minutes'
+        }
     }
 
     renderChapterRadios(){
@@ -140,34 +182,36 @@ class StoryModalContent extends React.Component {
     }
 
     getTopSubmission(){
-        var submissions = this.state.submissions
-        var equalAmountOfLikes = []
 
-        // Sort submissions by like count
-        submissions.sort(function(a, b){
-            return b.likeCount - a.likeCount
-        })
-        // If top likes are equal, push to array
-        if(submissions.length > 1){
-            for (let i = 0; i < submissions.length; i++) {
-                if(submissions[i].likeCount === submissions[i+1].likeCount){
-                    equalAmountOfLikes.push(submissions[i])
-                    equalAmountOfLikes.push(submissions[i+1])
-                }else{
-                    break
+        if(this.state.submissionsLoaded && this.state.submissions.length > 0){
+
+            var submissions = this.state.submissions
+            var equalAmountOfLikes = []
+            // Sort submissions by like count
+            submissions.sort(function(a, b){
+                return b.likeCount - a.likeCount
+            })
+            // If top likes are equal, push to array
+            if(submissions.length > 1){
+                for (let i = 0; i < submissions.length - 1; i++) {
+                    if(submissions[i].likeCount === submissions[i+1].likeCount){
+                        equalAmountOfLikes.push(submissions[i])
+                        equalAmountOfLikes.push(submissions[i+1])
+                    }else{
+                        break
+                    }
                 }
             }
+            // If there is equal likes, sort by newest submission, if not return top liked
+            if(equalAmountOfLikes.length > 0){
+                equalAmountOfLikes.sort(function(a,b){
+                    return b.time.toDate() - a.time.toDate()
+                })
+                this.endSubmissionProcess(equalAmountOfLikes[0])
+            }else{
+                this.endSubmissionProcess(submissions[0])
+            }
         }
-        // If there is equal likes, sort by newest submission, if not return top liked
-        if(equalAmountOfLikes.length > 0){
-            equalAmountOfLikes.sort(function(a,b){
-                return b.time.toDate() - a.time.toDate()
-            })
-            return equalAmountOfLikes[0]
-        }else{
-            return submissions[0]
-        }
-
     }
 
     openSubmitPanel(){
@@ -261,7 +305,7 @@ class StoryModalContent extends React.Component {
                     theme="filled"
                     size="large"
                     key="heart" 
-                    style={{ color:'#cf1322' }}
+                    style={{ color:'#fa541c' }}
                 />
             )
         }else{
@@ -384,42 +428,73 @@ class StoryModalContent extends React.Component {
         }else if(hoursLeft > 1){
             return <Tag color="#cf1322">{Math.round(hoursLeft) + 'h Left'}</Tag>
         }else if(hoursLeft > 0) {
-            return <Tag color="#cf1322">{60 - Math.round(minutesLeft) + 'min Left'}</Tag>
+            return <Tag color="#cf1322">{Math.round(minutesLeft) + 'min Left'}</Tag>
         }else if(minutesLeft <= 0){
-            // TODO: convert to next chapter
+            this.getTopSubmission()
         }
 
+    }
+
+    endSubmissionProcess(topSubmission){
+        // If story is not on last chapter do following
+        if(this.props.currentChapter !== 4){
+            getFirestore().collection('stories').doc(this.props.id).update({
+                currentChapter: this.props.currentChapter + 1,
+                selectedChapters: firebase.firestore.FieldValue.arrayUnion(
+                    topSubmission
+                )
+            })
+        }
+    }
+
+    getAvatar(){
+        if(this.props.authorPic !== null){
+            return <Avatar size="large" src={this.props.authorPic}/>
+        }else{
+            return <Avatar size="large" icon="user"/>
+        }
     }
 
     render() { 
 
         return (
             <div>
+                <BackTop/>
                 <div className="modal-body">
-                    <h2>{this.props.title}</h2>
+
+                    {/* HEADER */}
+                    <h2 style={{ margin: 0 }}>{this.props.title}</h2>
+
                     <Divider/>
-                    <p>
-                        {this.props.prompt}
-                    </p>        
-                    <br></br>
+
+                    {/* PROMPT STYLING */}
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '48px', paddingTop: '12px' }}>
+                        <div>
+                            {this.getAvatar()}
+                        </div>
+                        <div style={{ marginLeft: '14px' }}>
+                            {this.props.prompt}
+                        </div>
+                    </div>        
+
                     <div className="modal-buttons">
                         <Button 
                             onClick={this.openSubmitPanel} 
                             style={{ 
-                            paddingBottom: '40px',
-                            paddingRight: '20px',
-                            paddingLeft: '20px',
-                            paddingTop: '20px' }} 
-                            type="dashed"
+                            paddingBottom: '30px',
+                            paddingRight: '10px',
+                            paddingLeft: '10px',
+                            paddingTop: '10px' }} 
+                            type="primary"
                         >
                             {this.state.panelOpen ? <Icon type="minus"/> : <Icon type="plus"/> }
-                            Submit Chapter
+                            Submit Chapter {this.props.currentChapter}
                         </Button>
 
                         <Button type="link" onClick={this.like}>
                             {this.renderHeart()}
                             <span id="likes">
-                                {this.state.amountOfLikes}
+                                <small>{this.state.amountOfLikes}</small>
                             </span>
                         </Button>
 
@@ -443,19 +518,12 @@ class StoryModalContent extends React.Component {
                                 <small style={{ marginLeft: '5px' }}>  Share</small>
                             </Button>
                         </CopyToClipboard>
+
                     </div>
 
                     {this.renderSubmitHeader()}
                     <Divider/>
-                    <small>Chapters </small>
-
-                    <Tag 
-                        style={{ marginLeft: '10px', marginRight: '10px' }}
-                        color='#171f22'
-                    >
-                        {(4 - this.props.currentChapter) + ' left'}
-                    </Tag>
-                    
+                    <small style={{ marginRight: '10px' }}>Chapters </small>
                     {this.timeLeftForSubmission()}
                     <br></br><br></br>
                     {this.renderChapterRadios()}

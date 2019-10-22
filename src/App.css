@@ -5,7 +5,7 @@ MAIN COMPONENT STYLING
 */
 
 #home{
-    min-height: 90vh;
+    min-height: 100vh;
 }
 
 #footer{
@@ -19,10 +19,24 @@ MAIN COMPONENT STYLING
     background-color: #171F22
 }
 
-#sidebar{
+@media screen and (max-width: 1199px) {
+    #sidebar{
+        padding-top: 50px;
+        width: 20.83%;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    #sidebar{
+        padding-top: 50px;
+        width: 12.5%;
+    }
+}
+
+/* #sidebar{
     padding-top: 50px;
     width: 12.5%;
-}
+} */
 
 /* 
 ------------------
@@ -72,6 +86,13 @@ SCROLL STYLING
     justify-content: flex-end;
 }
 
+@media screen and (max-width: 768px) {
+    .nav-col-right{
+        display: flex;
+        justify-content: center;
+    }
+}
+
 .nav-link{
     margin-right: 10px;
     margin-left: 10px;
@@ -95,7 +116,7 @@ SCROLL STYLING
     }
 }
 
-@media screen and (max-width: 576px){
+@media screen and (max-width: 768px){
     #sidebar{
         padding-top: 100px;
     }
@@ -272,7 +293,9 @@ SCROLL STYLING
 
 #comments{
     background-color: #111717;
-    padding: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-bottom: 24px;
 }
 
 .ant-card-actions{
@@ -287,6 +310,18 @@ SCROLL STYLING
 
 .ant-modal-body{
     padding: 0 !important;
+}
+
+@media screen and (max-width: 992px) {
+    .ant-modal{
+        width: 90% !important;
+    }
+}
+
+@media screen and (min-width: 993px) {
+    .ant-modal{
+        width: 60% !important;
+    }
 }
 
 .ant-list-split, .ant-list-header{
@@ -351,4 +386,8 @@ SCROLL STYLING
 
 .ant-menu-item, .ant-menu-submenu-title{
     font-weight: bold;
+}
+
+.ant-menu-submenu-horizontal{
+    width: 33%;
 }

@@ -53,6 +53,7 @@ class PromptsFeed extends Component {
                                     genre={post.genre}
                                     content={post.content}
                                     author={post.author}
+                                    authorPic={post.authorPic ? post.authorPic : null}
                                     time={post.createdAt}
                                     likes={post.likes}
                                     amountOfLikes={post.likes.length}

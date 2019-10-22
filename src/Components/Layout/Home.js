@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PromptsFeed from '../Layout/PromptsFeed'
 import StoriesFeed from '../Layout/StoriesFeed'
 import Sidebar from '../Layout/Sidebar'
-import UserProfile from '../Layout/UserProfile'
+import UserProfile from '../Profile/UserProfile'
 import { Row, Col } from 'antd';
 import '../../App.css'
 import Footer from '../Layout/Footer'
@@ -62,10 +62,10 @@ class Home extends Component {
             <div>
             <div id="home">
                 <Row>
-                    <Col xs={24} md={3}>
+                    <Col xs={24} md={5} xl={3}>
                         <Sidebar auth={this.props.auth} query={this.updateQuery}/>
                     </Col>
-                    <Col xs={22} md={19} offset={1}  id="feed-container">
+                    <Col xs={22} md={17} xl={19} offset={1}  id="feed-container">
                         {this.showRelevantFeed()}
                     </Col>
                 </Row>

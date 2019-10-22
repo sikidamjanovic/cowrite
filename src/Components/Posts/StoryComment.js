@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Comment, Tooltip, Icon, Avatar, message } from 'antd'
+import { Comment, Tooltip, Icon, Avatar, message, Tag } from 'antd'
 import { getFirestore } from "redux-firestore";
 var firebase = require('firebase');
 
@@ -157,7 +157,11 @@ class StoryComment extends Component {
                 </p>
                 }
                 datetime={
-                    this.getTime()
+                    this.props.selected ? 
+                        <Tag color="#fadb14">
+                            <Icon color="black" type="star"/>
+                        </Tag> : 
+                        this.getTime()
                 }
             />
         )

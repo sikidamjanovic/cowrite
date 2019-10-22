@@ -101,7 +101,10 @@ class StoryCard extends Component {
                     content: this.props.content,
                     genre: this.props.genre,
                     title: this.props.title,
-                    time: this.props.time
+                    time: this.props.time,
+                    likes: this.props.likes,
+                    likeCount: this.props.likes.length,
+                    saves: this.props.saves
                 })
                 message.success('Story saved!')
             }else{
@@ -203,6 +206,14 @@ class StoryCard extends Component {
         }
     }
 
+    getAvatar(){
+        if(this.props.authorPic !== null){
+            return <Avatar src={this.props.authorPic}/>
+        }else{
+            return <Avatar icon="user"/>
+        }
+    }
+
     render() {
         const { Meta } = Card;
         return (
@@ -235,14 +246,14 @@ class StoryCard extends Component {
                             avatar={
                                 <span>
                                     <Popover content={this.props.author} title="">
-                                        <Avatar icon="user" />
+                                        {this.getAvatar()}
                                     </Popover>
                                 </span>
                             }
                             title = {
                                 <span id="title-container">
                                     <span id="card-title">{this.props.title}</span>
-                                    <Tag>Story</Tag>
+                                    <Tag>S</Tag>
                                     <Tag>{this.props.currentChapter}/4 Chapters</Tag>
                                     <Tag color="#006d75">24h Left</Tag>
                                 </span>

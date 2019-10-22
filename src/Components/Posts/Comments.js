@@ -152,7 +152,7 @@ export default compose(
             doc: props.id,
             subcollections: [{ collection: 'submissions'}],
             where: [
-                ['chapter', '==', props.chapter]
+                'chapter', '==', props.chapter
             ],
             orderBy: [props.sort, props.sortOrder],
             storeAs: 'submissions'

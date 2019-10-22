@@ -10,7 +10,7 @@ class Sidebar extends Component {
     constructor(props){
         super(props)
         this.state = {
-            width: 0
+            width: 769
         }
         this.updateWidth = this.updateWidth.bind(this)
     }
@@ -40,6 +40,7 @@ class Sidebar extends Component {
                     left: 0
                 } : {
                     position: 'fixed',
+                    width: '100%',
                     left: '0',
                     zIndex: 100
                 }}
@@ -125,7 +126,7 @@ class Sidebar extends Component {
 
                 </SubMenu>
 
-                <Divider/>
+                {this.state.width < 768 ? '' : <Divider/>}
 
                 {/* STORIES PART OF SIDEBAR*/}
 

@@ -8,7 +8,7 @@ var firebaseConfig = {
     authDomain: "writingrelay.firebaseapp.com",
     databaseURL: "https://writingrelay.firebaseio.com",
     projectId: "writingrelay",
-    storageBucket: "",
+    storageBucket: "writingrelay.appspot.com",
     messagingSenderId: "549963888326",
     appId: "1:549963888326:web:65281ab754acef09"
 };

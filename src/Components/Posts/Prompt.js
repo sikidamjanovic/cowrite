@@ -123,7 +123,9 @@ class Prompt extends Component {
                     content: this.props.content,
                     genre: this.props.genre,
                     title: this.props.title,
-                    time: this.props.time
+                    time: this.props.time,
+                    likes: this.props.likes,
+                    likeCount: this.state.amountOfLikes
                 })
             }else{
                 this.setState({
@@ -151,6 +153,14 @@ class Prompt extends Component {
         } 
     }
 
+    getAvatar(){
+        if(this.props.authorPic !== null){
+            return <Avatar src={this.props.authorPic}/>
+        }else{
+            return <Avatar icon="user"/>
+        }
+    }
+
     render() { 
         const { Meta } = Card;
         return (
@@ -176,14 +186,14 @@ class Prompt extends Component {
                     avatar={
                         <span>
                             <Popover content={this.props.author} title="">
-                                <Avatar icon="user" />
+                                {this.getAvatar()}
                             </Popover>
                         </span>
                     }
                     title = {
                         <span id="title-container">
                             <span id="card-title">{this.props.title}</span>
-                            <Tag>Prompt</Tag>
+                            <Tag>P</Tag>
                             {this.getTime()}
                         </span>
                     }

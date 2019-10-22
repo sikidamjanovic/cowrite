@@ -36,6 +36,7 @@ const evaluateLikes = ((data, id) => {
         story = {
             promptId: id,
             author: data.author,
+            authorPic: data.authorPic,
             prompt: data.content,
             genre: data.genre,
             title: data.title,

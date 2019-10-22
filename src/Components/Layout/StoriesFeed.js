@@ -52,6 +52,7 @@ class StoriesFeed extends Component {
                                 genre={post.genre}
                                 content={post.prompt}
                                 author={post.author}
+                                authorPic={post.authorPic ? post.authorPic : null}
                                 time={post.createdAt}
                                 currentChapter={post.currentChapter}
                                 chapters={post.chapters}

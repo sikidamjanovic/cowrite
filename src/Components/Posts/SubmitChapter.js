@@ -72,7 +72,7 @@ class SubmitChapter extends Component {
                 </span>
                 <br></br>
                 <Button 
-                    type="default"
+                    type="primary"
                     id="submit-chapter-button"
                     htmlType="submit"
                 >

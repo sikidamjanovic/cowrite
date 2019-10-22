@@ -12,6 +12,7 @@ export const createPost = (post) => {
         firestore.collection('posts').add({ 
             ...post,
             author: getFirebase().auth().currentUser.displayName,
+            authorPic: getFirebase().auth().currentUser.photoURL,
             createdAt: new Date(),
             time: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' - '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds(),
         }).then(function(docRef) { //setting an initial like from the user
