@@ -161,7 +161,7 @@ class Prompt extends Component {
         getFirestore().collection('users').doc(this.props.author).get()
         .then(function(doc) {
             if (doc.exists) {
-                if(doc.data().photoURL !== null){
+                if(doc.data().photoURL !== undefined){
                     that.setState({
                         photoURL: doc.data().photoURL
                     })
@@ -204,11 +204,10 @@ class Prompt extends Component {
                     avatar={
                         <span>
                             <Popover content={this.props.author} title="">
-                                {this.state.photoURL !== 'null' ?
-                                    <Avatar src={this.state.photoURL}/>
-                                :
-                                    <Avatar icon="user"/>
-                                }
+                                {this.state.photoURL !== null ?
+                                    <Avatar src={this.state.photoURL}/>:
+                                    <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                            }
                             </Popover>
                         </span>
                     }

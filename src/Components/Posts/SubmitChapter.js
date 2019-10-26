@@ -36,6 +36,7 @@ class SubmitChapter extends Component {
     handleSubmit = (e) =>{
         e.preventDefault();
         if(this.state.remainingCharacters > 0){
+            this.props.closePanel()
             this.props.submitChapter(this.state)
         }else{
             message.error('Chapter is too long.')

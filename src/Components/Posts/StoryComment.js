@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Comment, Tooltip, Icon, Avatar, message, Tag } from 'antd'
+import { Comment, Tooltip, Icon, Avatar, message, Tag, Popover, Popconfirm } from 'antd'
 import { getFirestore } from "redux-firestore";
 var firebase = require('firebase');
 
@@ -13,6 +13,7 @@ class StoryComment extends Component {
         }
         this.like = this.like.bind(this)
         this.userLiked = this.userLiked.bind(this)
+        this.deleteSubmission = this.deleteSubmission.bind(this)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -29,6 +30,7 @@ class StoryComment extends Component {
     componentDidMount(){
         this.getLikeAmount()
         this.userLiked()
+        this.getAvatar()
     }
 
     getTime(){
@@ -132,6 +134,54 @@ class StoryComment extends Component {
 
     }
 
+    getAvatar(){
+        var that = this
+        getFirestore().collection('users').doc(this.props.author).get()
+        .then(function(doc) {
+            if (doc.exists) {
+                if(doc.data().photoURL !== undefined){
+                    that.setState({
+                        photoURL: doc.data().photoURL
+                    })
+                }else{
+                    that.setState({
+                        photoURL: null
+                    })
+                }
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+    }
+
+    deleteSubmission(){
+        getFirestore().collection('stories').doc(this.props.postId).collection('submissions').doc(this.props.id).delete()
+        .then(function() {
+            message.success('Your submission has been deleted.')
+        }).catch(function(error) {
+            message.error(error)
+        });
+    }
+
+    isOwnSubmission(){
+        var currentUser = this.props.auth.displayName
+        if(currentUser === this.props.author){
+            return(
+                <Popconfirm
+                    title="Are you sure you want to delete your submission?"
+                    onConfirm={this.deleteSubmission}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    delete
+                </Popconfirm>
+            )
+        }
+    }
+
     render() {  
         const actions = [
             <span onClick={this.like} key="comment-basic-like">
@@ -142,14 +192,22 @@ class StoryComment extends Component {
                     </span>
                 </Tooltip>
                 {/* <span style={{ paddingLeft: 8, cursor: 'auto' }}>{this.props.likes.length}</span> */}
-            </span>
+            </span>,
+            this.isOwnSubmission()
         ]
         return (
             <Comment
                 author={<a>{this.props.author}</a>}
                 actions={actions}
                 avatar={
-                    <Avatar icon="user" />
+                    <span>
+                        <Popover content={this.props.author} title="">
+                            {this.state.photoURL !== null ?
+                                <Avatar src={this.state.photoURL}/> :
+                                <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                        }
+                        </Popover>
+                    </span>
                 }
                 content={
                 <p>

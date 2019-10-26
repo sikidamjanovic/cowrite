@@ -26,8 +26,9 @@ export const signOut = () => {
         const firebase = getFirebase();
         firebase.auth().signOut().then(() => {
             dispatch({ type: 'SIGNOUT_SUCCESS' });
+            window.location.reload();
+            message.success('Signed Out Successfully')
         })
-        message.success('Signed Out Successfully')
     }
 }
 

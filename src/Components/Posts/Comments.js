@@ -64,6 +64,7 @@ class Comments extends Component {
                             <StoryComment 
                                 id={item.id}
                                 postId={item.postId}
+                                auth={this.props.auth}
                                 uid={this.props.auth.uid}
                                 author={item.author}
                                 comment={item.content}

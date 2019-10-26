@@ -6,7 +6,7 @@ import '../../App.css'
 var firebase = require('firebase');
 
 class StoryCard extends Component {
-
+s
     constructor(props){
         super(props)
         this.state = {
@@ -214,7 +214,7 @@ class StoryCard extends Component {
         getFirestore().collection('users').doc(this.props.author).get()
         .then(function(doc) {
             if (doc.exists) {
-                if(doc.data().photoURL !== null){
+                if(doc.data().photoURL !== undefined){
                     that.setState({
                         photoURL: doc.data().photoURL
                     })
@@ -264,11 +264,10 @@ class StoryCard extends Component {
                             avatar={
                                 <span>
                                     <Popover content={this.props.author} title="">
-                                        {this.state.photoURL !== 'null' ?
-                                            <Avatar src={this.state.photoURL}/>
-                                        :
-                                            <Avatar icon="user"/>
-                                        }
+                                        {this.state.photoURL !== null ?
+                                            <Avatar src={this.state.photoURL}/> :
+                                            <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                                    }
                                     </Popover>
                                 </span>
                             }

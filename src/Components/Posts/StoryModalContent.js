@@ -2,7 +2,7 @@ import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
 import StoryComment from '../Posts/StoryComment'
-import { Radio, Button, Icon, Tag, Divider, message, Tooltip, BackTop, Avatar} from 'antd';
+import { Radio, Button, Icon, Tag, Divider, message, Tooltip, BackTop, Avatar, Popover} from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import '../../App.css'
@@ -22,18 +22,22 @@ class StoryModalContent extends React.Component {
             userLiked: false,
             userSaved: false,
             submissions: [],
-            submissionsLoaded: false
+            submissionsLoaded: false,
+            photoURL: null,
+            userSubmitted: true
         }
         this.getSelectedChapter = this.getSelectedChapter.bind(this)
         this.updateCommentSort = this.updateCommentSort.bind(this)
         this.updateCommentSortOrder = this.updateCommentSortOrder.bind(this)
         this.getSubmissions = this.getSubmissions.bind(this)
         this.openSubmitPanel = this.openSubmitPanel.bind(this)
+        this.closeSubmitPanel = this.closeSubmitPanel.bind(this)
         this.onChange = this.onChange.bind(this)
         this.like = this.like.bind(this)
         this.userLiked = this.userLiked.bind(this)
         this.save = this.save.bind(this)
         this.userSaved = this.userSaved.bind(this)
+        this.hasUserSubmitted = this.hasUserSubmitted.bind(this)
     }
 
     componentDidMount(){
@@ -45,6 +49,7 @@ class StoryModalContent extends React.Component {
         this.userLiked()
         this.userSaved()
         this.getDisabledRadios()
+        this.getAvatar()
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -52,6 +57,7 @@ class StoryModalContent extends React.Component {
             this.setState({
                 submissionsLoaded: true
             })
+            this.hasUserSubmitted()
         }
     }
 
@@ -68,19 +74,21 @@ class StoryModalContent extends React.Component {
     getComments(){
 
         var selected = this.props.selectedChapters
+        var radio = this.state.selectedChapter
         var current = this.state.currentChapter
 
         if(current){
             if(this.state.selectedChapter < current){
                 return (
                     <StoryComment 
-                        id={selected[current-1].id}
-                        postId={selected[current-1].postId}
+                        id={selected[radio-1].id}
+                        postId={selected[radio-1].postId}
                         uid={this.props.auth.uid}
-                        author={selected[current-1].author}
-                        comment={selected[current-1].content}
-                        likes={selected[current-1].likes}
-                        likeCount={selected[current-1].likeCount}
+                        author={selected[radio-1].author}
+                        comment={selected[radio-1].content}
+                        likes={selected[radio-1].likes}
+                        likeCount={selected[radio-1].likeCount}
+                        auth={this.props.auth}
                         selected={true}
                     />
                 )
@@ -220,12 +228,41 @@ class StoryModalContent extends React.Component {
         })
     }
 
+    closeSubmitPanel(){
+        this.setState({
+            panelOpen: false
+        })
+    }
+
+    hasUserSubmitted(){
+        var submissions = this.state.submissions
+        if(submissions.length > 0){
+            for (let i = 0; i < submissions.length; i++) {
+                if(submissions[i].author === this.props.auth.displayName && submissions[i].chapter === this.props.currentChapter){
+                    this.setState({
+                        userSubmitted: true
+                    })
+                    break
+                }else{
+                    this.setState({
+                        userSubmitted: false
+                    })
+                }
+            }
+        }else{
+            this.setState({
+                userSubmitted: false
+            })
+        }
+    }
+
     renderSubmitHeader(){
         if(this.state.panelOpen){
             return(
                 <SubmitChapter
                     id={this.props.id}
                     chapter={this.props.currentChapter}
+                    closePanel={this.closeSubmitPanel}
                 />
             )
         }
@@ -422,13 +459,13 @@ class StoryModalContent extends React.Component {
         var minutesLeft = hoursLeft * 60
 
         if(hoursLeft > 12){
-            return <Tag color='#171f22'>{Math.round(hoursLeft) + 'h Left'}</Tag>
+            return <Tag color='#171f22'>{Math.round(hoursLeft) + 'h left in chapter ' + currentChapter}</Tag>
         }else if(hoursLeft > 4){
-            return <Tag color='#171f22'>{Math.round(hoursLeft) + 'h Left'}</Tag>
+            return <Tag color='#171f22'>{Math.round(hoursLeft) + 'h left in chapter ' + currentChapter}</Tag>
         }else if(hoursLeft > 1){
-            return <Tag color="#cf1322">{Math.round(hoursLeft) + 'h Left'}</Tag>
+            return <Tag color="#cf1322">{Math.round(hoursLeft) + 'h left in chapter ' + currentChapter}</Tag>
         }else if(hoursLeft > 0) {
-            return <Tag color="#cf1322">{Math.round(minutesLeft) + 'min Left'}</Tag>
+            return <Tag color="#cf1322">{Math.round(minutesLeft) + 'min left in chapter ' + currentChapter}</Tag>
         }else if(minutesLeft <= 0){
             this.getTopSubmission()
         }
@@ -448,11 +485,27 @@ class StoryModalContent extends React.Component {
     }
 
     getAvatar(){
-        if(this.props.authorPic !== null){
-            return <Avatar size="large" src={this.props.authorPic}/>
-        }else{
-            return <Avatar size="large" icon="user"/>
-        }
+        var that = this
+        getFirestore().collection('users').doc(this.props.author).get()
+        .then(function(doc) {
+            if (doc.exists) {
+                console.log("DOC: ", doc.data());
+                if(doc.data().photoURL !== undefined){
+                    that.setState({
+                        photoURL: doc.data().photoURL
+                    })
+                }else{
+                    that.setState({
+                        photoURL: null
+                    })
+                }
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
     }
 
     render() { 
@@ -468,9 +521,16 @@ class StoryModalContent extends React.Component {
                     <Divider/>
 
                     {/* PROMPT STYLING */}
-                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '48px', paddingTop: '12px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '48px' }}>
                         <div>
-                            {this.getAvatar()}
+                            <span>
+                                <Popover content={this.props.author} title="">
+                                    {this.state.photoURL !== null ?
+                                        <Avatar src={this.state.photoURL}/> :
+                                        <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                                }
+                                </Popover>
+                            </span>
                         </div>
                         <div style={{ marginLeft: '14px' }}>
                             {this.props.prompt}
@@ -478,18 +538,41 @@ class StoryModalContent extends React.Component {
                     </div>        
 
                     <div className="modal-buttons">
-                        <Button 
-                            onClick={this.openSubmitPanel} 
-                            style={{ 
-                            paddingBottom: '30px',
-                            paddingRight: '10px',
-                            paddingLeft: '10px',
-                            paddingTop: '10px' }} 
-                            type="primary"
-                        >
-                            {this.state.panelOpen ? <Icon type="minus"/> : <Icon type="plus"/> }
-                            Submit Chapter {this.props.currentChapter}
-                        </Button>
+                        
+                        {this.props.auth.isEmpty ? 
+                            <Button
+                                onClick={function(){ message.error('Please login to submit chapters.')}}
+                                style={{ 
+                                    paddingBottom: '30px',
+                                    paddingRight: '10px',
+                                    paddingLeft: '10px',
+                                    paddingTop: '10px' }} 
+                                type="primary"
+                            >
+                                <Icon type="plus"/> Submit Chapter {this.props.currentChapter}</Button>    
+                            :
+                            <Button 
+                                onClick={this.openSubmitPanel} 
+                                style={{ 
+                                    paddingBottom: '30px',
+                                    paddingRight: '10px',
+                                    paddingLeft: '10px',
+                                    paddingTop: '10px' }} 
+                                type="primary"
+                                disabled={this.state.userSubmitted}
+                            >
+                                {this.state.userSubmitted ? 
+                                    <Icon type="check"/> : 
+                                this.state.panelOpen ? 
+                                    <Icon type="minus"/> : 
+                                    <Icon type="plus"/>
+                                }
+                                {this.state.userSubmitted ?
+                                    'Chapter Submitted':
+                                    'Submit Chapter ' + this.props.currentChapter     
+                                }
+                            </Button>
+                        }
 
                         <Button type="link" onClick={this.like}>
                             {this.renderHeart()}
