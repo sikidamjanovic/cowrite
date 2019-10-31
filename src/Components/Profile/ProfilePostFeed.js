@@ -40,6 +40,7 @@ class ProfilePostFeed extends Component {
                             <Col id="prompt">
                                 {post.type === "story" ?
                                     <StoryCard 
+                                        auth={this.props.auth}
                                         key={post.id} 
                                         id={post.id} 
                                         title={post.title} 

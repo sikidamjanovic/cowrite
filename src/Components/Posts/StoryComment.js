@@ -68,7 +68,7 @@ class StoryComment extends Component {
         }
     }
 
-    renderThumb(){
+    renderHeart(){
         if(this.state.userLiked){
             return(
                 <Icon 
@@ -76,7 +76,7 @@ class StoryComment extends Component {
                     theme="filled"
                     size="large"
                     key="heart" 
-                    style={{ color:'#fa541c' }}
+                    style={{ color:'#ff7a45' }}
                 />
             )
         }else{
@@ -186,7 +186,7 @@ class StoryComment extends Component {
         const actions = [
             <span onClick={this.like} key="comment-basic-like">
                 <Tooltip title="Like">
-                    {this.renderThumb()}
+                    {this.renderHeart()}
                     <span style={{ marginLeft: '5px' }}>
                         {this.state.amountOfLikes}
                     </span>
@@ -198,7 +198,7 @@ class StoryComment extends Component {
         return (
             <Comment
                 author={<a>{this.props.author}</a>}
-                actions={actions}
+                actions={this.props.selected ? '' : actions}
                 avatar={
                     <span>
                         <Popover content={this.props.author} title="">
@@ -210,15 +210,15 @@ class StoryComment extends Component {
                     </span>
                 }
                 content={
-                <p>
-                    {this.props.comment}
-                </p>
+                    this.props.selected ?
+                    <div style={{ marginTop: 'px'}}>
+                        <p>{this.props.comment}</p>
+                    </div> :
+                    <p>{this.props.comment}</p>
                 }
                 datetime={
                     this.props.selected ? 
-                        <Tag color="#fadb14">
-                            <Icon color="black" type="star"/>
-                        </Tag> : 
+                        <span></span>: 
                         this.getTime()
                 }
             />

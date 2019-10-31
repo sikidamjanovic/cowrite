@@ -15,13 +15,15 @@ class Home extends Component {
         this.state = {
             query: '',
             getAll: false,
-            sort: 'createdAt'
+            sort: 'createdAt',
+            yposition: 0
         }
         this.sort = this.sort.bind(this)
     }
 
     componentDidMount(){
         this.getQuery()
+        this.getScrollPosition()
         this.getAll()
     }
 
@@ -30,6 +32,16 @@ class Home extends Component {
             this.setState({
                 query: this.props.location.state.query
             })
+        }
+    }
+
+    getScrollPosition(){
+        if(this.props.location.state){
+            if(this.props.location.state.hasOwnProperty('yposition')){
+                this.setState({
+                    yposition: this.props.location.state.yposition
+                })
+            }
         }
     }
 
@@ -53,7 +65,7 @@ class Home extends Component {
         }else if(window.location.pathname.slice(1,8) == 'profile'){
             return <UserProfile auth={this.props.auth} isOwnProfile={true}/>
         }else{
-            return <StoriesFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
+            return <StoriesFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query} yposition={this.state.yposition}/>
         }
     }    
 

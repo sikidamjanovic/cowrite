@@ -70,7 +70,7 @@ export const signUp = (newUser) => {
                     )
                 }).then(() => {
                     dispatch({ type: 'SIGNUP_SUCCESS'})
-                    message.success('Signed Up Successfully')
+                    window.document.reload()
                 }).catch(err => {
                     dispatch({ type: 'SIGNUP_ERROR', err})
                 })

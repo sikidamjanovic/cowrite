@@ -5,6 +5,7 @@ import { firestoreConnect } from 'react-redux-firebase'
 import { Row, Col, Breadcrumb, Select, Spin } from 'antd'
 import StoryCard from '../Posts/StoryCard'
 import '../../App.css'
+import StoriesFeedHeader from './StoriesFeedHeader'
 
 class StoriesFeed extends Component {
 
@@ -12,7 +13,8 @@ class StoriesFeed extends Component {
         super(props)
         this.state={
             sort: "new",
-            loaded: false
+            loaded: false,
+            yposition: 0
         }
         this.handleSort = this.handleSort.bind(this)
     }
@@ -24,17 +26,48 @@ class StoriesFeed extends Component {
     componentDidMount(){
         if(!this.props.stories){
             this.setState({
-                loaded: false
+                loaded: false,
             })
         }
+        window.addEventListener('scroll', this.listenToScroll)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.listenToScroll)
     }
 
     componentDidUpdate(prevProps, prevState){
         if(prevProps.stories !== this.props.stories){
-            this.setState({
-                loaded: true
-            })
+            if(this.state.yposition === 0){
+                this.setState({
+                    loaded: true,
+                    yposition: this.props.yposition
+                }, () => {
+                    this.scrollTo(this.state.yposition)
+                });
+            }else{
+                this.setState({
+                    loaded: true
+                }, () => {
+                    this.listenToScroll()
+                    this.scrollTo(this.state.yposition)
+                })
+            }
         }
+    }
+
+    scrollTo(y){
+        console.log('SCROLLING:' , y)
+        window.scrollTo({
+            top: y,
+            behavior: 'smooth'
+        });
+    }
+
+    listenToScroll = () => {
+        this.setState({
+            yposition: window.scrollY,
+        })
     }
 
     getStories(){
@@ -53,11 +86,17 @@ class StoriesFeed extends Component {
                                 content={post.prompt}
                                 author={post.author}
                                 authorPic={post.authorPic ? post.authorPic : null}
-                                time={post.createdAt}
+                                createdAt={post.createdAt}
                                 currentChapter={post.currentChapter}
                                 chapters={post.chapters}
+                                chapter1={post.chapter1}
+                                chapter2={post.chapter2}
+                                chapter3={post.chapter3}
+                                chapter4={post.chapter4}
                                 likes={post.likes}
                                 saves={post.saves}
+                                yposition={this.state.yposition}
+                                query={this.props.query}
                             />
                         </Col> 
                     )
@@ -85,6 +124,7 @@ class StoriesFeed extends Component {
         const { Option } = Select;
         return (
             <div>
+                <StoriesFeedHeader/>
                 <Row>
                     <div id="feed-header">
                         <div id="breadcrumb-container">

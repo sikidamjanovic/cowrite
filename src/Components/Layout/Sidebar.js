@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Menu, Icon, Divider } from 'antd';
-import { NavLink, withRouter } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { FaLaughSquint, FaHeart, FaRobot, FaList } from 'react-icons/fa'
 import { GiShardSword, GiRaiseZombie} from 'react-icons/gi'
 import '../../App.css'
@@ -10,7 +10,7 @@ class Sidebar extends Component {
     constructor(props){
         super(props)
         this.state = {
-            width: 769
+            mobile: false
         }
         this.updateWidth = this.updateWidth.bind(this)
     }
@@ -21,9 +21,15 @@ class Sidebar extends Component {
     }
 
     updateWidth() {
-        this.setState({ 
-            width: window.innerWidth
-        })
+        if(window.innerWidth > 768){
+            this.setState({
+                mobile: false
+            })
+        }else{
+            this.setState({ 
+                mobile: true
+            })
+        }
     }
 
     render() { 
@@ -31,7 +37,7 @@ class Sidebar extends Component {
         return (
             <Menu
                 onClick={this.handleClick}
-                style={this.state.width > 768 ? { 
+                style={this.state.mobile === false ? { 
                     height: '100vh',
                     position: 'fixed',
                     overflowY: 'scroll',
@@ -44,9 +50,11 @@ class Sidebar extends Component {
                     left: '0',
                     zIndex: 100
                 }}
-                {...(this.state.width > 768 ? {openKeys: ['sub1', 'sub2', 'sub3']} : {})}
+                {...(this.state.mobile === false ? {openKeys: ['sub1', 'sub2', 'sub3']} : null)}
+                {...(this.state.mobile === false ? {defaultOpenKeys: ['sub1', 'sub2', 'sub3']} : null)}
+                {...(this.state.mobile === true ? {forceSubMenuRender: true} : null)}
                 selectedKeys={window.location.pathname}
-                mode={this.state.width < 768 ? 'horizontal' : 'inline'}
+                mode={this.state.mobile === true ? 'horizontal' : 'inline'}
                 id="sidebar"
             >
                 <SubMenu
@@ -126,7 +134,7 @@ class Sidebar extends Component {
 
                 </SubMenu>
 
-                {this.state.width < 768 ? '' : <Divider/>}
+                {this.state.mobile === true ? '' : <Divider/>}
 
                 {/* STORIES PART OF SIDEBAR*/}
 

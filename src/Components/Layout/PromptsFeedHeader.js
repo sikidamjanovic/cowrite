@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import Particles from 'react-particles-js'
-import { Button, Row, Col } from 'antd'
+import { Row, Col } from 'antd'
 import HelpModal from '../Common/HelpModal'
+import SignInModal from '../Auth/SignInModal'
+import SignUpModal from '../Auth/SignUpModal'
 import NewPostModal from '../Posts/NewPostModal'
 
 class PromptsFeedHeader extends Component {
@@ -20,7 +21,10 @@ class PromptsFeedHeader extends Component {
                         {this.props.loggedIn ? 
                             <NewPostModal title="New Prompt" />   
                             :
-                            ''
+                            <div style={{ display: 'flex', flexDirection: 'row'}}>
+                                <span style={{ marginRight: '14px' }}><SignInModal/></span>
+                                <SignUpModal/>
+                            </div>
                         }
                     </div>
                 </Col>

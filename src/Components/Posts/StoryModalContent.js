@@ -80,17 +80,27 @@ class StoryModalContent extends React.Component {
         if(current){
             if(this.state.selectedChapter < current){
                 return (
-                    <StoryComment 
-                        id={selected[radio-1].id}
-                        postId={selected[radio-1].postId}
-                        uid={this.props.auth.uid}
-                        author={selected[radio-1].author}
-                        comment={selected[radio-1].content}
-                        likes={selected[radio-1].likes}
-                        likeCount={selected[radio-1].likeCount}
-                        auth={this.props.auth}
-                        selected={true}
-                    />
+                    <div style={{ 
+                        paddingBottom: '24px', 
+                        paddingTop: '14px',
+                        paddingLeft: '24px',
+                        paddingRight: '24px',
+                        backgroundColor: '#111717'
+                    }}>
+                        <h3 style={{ marginBottom: '12px' }}>Chapter {this.state.selectedChapter}</h3>
+                        <Divider/>
+                        <StoryComment 
+                            id={selected[radio-1].id}
+                            postId={selected[radio-1].postId}
+                            uid={this.props.auth.uid}
+                            author={selected[radio-1].author}
+                            comment={selected[radio-1].content}
+                            likes={selected[radio-1].likes}
+                            likeCount={selected[radio-1].likeCount}
+                            auth={this.props.auth}
+                            selected={true}
+                        />
+                    </div>
                 )
             }else{
                 return(
@@ -117,7 +127,14 @@ class StoryModalContent extends React.Component {
         var current = this.props.currentChapter
         var enabled = []
         for (let i = 1; i <= current; i++) {
-            enabled.push(<Radio.Button style={{marginRight: '10px', border: '2px solid #006d75'}} value={i}>{i}</Radio.Button>)
+            enabled.push(
+                <Radio.Button 
+                    style={{
+                        marginRight: '10px', border: '2px solid rgba(0, 109, 117,0.5)',
+                        color: 'rgba(0, 109, 117)'
+                    }} 
+                    value={i}>{i}
+                </Radio.Button>)
         }
         return enabled
     }
@@ -342,7 +359,7 @@ class StoryModalContent extends React.Component {
                     theme="filled"
                     size="large"
                     key="heart" 
-                    style={{ color:'#fa541c' }}
+                    style={{ color:'#ff7a45' }}
                 />
             )
         }else{
@@ -579,13 +596,6 @@ class StoryModalContent extends React.Component {
                             <span id="likes">
                                 <small>{this.state.amountOfLikes}</small>
                             </span>
-                        </Button>
-
-                        <Button type="link" onClick={this.save}>
-                            {this.renderSaveIcon()}
-                            <small style={{ marginLeft: '5px' }}>
-                                {this.state.userSaved ? ' Saved' : 'Save'}
-                            </small>
                         </Button>
 
                         <Button type="link">

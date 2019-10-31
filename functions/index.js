@@ -49,6 +49,11 @@ const evaluateLikes = ((data, id) => {
             likeCount: 0,
             saves: []
         }
+
+        for (let i = 0; i < data.likes.length; i++) {
+            db.collection('users').where())
+        }
+
         return createStory(story, id)
     }else{
         return console.log('Not Enough Likes For Story')
@@ -59,7 +64,7 @@ const evaluateLikes = ((data, id) => {
     Delete the original prompt (now a story)
 */
 const createStory = ((story, id )=> {
-    return admin.firestore().collection('stories')
+    return db.collection('stories')
         .add(story)
         .then(
             db.collection('posts').doc(id).delete()

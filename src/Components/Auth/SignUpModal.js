@@ -36,7 +36,6 @@ class SignUpModal extends React.Component {
                     Join
                 </Button>
                 <Modal
-                    title="Join CoAuthor"
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null}

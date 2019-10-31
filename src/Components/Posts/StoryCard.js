@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import { Card, Icon, Avatar, Tag, Popover, Tooltip, message } from 'antd';
 import { Link } from 'react-router-dom'
 import { getFirestore } from "redux-firestore";
+import CopyToClipboard from 'react-copy-to-clipboard'
 import '../../App.css'
 var firebase = require('firebase');
 
 class StoryCard extends Component {
-s
+
     constructor(props){
         super(props)
         this.state = {
@@ -54,7 +55,9 @@ s
                     content: this.props.content,
                     genre: this.props.genre,
                     title: this.props.title,
-                    time: this.props.time
+                    likes: this.props.likes,
+                    saves: this.props.saves,
+                    createdAt: this.props.createdAt
                 })
                 message.success('Story liked!')
             }else{
@@ -173,7 +176,7 @@ s
                     theme="filled"
                     size="large"
                     key="heart" 
-                    style={{ color:'#cf1322' }}
+                    style={{ color:'#ff7a45' }}
                 />
             )
         }else{
@@ -181,7 +184,7 @@ s
                 <Icon 
                     type="heart" 
                     key="heart" 
-                    style={{ color:'white' }}
+                    style={{ color:'rgba(255,255,255,0.5)' }}
                 />
             )
         }
@@ -195,7 +198,7 @@ s
                     theme="filled"
                     size="large"
                     key="save" 
-                    style={{ color:'white' }}
+                    style={{ color:'rgba(255,255,255,0.5)' }}
                 />
             )
         }else{
@@ -203,7 +206,7 @@ s
                 <Icon 
                     type="save" 
                     key="save" 
-                    style={{ color:'white' }}
+                    style={{ color:'rgba(255,255,255,0.5)' }}
                 />
             )
         }
@@ -232,32 +235,100 @@ s
         });
     }
 
+    getTimeLeft(){
+        var currentChapter = this.props.currentChapter
+        var currentTime = new Date() 
+        var diffHours = String
+
+        if(currentChapter === 1){
+            diffHours = Math.abs(currentTime - this.props.createdAt.toDate()) / 36e5
+        }else if(currentChapter === 2){
+            diffHours = Math.abs(currentTime - this.props.chapter2.toDate()) / 36e5
+        }else if(currentChapter === 3){
+            diffHours = Math.abs(currentTime - this.props.chapter3.toDate()) / 36e5
+        }else if(currentChapter === 4){
+            currentChapter += 5
+            diffHours = Math.abs(currentTime - this.props.chapter4.toDate()) / 36e5
+        }
+
+        var hoursLeft = 48 - diffHours
+        var minutesLeft = hoursLeft * 60
+
+        if(hoursLeft > 1){
+            return(
+                <Tooltip title="Hours left until chapter selection">
+                    <Tag style={{
+                        background: 'none',
+                        border: '1px solid rgb(255,255,255,0.15)',
+                        color: 'rgb(255,255,255,0.6)'
+                    }}>
+                        <span style={{ display: 'flex', alignItems: 'center'}}>
+                            <Icon style={{ marginRight: '4px' }}type="clock-circle" />
+                            {Math.round(hoursLeft) + 'h'}
+                        </span>
+                    </Tag>
+                </Tooltip>
+            )
+        }else if(hoursLeft > 0) {
+            return(
+                <Tooltip title="Minutes left until chapter selection">
+                    <Tag style={{
+                        background: 'none',
+                        border: '1px solid rgb(255,255,255,0.15)',
+                        color: 'rgb(255,255,255,0.6)'
+                    }}>
+                        {Math.round(minutesLeft) + ' min'}
+                    </Tag>
+                </Tooltip>
+            )
+        }
+    }
+
     render() {
         const { Meta } = Card;
         return (
                     <Card
-                        actions={[        
-                            <button id="cardActionBtn" onClick={this.like}>
-                                {this.renderHeart()}
-                                <span id="likes">
-                                    {this.state.amountOfLikes}
-                                </span>
-                            </button>,
-                            <button id="cardActionBtn" onClick={this.save}>
-                                {this.renderSaveIcon()}
-                            </button>,
+                        actions={[     
+                            
+                            <Tooltip title="Like story">
+                                <button id="cardActionBtn" onClick={this.like}>
+                                    {this.renderHeart()}
+                                    <span id="likes">
+                                        {this.state.amountOfLikes}
+                                    </span>
+                                </button>
+                            </Tooltip>,
+
+                            <Tooltip title="Share story">
+                                <CopyToClipboard text={'cowrite.io/story/' + this.props.id}
+                                    onCopy={() => message.success('Link copied to clipboard')}
+                                >
+                                    <button id="cardActionBtn">
+                                        <Icon type="share-alt"/>
+                                    </button>
+                                </CopyToClipboard>
+                            </Tooltip>,
+
+                            <Tooltip title={this.props.author}>
+                                <button id="cardActionBtn">
+                                    <Icon type="user"/>
+                                </button>
+                            </Tooltip>,
+
                             <Tooltip title="Report this prompt">
                                 <button id="cardActionBtn">
                                     <Icon type="warning" key="warning" />
                                 </button>
                             </Tooltip>
-                            ]}
+                        ]}
                         hoverable={true}
                     >
                         <Link to={{ pathname: '/story/' + this.props.id, 
                             state: { 
                                 id: this.props.id,
-                                auth: this.props.auth
+                                auth: this.props.auth,
+                                yposition: this.props.yposition,
+                                query: this.props.query
                             } 
                         }}>
                         <Meta
@@ -274,14 +345,33 @@ s
                             title = {
                                 <span id="title-container">
                                     <span id="card-title">{this.props.title}</span>
-                                    <Tag>S</Tag>
-                                    <Tag>{this.props.currentChapter}/4 Chapters</Tag>
-                                    <Tag color="#006d75">24h Left</Tag>
+
+                                    <Tag style={{
+                                        background: 'none',
+                                        border: '1px solid rgb(255,255,255,0.15)',
+                                        color: 'rgb(255,255,255,0.6)',
+                                        display: 'flex'
+                                    }}>
+                                        {this.props.currentChapter !== 4 ?
+                                            <Tooltip title="Current chapter">
+                                                <span style={{ display: 'flex', alignItems: 'center'}}>
+                                                    <Icon type="book" style={{ marginRight: '4px' }}/>
+                                                    {this.props.currentChapter +  '/4'}
+                                                </span>
+                                            </Tooltip> :
+                                            'FINAL CHAPTER'
+                                        }
+                                    </Tag>
+
+                                    {this.getTimeLeft()}
                                 </span>
                             }
                             description =  { 
                                 <div>
-                                    <small>{this.props.genre}</small>
+                                    
+                                    <small>
+                                        {this.props.genre}
+                                    </small>
                                     <br></br><br></br>
                                     <span id="card-content">{this.props.content}</span>
                                     <br></br>

@@ -40,19 +40,37 @@ class Prompt extends Component {
             if(hoursLeft > 12){
                 return(
                     <Tooltip title={tooltipTitle}>
-                        <Tag color="#006d75">{Math.round(hoursLeft) + 'h Left'}</Tag>
+                        <Tag style={{
+                            background: 'none',
+                            border: '1px solid rgb(135, 232, 222, 0.5)',
+                            color: '#87e8de'
+                        }}>
+                            {Math.round(hoursLeft) + 'h Left'}
+                        </Tag>
                     </Tooltip>
                 )
             }else if(hoursLeft > 4){
                 return(
                     <Tooltip title={tooltipTitle}>
-                        <Tag color="#faad14">{Math.round(hoursLeft) + 'h Left'}</Tag>
+                        <Tag style={{
+                            background: 'none',
+                            border: '1px solid rgb(135, 232, 222, 0.5)',
+                            color: '#87e8de'
+                        }}>
+                            {Math.round(hoursLeft) + 'h Left'}
+                        </Tag>
                     </Tooltip>
                 )
             }else if(hoursLeft > 1){
                 return(
                     <Tooltip title={tooltipTitle}>
-                        <Tag color="#cf1322">{Math.round(hoursLeft) + 'h Left'}</Tag>
+                        <Tag style={{
+                            background: 'none',
+                            border: '1px solid rgb(135, 232, 222, 0.5)',
+                            color: '#87e8de'
+                        }}>
+                            {Math.round(hoursLeft) + 'h Left'}
+                        </Tag>
                     </Tooltip>
                 )
             }else if(hoursLeft > 0) {
@@ -214,7 +232,11 @@ class Prompt extends Component {
                     title = {
                         <span id="title-container">
                             <span id="card-title">{this.props.title}</span>
-                            <Tag>P</Tag>
+                            <Tag style={{
+                                background: 'none',
+                                border: '1px solid #bae7ff',
+                                color: '#bae7ff'
+                            }}>Prompt</Tag>
                             {this.getTime()}
                         </span>
                     }

@@ -60,10 +60,23 @@ class StoryModal extends Component {
     }
 
     handleCancel(){
-        this.setState({ visible: false }, () => {
-            console.log(this.state.visible);
-        });
-        this.goBack()
+        console.log(document.referrer.substring(0,12))
+        if(document.referrer.substring(0,12) === 'http://local'){
+            this.props.history.push({
+                pathname: '/stories/' + this.props.location.state.query.toLowerCase(),
+                state: { 
+                    query: this.props.location.state.query,
+                    yposition: this.props.location.state.yposition
+                }
+            })
+        }else{
+            this.props.history.push({
+                pathname: '/stories/all',
+                state: { 
+                    query: 'all',
+                }
+            })
+        }
     }
     
     render() {

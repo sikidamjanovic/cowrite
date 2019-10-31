@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Modal, Icon, Form, Input, Select, message } from 'antd';
 import { connect } from 'react-redux'
 import { createPost } from '../../Store/Actions/postActions'
+import { FaPlus } from 'react-icons/fa'
 
 class NewPostModal extends React.Component {
 
@@ -70,8 +71,11 @@ class NewPostModal extends React.Component {
                     onClick={this.showModal}
                     type="primary"
                 >
-                    <Icon type="plus"/>    
-                    {this.props.title}
+                    <div style={{ display: 'flex', alignItems: 'center'}}>
+                        <FaPlus style={{ marginRight: '5px' }}/>
+                        {this.props.title}
+                    </div>
+
                 </Button>
                 <Modal
                     title="New Prompt"

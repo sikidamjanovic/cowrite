@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button,  Select } from 'antd';
+import { Form, Icon, Input, Button,  Row, Col } from 'antd';
 import { connect } from 'react-redux';
 import { signUp } from '../../Store/Actions/authActions'
+import signupbg from '../../img/signupbg.png'
+import '../../App.css'
 
 class SignUpModalDetails extends Component {
   
@@ -28,41 +30,59 @@ class SignUpModalDetails extends Component {
     render() {
         const { authError } = this.props
         return (
+            <Row style= {{ backgroundColor: '#1a1a1a', height: '100%'}}>
 
-            <Form onSubmit={this.handleSubmit} className="signup-form">
-                <Form.Item>
-                    <Input
-                        id="username"
-                        onChange={this.handleChange} 
-                        placeholder="Username"
-                    />
-                </Form.Item>
+                <Col xs={24} md={12} className="left-side-signup">
 
-                <Form.Item>
-                    <Input
-                        id="email"
-                        onChange={this.handleChange} 
-                        placeholder="Email"
-                    />
-                </Form.Item>
+                    <h1>Start Writing.</h1>
 
-                <Form.Item>
-                    <Input
-                        id="password"
-                        onChange={this.handleChange} 
-                        placeholder="Password"
-                    />
-                </Form.Item>
+                    <div className="signup-form">
+                        <Form onSubmit={this.handleSubmit}>
+                            <Form.Item>
+                                <Input
+                                    id="username"
+                                    onChange={this.handleChange} 
+                                    placeholder="Username"
+                                />
+                            </Form.Item>
 
-                <Button type="primary" htmlType="submit">    
-                    <Icon type="plus"/>
-                    Sign Up
-                </Button>
-                <div className="red-text center">
-                    { authError ? <p>{authError}</p> : null }
-                </div>
+                            <Form.Item>
+                                <Input
+                                    id="email"
+                                    onChange={this.handleChange} 
+                                    placeholder="Email"
+                                />
+                            </Form.Item>
 
-            </Form>
+                            <Form.Item>
+                                <Input
+                                    id="password"
+                                    onChange={this.handleChange} 
+                                    placeholder="Password"
+                                />
+                            </Form.Item>
+
+                            <Button type="primary" htmlType="submit" className="sign-up-submit">    
+                                Join
+                            </Button>
+                            
+                            <div className="red-text center">
+                                { authError ? <p>{authError}</p> : null }
+                            </div>
+
+                        </Form>
+                    </div>
+                </Col>
+
+                <Col xs={0} md={12}>
+                    <div className="join-bg">
+                        <img src={signupbg} alt="bg" />
+                    </div>
+                </Col>
+                
+
+            </Row>
+            
     )
   }
 }
