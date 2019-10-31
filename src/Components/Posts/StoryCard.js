@@ -259,12 +259,12 @@ class StoryCard extends Component {
                 <Tooltip title="Hours left until chapter selection">
                     <Tag style={{
                         background: 'none',
-                        border: '1px solid rgb(255,255,255,0.15)',
-                        color: 'rgb(255,255,255,0.6)'
+                        border: '1px solid rgb(135, 232, 222, 0.5)',
+                        color: '#87e8de'
                     }}>
                         <span style={{ display: 'flex', alignItems: 'center'}}>
                             <Icon style={{ marginRight: '4px' }}type="clock-circle" />
-                            {Math.round(hoursLeft) + 'h'}
+                            {Math.round(hoursLeft) + 'h '}
                         </span>
                     </Tag>
                 </Tooltip>
@@ -274,8 +274,8 @@ class StoryCard extends Component {
                 <Tooltip title="Minutes left until chapter selection">
                     <Tag style={{
                         background: 'none',
-                        border: '1px solid rgb(255,255,255,0.15)',
-                        color: 'rgb(255,255,255,0.6)'
+                        border: '1px solid rgb(135, 232, 222, 0.5)',
+                        color: '#87e8de'
                     }}>
                         {Math.round(minutesLeft) + ' min'}
                     </Tag>
@@ -348,9 +348,8 @@ class StoryCard extends Component {
 
                                     <Tag style={{
                                         background: 'none',
-                                        border: '1px solid rgb(255,255,255,0.15)',
-                                        color: 'rgb(255,255,255,0.6)',
-                                        display: 'flex'
+                                        border: '1px solid rgb(135, 232, 222, 0.5)',
+                                        color: '#87e8de'
                                     }}>
                                         {this.props.currentChapter !== 4 ?
                                             <Tooltip title="Current chapter">

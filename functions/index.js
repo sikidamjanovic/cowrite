@@ -50,9 +50,7 @@ const evaluateLikes = ((data, id) => {
             saves: []
         }
 
-        for (let i = 0; i < data.likes.length; i++) {
-            db.collection('users').where())
-        }
+        // TODO: UPDATE USERS LIKE COLLECTION
 
         return createStory(story, id)
     }else{

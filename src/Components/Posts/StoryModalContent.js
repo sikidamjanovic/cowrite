@@ -600,7 +600,6 @@ class StoryModalContent extends React.Component {
 
                         <Button type="link">
                             <Icon type="warning"/>
-                            <small style={{ marginLeft: '5px' }}>  Report</small>
                         </Button>
 
                         <CopyToClipboard text={window.location.href}
@@ -608,7 +607,6 @@ class StoryModalContent extends React.Component {
                         >
                             <Button type="link">
                                 <Icon type="share-alt"/>
-                                <small style={{ marginLeft: '5px' }}>  Share</small>
                             </Button>
                         </CopyToClipboard>
 

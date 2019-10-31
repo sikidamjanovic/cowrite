@@ -234,8 +234,8 @@ class Prompt extends Component {
                             <span id="card-title">{this.props.title}</span>
                             <Tag style={{
                                 background: 'none',
-                                border: '1px solid #bae7ff',
-                                color: '#bae7ff'
+                                border: '1px solid rgb(135, 232, 222, 0.5)',
+                                color: '#87e8de'
                             }}>Prompt</Tag>
                             {this.getTime()}
                         </span>
