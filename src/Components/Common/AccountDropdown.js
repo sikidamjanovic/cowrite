@@ -24,7 +24,7 @@ class AccountDropdown extends Component {
         return (
             <div>
                 <Dropdown overlay={menu} trigger={['click']}>
-                    <Button>
+                    <Button type="dashed">
                         {this.props.auth.displayName} 
                         <Icon type="down" />
                     </Button>

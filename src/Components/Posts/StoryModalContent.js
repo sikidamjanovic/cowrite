@@ -2,7 +2,7 @@ import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
 import StoryComment from '../Posts/StoryComment'
-import { Radio, Button, Icon, Tag, Divider, message, Tooltip, BackTop, Avatar, Popover} from 'antd';
+import { Radio, Button, Icon, Tag, Divider, message, Tooltip, BackTop, Avatar, Popover, Steps} from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import '../../App.css'
@@ -24,9 +24,9 @@ class StoryModalContent extends React.Component {
             submissions: [],
             submissionsLoaded: false,
             photoURL: null,
-            userSubmitted: true
+            userSubmitted: true,
+            selectedChapter: 0
         }
-        this.getSelectedChapter = this.getSelectedChapter.bind(this)
         this.updateCommentSort = this.updateCommentSort.bind(this)
         this.updateCommentSortOrder = this.updateCommentSortOrder.bind(this)
         this.getSubmissions = this.getSubmissions.bind(this)
@@ -44,7 +44,7 @@ class StoryModalContent extends React.Component {
         this.setState({
             amountOfLikes: this.props.likes.length,
             currentChapter: this.props.currentChapter,
-            selectedChapter: this.props.currentChapter
+            selectedChapter: this.props.currentChapter - 1
         })
         this.userLiked()
         this.userSaved()
@@ -61,16 +61,6 @@ class StoryModalContent extends React.Component {
         }
     }
 
-    onChange(e) {
-        this.getSelectedChapter(e.target.value)
-    }
-
-    getSelectedChapter(chapter){
-        this.setState({
-            selectedChapter: chapter
-        })
-    }
-
     getComments(){
 
         var selected = this.props.selectedChapters
@@ -78,7 +68,7 @@ class StoryModalContent extends React.Component {
         var current = this.state.currentChapter
 
         if(current){
-            if(this.state.selectedChapter < current){
+            if((radio + 1) < current){
                 return (
                     <div style={{ 
                         paddingBottom: '24px', 
@@ -90,13 +80,13 @@ class StoryModalContent extends React.Component {
                         <h3 style={{ marginBottom: '12px' }}>Chapter {this.state.selectedChapter}</h3>
                         <Divider/>
                         <StoryComment 
-                            id={selected[radio-1].id}
-                            postId={selected[radio-1].postId}
+                            id={selected[radio].id}
+                            postId={selected[radio].postId}
                             uid={this.props.auth.uid}
-                            author={selected[radio-1].author}
-                            comment={selected[radio-1].content}
-                            likes={selected[radio-1].likes}
-                            likeCount={selected[radio-1].likeCount}
+                            author={selected[radio].author}
+                            comment={selected[radio].content}
+                            likes={selected[radio].likes}
+                            likeCount={selected[radio].likeCount}
                             auth={this.props.auth}
                             selected={true}
                         />
@@ -107,7 +97,7 @@ class StoryModalContent extends React.Component {
                     <Comments
                         id={this.props.id}
                         uid={this.state.uid}
-                        chapter={this.state.selectedChapter}
+                        chapter={this.state.selectedChapter + 1}
                         sort={this.state.sort}
                         sortOrder={this.state.sortOrder}
                         updateSort={this.updateCommentSort}
@@ -126,15 +116,17 @@ class StoryModalContent extends React.Component {
     getEnabledRadios(){
         var current = this.props.currentChapter
         var enabled = []
+        var { Step } = Steps;
         for (let i = 1; i <= current; i++) {
-            enabled.push(
-                <Radio.Button 
-                    style={{
-                        marginRight: '10px', border: '2px solid rgba(0, 109, 117,0.5)',
-                        color: 'rgba(0, 109, 117)'
-                    }} 
-                    value={i}>{i}
-                </Radio.Button>)
+            if(i === current){
+                enabled.push(
+                    <Step icon={<Icon type="hourglass" />} title={"Chapter " + i} description={this.timeLeftForSubmission()}/>
+                )
+            }else{
+                enabled.push(
+                    <Step icon={<Icon type="check-circle" />}title={"Chapter " + i} description={"Click To See"}/>
+                )
+            }
         }
         return enabled
     }
@@ -143,6 +135,7 @@ class StoryModalContent extends React.Component {
         var current = this.props.currentChapter
         var disabled = []
         var submissionDate = ''
+        var { Step } = Steps;
 
         for (let i = current + 1; i <= 4; i++) {
 
@@ -155,9 +148,7 @@ class StoryModalContent extends React.Component {
             }
 
             disabled.push(
-                <Tooltip title={'Chapter ' + i + ' submission starts in ' + submissionDate}>
-                    <Radio.Button style={{marginRight: '10px'}} disabled={true} value={i}>{i}</Radio.Button>
-                </Tooltip>
+                <Step title={"Chapter " + i} style={{ opacity: 0.3 }} disabled={true} description={"In " + submissionDate}/>
             )
         }
         return disabled
@@ -176,13 +167,19 @@ class StoryModalContent extends React.Component {
         }
     }
 
+    onChange = selectedChapter => {
+        this.setState({ selectedChapter });
+    };
+
     renderChapterRadios(){
-        var current = this.props.currentChapter
+        const { selectedChapter } = this.state;
         return(
-            <Radio.Group onChange={this.onChange} defaultValue={current} size="large" buttonStyle="solid">
-                {this.getEnabledRadios()}
-                {this.getDisabledRadios()}
-            </Radio.Group>
+            <div>
+                <Steps type="navigation" size="small" status="process" current={selectedChapter} onChange={this.onChange}>
+                    {this.getEnabledRadios()}
+                    {this.getDisabledRadios()}
+                </Steps>
+            </div>
         )
     }
 
@@ -476,13 +473,13 @@ class StoryModalContent extends React.Component {
         var minutesLeft = hoursLeft * 60
 
         if(hoursLeft > 12){
-            return <Tag color='#171f22'>{Math.round(hoursLeft) + 'h left in chapter ' + currentChapter}</Tag>
+            return Math.round(hoursLeft) + ' Hours Left'
         }else if(hoursLeft > 4){
-            return <Tag color='#171f22'>{Math.round(hoursLeft) + 'h left in chapter ' + currentChapter}</Tag>
+            return Math.round(hoursLeft) + ' Hours Left'
         }else if(hoursLeft > 1){
-            return <Tag color="#cf1322">{Math.round(hoursLeft) + 'h left in chapter ' + currentChapter}</Tag>
+            return Math.round(hoursLeft) + ' Hours Left'
         }else if(hoursLeft > 0) {
-            return <Tag color="#cf1322">{Math.round(minutesLeft) + 'min left in chapter ' + currentChapter}</Tag>
+            return Math.round(minutesLeft) + ' Hours Left'
         }else if(minutesLeft <= 0){
             this.getTopSubmission()
         }
@@ -533,23 +530,18 @@ class StoryModalContent extends React.Component {
                 <div className="modal-body">
 
                     {/* HEADER */}
-                    <h2 style={{ margin: 0 }}>{this.props.title}</h2>
 
-                    <Divider/>
+                    <div>
+                        <span style={{ display: 'flex', flexDirection: 'row' }}>
+                            <h2>{this.props.title}</h2>
+                        </span>
+                    </div>
+
+                    <br></br>
 
                     {/* PROMPT STYLING */}
-                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '48px' }}>
-                        <div>
-                            <span>
-                                <Popover content={this.props.author} title="">
-                                    {this.state.photoURL !== null ?
-                                        <Avatar src={this.state.photoURL}/> :
-                                        <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
-                                }
-                                </Popover>
-                            </span>
-                        </div>
-                        <div style={{ marginLeft: '14px' }}>
+                    <div>
+                        <div style={{ marginBottom: '48px' }}>
                             {this.props.prompt}
                         </div>
                     </div>        
@@ -591,6 +583,13 @@ class StoryModalContent extends React.Component {
                             </Button>
                         }
 
+                        <Popover content={this.props.author} title="">
+                            {this.state.photoURL !== null ?
+                                <Avatar src={this.state.photoURL} style={{ marginRight: '14px' }} /> :
+                                <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                            }
+                        </Popover>
+
                         <Button type="link" onClick={this.like}>
                             {this.renderHeart()}
                             <span id="likes">
@@ -614,9 +613,6 @@ class StoryModalContent extends React.Component {
 
                     {this.renderSubmitHeader()}
                     <Divider/>
-                    <small style={{ marginRight: '10px' }}>Chapters </small>
-                    {this.timeLeftForSubmission()}
-                    <br></br><br></br>
                     {this.renderChapterRadios()}
                 </div>
 

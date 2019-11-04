@@ -42,7 +42,8 @@ class Sidebar extends Component {
                     position: 'fixed',
                     overflowY: 'scroll',
                     overflowX: 'hidden',
-                    top: 15,
+                    paddingTop: '100px',
+                    top: 0,
                     left: 0
                 } : {
                     position: 'fixed',
@@ -91,9 +92,10 @@ class Sidebar extends Component {
                             state: {
                                 query: 'Horror'
                             }
-                        }}/>
-                        <GiRaiseZombie style={styles.IconStyle}/>
-                        Horror
+                        }}>
+                            <GiRaiseZombie style={styles.IconStyle}/>
+                            Horror
+                        </NavLink>
                     </Menu.Item>
                     <Menu.Item key="/prompts/fantasy">
                         <NavLink to={{
@@ -101,11 +103,12 @@ class Sidebar extends Component {
                             state: {
                                 query: 'Fantasy'
                             }
-                        }}/>
-                        <GiShardSword 
-                            style={styles.IconStyle}
-                        />
-                        Fantasy
+                        }}>
+                            <GiShardSword 
+                                style={styles.IconStyle}
+                            />
+                            Fantasy
+                        </NavLink>
                     </Menu.Item>
                     <Menu.Item key="/prompts/romance">
                         <NavLink to={{
@@ -113,11 +116,12 @@ class Sidebar extends Component {
                             state: {
                                 query: 'Romance'
                             }
-                        }}/>
-                        <FaHeart 
-                            style={styles.IconStyle}
-                        />
-                        Romance
+                        }}>
+                            <FaHeart 
+                                style={styles.IconStyle}
+                            />
+                            Romance
+                        </NavLink>
                     </Menu.Item>
                     <Menu.Item key="/prompts/scifi">
                         <NavLink to={{
@@ -125,11 +129,12 @@ class Sidebar extends Component {
                             state: {
                                 query: 'SciFi'
                             }
-                        }}/>
-                        <FaRobot 
-                            style={styles.IconStyle} 
-                        />
-                        SciFi
+                        }}>
+                            <FaRobot 
+                                style={styles.IconStyle} 
+                            />
+                            SciFi
+                        </NavLink>
                     </Menu.Item>
 
                 </SubMenu>
@@ -153,9 +158,10 @@ class Sidebar extends Component {
                             state: {
                                 query: 'all'
                             }
-                        }}/>
-                        <FaList style={styles.IconStyle}/>
-                        All
+                        }}>
+                            <FaList style={styles.IconStyle}/>
+                            All
+                        </NavLink>
                     </Menu.Item>
                     <Menu.Item key="/stories/comedy">
                         <NavLink to={{
@@ -163,11 +169,12 @@ class Sidebar extends Component {
                             state: {
                                 query: 'Comedy'
                             }
-                        }}/>
-                        <FaLaughSquint               
-                            style={styles.IconStyle}
-                        />
-                        Comedy
+                        }}>
+                            <FaLaughSquint               
+                                style={styles.IconStyle}
+                            />
+                            Comedy
+                        </NavLink>
                     </Menu.Item>
                     <Menu.Item key="/stories/horror">
                         <NavLink to={{
@@ -175,11 +182,12 @@ class Sidebar extends Component {
                             state: {
                                 query: 'Horror'
                             }
-                        }}/>
-                        <GiRaiseZombie 
-                            style={styles.IconStyle}
-                        />
-                        Horror
+                        }}>
+                            <GiRaiseZombie 
+                                style={styles.IconStyle}
+                            />
+                            Horror
+                        </NavLink>
                     </Menu.Item>
                     <Menu.Item key="/stories/fantasy">
                         <NavLink to={{
@@ -187,11 +195,12 @@ class Sidebar extends Component {
                             state: {
                                 query: 'Fantasy'
                             }
-                        }}/>
-                        <GiShardSword 
-                            style={styles.IconStyle}
-                        />
-                        Fantasy
+                        }}>
+                            <GiShardSword 
+                                style={styles.IconStyle}
+                            />
+                            Fantasy
+                        </NavLink>
                     </Menu.Item>
                     <Menu.Item key="/stories/romance">
                         <NavLink to={{
@@ -199,11 +208,12 @@ class Sidebar extends Component {
                             state: {
                                 query: 'Romance'
                             }
-                        }}/>
-                        <FaHeart 
-                            style={styles.IconStyle}
-                        />
-                        Romance
+                        }}>
+                            <FaHeart 
+                                style={styles.IconStyle}
+                            />
+                            Romance
+                        </NavLink>
                     </Menu.Item>
                     <Menu.Item key="/stories/scifi">
                         <NavLink to={{
@@ -211,13 +221,12 @@ class Sidebar extends Component {
                             state: {
                                 query: 'SciFi'
                             }
-                        }}/>
-                        <FaRobot style={styles.IconStyle}/>
-                        SciFi
+                        }}>
+                            <FaRobot style={styles.IconStyle}/>
+                            SciFi
+                        </NavLink>
                     </Menu.Item>
-                    
                 </SubMenu>
-
             </Menu>        
         );
     }

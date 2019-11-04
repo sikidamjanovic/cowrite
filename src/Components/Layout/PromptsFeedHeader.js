@@ -15,7 +15,7 @@ class PromptsFeedHeader extends Component {
                             <h1 style={{ marginRight: '10px', marginBottom: 0}}>PROMPTS</h1>
                             <HelpModal/>
                         </div>
-                        <h4>Story ideas created and voted on by users.</h4>
+                        <h4 style={{ opacity: 0.8, marginTop: '14px' }}>Story ideas created and voted on by users.</h4>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'row '}}>
                         {this.props.loggedIn ? 

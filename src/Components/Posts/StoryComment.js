@@ -211,10 +211,10 @@ class StoryComment extends Component {
                 }
                 content={
                     this.props.selected ?
-                    <div style={{ marginTop: 'px'}}>
+                    <div style={{ paddingRight: '48px'}}>
                         <p>{this.props.comment}</p>
                     </div> :
-                    <p>{this.props.comment}</p>
+                    <p style={{ paddingRight: '48px'}}>{this.props.comment}</p>
                 }
                 datetime={
                     this.props.selected ? 

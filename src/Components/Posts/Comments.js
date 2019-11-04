@@ -92,7 +92,7 @@ class Comments extends Component {
     getCommentSort(){
         const { Option } = Select;
         return(
-            <div style={{marginBottom: '20px'}}>
+            <div style={{marginBottom: '24px'}}>
                 {this.state.submissions.length + ' Submissions'}
                 <Select 
                     defaultValue="time" 
@@ -106,7 +106,6 @@ class Comments extends Component {
                 <Button style={{ marginLeft: '5px' }} onClick={this.handleSortOrder}>
                     {this.renderSortArrow()}
                 </Button>
-                <Divider/>
             </div>
         )
     }

@@ -16,7 +16,7 @@ MAIN COMPONENT STYLING
     height: 100px;
     padding-top: 20px;
     font-family: 'Lato';
-    background-color: #171F22
+    background: none;
 }
 
 @media screen and (max-width: 1199px) {
@@ -46,7 +46,7 @@ SCROLL STYLING
 
 /* width */
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 0px;
     opacity: 0.2;
   }
   
@@ -101,10 +101,18 @@ SCROLL STYLING
 #navBar{
     display: flex;
     position: fixed;
+    background: none;
+    border: none;
+    height: 100px;
+    line-height: 100px;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 101;
+}
+
+#navBar button{
+    box-shadow: 10px 20px 20px rgb(0,0,0,0.2);
 }
 
 @media screen and (max-width: 768px) {
@@ -121,7 +129,7 @@ SCROLL STYLING
         padding-top: 100px;
     }
     #feed-container{
-        margin-top: 150px !important;
+        margin-top: 100px !important;
     }
 }
 
@@ -150,19 +158,14 @@ SCROLL STYLING
 
 #feed-header-container {
     position: relative;
-    height: 200px;
-    margin-bottom: 50px;
+    margin-bottom: 25px;
+    min-height: 300px;
 }
 
 #feed-header-text h1{
-    color: white;
-    font-family: 'Lato';
-    font-size: 2em;
-}
-
-#feed-header-text h4{
-    color: white;
-    margin-bottom: 20px;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: bold;
+    font-size: 1.8em;
 }
 
 #feed-header-button{
@@ -183,7 +186,7 @@ SCROLL STYLING
 }
 
 #feed-container{
-    margin-top: 100px;
+    margin-top: 50px;
 }
 
 /* 
@@ -203,6 +206,19 @@ SCROLL STYLING
 
 #card-title{
     margin-right: 20px;
+}
+
+.heart-filled{
+    color: #ff7a45;
+    font-weight: bold;
+}
+
+.heart{
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.heart:hover{
+    color: #ff7a45;
 }
 
 /* 
@@ -302,10 +318,12 @@ SCROLL STYLING
     margin-right: 20px;
 }
 
-
 .modal-buttons button{
     padding: 0;
     margin-right: 21px;
+}
+
+.chapter-steps{
 }
 
 /* 
@@ -363,11 +381,11 @@ SCROLL STYLING
 }
 
 .ant-menu-item-selected{
-    background-color: rgba(0, 0, 0, 0.3) !important;
+    background-color: #0e1314 !important;
 }
 
 .ant-menu-item-selected > a, .ant-menu-submenu-selected{
-    color: white !important;
+    color: #006d75 !important;
 }
 
 #card-content{
@@ -414,12 +432,24 @@ SCROLL STYLING
     background-image: none !important
 }
 
+.ant-menu{
+    background-color: #101618;
+    border: none;
+}
+
 .ant-btn-link{
     color: rgba(255, 255, 255, 0.4);
 }
 
 .ant-menu-item, .ant-menu-submenu-title{
     font-weight: bold;
+    color: rgb(255, 255, 255, 0.7) !important;
+    background-color: #101618;
+    margin: 0 !important;
+}
+
+.ant-menu-item:active{
+    background-color: rgb(0,0,0,0.5);
 }
 
 .ant-menu-submenu-horizontal{
@@ -439,10 +469,17 @@ SCROLL STYLING
 
 .ant-menu-item{
     transition: 0.4s;
+    height: 50px !important;
+}
+
+.ant-menu-item a{
+    display: flex;
+    align-items: center;
+    height: 50px;
 }
 
 .ant-menu-item:hover{
-    transform: scale(1.08);
+    transform: scale(1.05);;
 }
 
 .ant-form-item input{
@@ -451,4 +488,50 @@ SCROLL STYLING
 
 .ant-btn-primary{
     font-weight: bold;
+}
+
+.ant-menu-item::after{
+    border-right: 5px solid #006d75 !important;
+}
+
+.ant-back-top-content{
+    background: #006d75;
+    box-shadow: 10px 10px 20px rgba(0,0,0, 0.2);
+}
+
+@media screen and (max-width: 1199px) {
+    .ant-steps{
+        width: 100% !important;
+        
+    }
+    .ant-steps-item-title{
+        font-size: 10px !important;
+    }
+    .ant-steps-item-description{
+        font-size: 8px !important;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .ant-steps{
+        width: 70% !important;
+    }
+    .ant-steps-item-title{
+        font-size: 14px !important;
+    }
+    .ant-steps-item-description{
+        font-size: 10px !important;
+    }
+}
+
+.ant-steps{
+    padding: 0px 28px 0px 0px !important;
+    padding-top: 24px !important;
+    padding-bottom: 24px !important;
+}
+
+.ant-steps-item::after{
+    border: 1px solid #00000075 !important;
+    border-left: none !important;
+    border-bottom: none !important;
 }

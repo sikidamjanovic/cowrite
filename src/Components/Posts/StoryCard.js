@@ -171,21 +171,29 @@ class StoryCard extends Component {
     renderHeart(){
         if(this.state.userLiked){
             return(
-                <Icon 
-                    type="heart"
-                    theme="filled"
-                    size="large"
-                    key="heart" 
-                    style={{ color:'#ff7a45' }}
-                />
+                <span className="heart-filled">
+                    <Icon 
+                        type="heart"
+                        theme="filled"
+                        size="large"
+                        key="heart"
+                    />
+                    <span id="likes">
+                        {this.state.amountOfLikes}
+                    </span>
+                </span>
             )
         }else{
             return(
-                <Icon 
-                    type="heart" 
-                    key="heart" 
-                    style={{ color:'rgba(255,255,255,0.5)' }}
-                />
+                <span className="heart">
+                    <Icon
+                        type="heart" 
+                        key="heart"
+                    />
+                    <span id="likes">
+                        {this.state.amountOfLikes}
+                    </span>
+                </span>
             )
         }
     }
@@ -292,9 +300,8 @@ class StoryCard extends Component {
                             
                             <Tooltip title="Like story">
                                 <button id="cardActionBtn" onClick={this.like}>
-                                    {this.renderHeart()}
-                                    <span id="likes">
-                                        {this.state.amountOfLikes}
+                                    <span className="heart-hover">
+                                        {this.renderHeart()}
                                     </span>
                                 </button>
                             </Tooltip>,
