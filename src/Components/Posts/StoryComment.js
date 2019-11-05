@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Comment, Tooltip, Icon, Avatar, message, Tag, Popover, Popconfirm } from 'antd'
+import { Comment, Tooltip, Icon, Avatar, message, Popover, Popconfirm } from 'antd'
 import { getFirestore } from "redux-firestore";
 var firebase = require('firebase');
 
@@ -9,11 +9,13 @@ class StoryComment extends Component {
         super(props);
         this.state = {
             amountOfLikes : 0,
-            userLiked: false
+            userLiked: false,
+            expanded: false
         }
         this.like = this.like.bind(this)
         this.userLiked = this.userLiked.bind(this)
         this.deleteSubmission = this.deleteSubmission.bind(this)
+        this.expandComment = this.expandComment.bind(this)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -182,6 +184,41 @@ class StoryComment extends Component {
         }
     }
 
+    expandComment(){
+        this.setState({
+            expanded: !this.state.expanded
+        })
+    }
+
+    expandStyle(){
+        if(this.state.expanded){
+            return({
+                height: 'auto'
+            })
+        }else{
+            return({
+                height: '6.3em',
+                overflow: 'hidden'
+            })
+        }
+    }
+
+    expandIcon(){
+        if(this.state.expanded){
+            return(
+                <Tooltip title="See less">
+                    <Icon style={{ color: "#006d75" }} type="minus-square"/>
+                </Tooltip>
+            )
+        }else{
+            return(
+                <Tooltip title="See full submission">
+                    <Icon style={{ color: "#006d75" }} type="plus-square"/>
+                </Tooltip>
+            )
+        }
+    }
+
     render() {  
         const actions = [
             <span onClick={this.like} key="comment-basic-like">
@@ -200,13 +237,21 @@ class StoryComment extends Component {
                 author={<a>{this.props.author}</a>}
                 actions={this.props.selected ? '' : actions}
                 avatar={
-                    <span>
+                    <span 
+                    style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        alignItems: 'center'
+                    }}>
                         <Popover content={this.props.author} title="">
                             {this.state.photoURL !== null ?
                                 <Avatar src={this.state.photoURL}/> :
                                 <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
                         }
                         </Popover>
+                        <div onClick={this.expandComment} style={{ marginTop: '14px' }}>
+                            {this.expandIcon()}
+                        </div>
                     </span>
                 }
                 content={
@@ -214,7 +259,9 @@ class StoryComment extends Component {
                     <div style={{ paddingRight: '48px'}}>
                         <p>{this.props.comment}</p>
                     </div> :
-                    <p style={{ paddingRight: '48px'}}>{this.props.comment}</p>
+                    <div style={this.expandStyle()}>
+                        {this.props.comment}
+                    </div>
                 }
                 datetime={
                     this.props.selected ? 

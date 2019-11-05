@@ -20,9 +20,7 @@ const Nav = (props) => {
                     }}> 
                         <Col xs={24} md={3} className="nav-col-left">
                             <Menu.Item key="app">
-
                                     <img id="logo" src={logo} alt="logo"/>
-
                             </Menu.Item>
                         </Col>
                     </NavLink>

@@ -443,7 +443,9 @@ class StoryModalContent extends React.Component {
                                     paddingBottom: '30px',
                                     paddingRight: '10px',
                                     paddingLeft: '10px',
-                                    paddingTop: '10px' }} 
+                                    paddingTop: '10px',
+                                    marginRight: '14px'
+                                }} 
                                 type="primary"
                             >
                                 <Icon type="plus"/> Submit Chapter {this.props.currentChapter}</Button>    
@@ -454,7 +456,9 @@ class StoryModalContent extends React.Component {
                                     paddingBottom: '30px',
                                     paddingRight: '10px',
                                     paddingLeft: '10px',
-                                    paddingTop: '10px' }} 
+                                    paddingTop: '10px', 
+                                    marginRight: '28px'
+                                }} 
                                 type="primary"
                                 disabled={this.state.userSubmitted}
                             >
@@ -471,26 +475,39 @@ class StoryModalContent extends React.Component {
                             </Button>
                         }
 
-                        <Button type="link" onClick={this.like}>
-                            {this.renderHeart()}
-                            <span id="likes">
-                                {this.state.amountOfLikes}
+                        <Button 
+                            type="link" 
+                            onClick={this.like} 
+                        >
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                                {this.renderHeart()}
+                                <span id="likes">
+                                    {this.state.amountOfLikes}
+                                </span>
                             </span>
                         </Button>
 
-                        <Button type="link">
-                            <Icon type="user"/>
-                        </Button>
+                        <Tooltip title={this.props.author}>
+                            <Button type="link">
+                                <span style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon type="user"/>
+                                </span>
+                            </Button>
+                        </Tooltip>
 
                         <Button type="link">
-                            <Icon type="warning"/>
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                                <Icon type="warning"/>
+                            </span>
                         </Button>
 
                         <CopyToClipboard text={window.location.href}
                             onCopy={() => message.success('Link copied to clipboard')}
                         >
                             <Button type="link">
-                                <Icon type="share-alt"/>
+                                <span style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon type="share-alt"/>
+                                </span>
                             </Button>
                         </CopyToClipboard>
 

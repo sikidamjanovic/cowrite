@@ -110,7 +110,7 @@ class Prompt extends Component {
                     theme="filled"
                     size="large"
                     key="heart" 
-                    style={{ color:'#cf1322' }}
+                    style={{ color:'#ff7a45' }}
                 />
             )
         }else{

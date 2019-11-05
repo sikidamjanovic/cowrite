@@ -79,6 +79,7 @@ SCROLL STYLING
 .nav-col-left{
     display: flex;
     justify-content: center;
+    background-color: #101618;
 }
 
 .nav-col-right{
