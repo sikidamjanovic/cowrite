@@ -3,6 +3,7 @@ import StoryModalContent from './StoryModalContent'
 import { Modal, Button, Icon, Tag } from 'antd';
 import { connect } from 'react-redux'
 import { getFirestore } from 'redux-firestore'
+import '../../App.css'
 
 class StoryModal extends Component {
 
@@ -92,6 +93,7 @@ class StoryModal extends Component {
                     onCancel={this.handleCancel}
                     footer={null}
                     style={{ top: 0, padding: 0 }}
+                    className={"story-modal"}
                 >
                     <StoryModalContent
                         id = {storyId}
@@ -119,7 +121,7 @@ class StoryModal extends Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null} 
-                    style={{ top: 0, minHeight: '100vh'}}
+                    className={"story-modal"}
                 >
                 </Modal>
             )

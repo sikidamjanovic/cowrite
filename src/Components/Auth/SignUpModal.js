@@ -39,6 +39,7 @@ class SignUpModal extends React.Component {
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null}
+                    className={'sign-up-modal'}
                 >
                 <SignUpModalDetails/>
                 </Modal>

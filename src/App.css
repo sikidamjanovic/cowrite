@@ -1,3 +1,13 @@
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px #18292b inset !important;
+    color: red !important;
+    border-color: #006d75;
+}
+
+
 /* 
 ---------------
 MAIN COMPONENT STYLING
@@ -160,6 +170,21 @@ SCROLL STYLING
     margin-bottom: 0;
 }
 
+.login-form-modal{
+    background-color: #1a1a1a;
+}
+
+.login-form{
+    background-color: #1a1a1a;
+    padding: 24px !important;
+}
+
+.login-form h3{
+    font-weight: bold;
+    margin-bottom: 28px;
+    padding-top: 28px;
+}
+
 /* 
 ------------------
 ** FEED STYLING ***
@@ -283,6 +308,10 @@ SCROLL STYLING
 ** SIGN UP MODAL STYLING 
 */
 
+.sign-up-modal{
+    width: 60% !important
+}
+
 .left-side-signup{
     display: flex;
     flex-direction: column;
@@ -316,6 +345,10 @@ SCROLL STYLING
 **  STORY MODAL STYLING ***
 ------------------
 */
+
+.story-modal{
+    width: 60% !important;
+}
 
 #number-of-submissions{
     margin-left: 20px;
@@ -386,12 +419,6 @@ SCROLL STYLING
 @media screen and (max-width: 992px) {
     .ant-modal{
         width: 90% !important;
-    }
-}
-
-@media screen and (min-width: 993px) {
-    .ant-modal{
-        width: 60% !important;
     }
 }
 
@@ -558,4 +585,8 @@ SCROLL STYLING
 .ant-badge-count{
     background: #ff7a45 !important;
     font-weight: bold !important;
+}
+
+.ant-modal-content{
+    box-shadow: none !important;
 }

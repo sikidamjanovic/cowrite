@@ -1,6 +1,7 @@
 import React from 'react';
 import SignInModalDetails from '../Auth/SignInModalDetails'
 import { Button, Modal, Icon } from 'antd';
+import '../../App.css'
 
 class SignInModal extends React.Component {
 
@@ -33,14 +34,12 @@ class SignInModal extends React.Component {
                     Login
                 </Button>
                 <Modal
-                    title="Login"
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null}
+                    className="login-form-modal"
                 >
-                
-                <SignInModalDetails/>
-                    
+                    <SignInModalDetails/>   
                 </Modal>
             </div>
     );
