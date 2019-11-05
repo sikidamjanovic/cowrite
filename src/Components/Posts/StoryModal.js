@@ -108,7 +108,7 @@ class StoryModal extends Component {
                         chapter3 = {data.chapter3}
                         chapter4 = {data.chapter4}
                         likes = {data.likes}
-                        saves = {data.saves}
+                        numberOfChapters = {data.numberOfChapters}
                         selectedChapters = {data.selectedChapters}
                     />      
                 </Modal>

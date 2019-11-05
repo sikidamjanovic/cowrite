@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Icon, Avatar, Tag, Popover, Tooltip, message } from 'antd';
+import { Card, Icon, Avatar, Tag, Popover, Tooltip, message, Popconfirm } from 'antd';
 import '../../App.css'
 import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
@@ -16,6 +16,7 @@ class Prompt extends Component {
             photoURL: null
         }
         this.like = this.like.bind(this)
+        this.delete = this.delete.bind(this)
         this.userLiked = this.userLiked.bind(this)
         this.getAvatar = this.getAvatar.bind(this)
     }
@@ -197,6 +198,51 @@ class Prompt extends Component {
         });
     }
 
+    delete(){
+        getFirestore().collection('posts').doc(this.props.id).delete().then(function() {
+            message.success('Prompt deleted')
+        }).catch(function(error) {
+            message.error('Prompt could not be deleted. Try again.')
+        });
+    }
+
+    deletePromptButton(){
+        if(!this.props.auth.isEmpty){
+            if(this.props.auth.displayName === this.props.author){
+                return(
+                    <Tooltip title="Delete prompt">
+                        <Popconfirm
+                            title="Are you sure delete this prompt?"
+                            onConfirm={this.delete}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <button id="cardActionBtn">
+                                <Icon type="delete" key="delete"/>
+                            </button>
+                        </Popconfirm>
+                    </Tooltip>
+                )
+            }else{
+                return(
+                    <Tooltip title="Report this prompt">
+                        <button id="cardActionBtn">
+                            <Icon type="warning" key="warning" />
+                        </button>
+                    </Tooltip>
+                )    
+            }
+        }else{
+            return(
+                <Tooltip title="Report this prompt">
+                    <button id="cardActionBtn">
+                        <Icon type="warning" key="warning" />
+                    </button>
+                </Tooltip>
+            )
+        }
+    }
+
     render() { 
         const { Meta } = Card;
         return (
@@ -211,11 +257,7 @@ class Prompt extends Component {
                     <button id="cardActionBtn">
                         <Icon type="book" key="book" />
                     </button>,
-                    <Tooltip title="Report this prompt">
-                        <button id="cardActionBtn">
-                            <Icon type="warning" key="warning" />
-                        </button>
-                    </Tooltip>
+                    this.deletePromptButton()
                 ]}
             >
                 <Meta

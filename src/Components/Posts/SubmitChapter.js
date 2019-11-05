@@ -57,16 +57,9 @@ class SubmitChapter extends Component {
                 </Form.Item>
                 <span 
                     style={
-                        this.state.remainingCharacters < 0 
-                            ? 
-                            { 
-                                color: '#fa541c', 
-                                opacity: 0.5
-                            } 
-                            : 
-                            { 
-                                opacity: 0.5 
-                            }
+                        this.state.remainingCharacters < 0 ? 
+                            { color: '#fa541c', opacity: 0.5} : 
+                            { opacity: 0.5 }
                     }
                 >
                     <small>{this.state.remainingCharacters} characters left</small>

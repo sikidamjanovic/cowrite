@@ -16,9 +16,11 @@ class Home extends Component {
             query: '',
             getAll: false,
             sort: 'createdAt',
+            sortOrder: 'desc',
             yposition: 0
         }
         this.sort = this.sort.bind(this)
+        this.sortOrder = this.sortOrder.bind(this)
     }
 
     componentDidMount(){
@@ -59,13 +61,40 @@ class Home extends Component {
         })
     }
 
+    sortOrder(){
+        if(this.state.sortOrder === 'desc'){
+            this.setState({
+                sortOrder: 'asc'
+            })
+        }else{
+            this.setState({
+                sortOrder: 'desc'
+            })
+        }
+    }
+
     showRelevantFeed(){
-        if(window.location.pathname.slice(1,8) == 'prompts'){
-            return <PromptsFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query}/>
-        }else if(window.location.pathname.slice(1,8) == 'profile'){
+        if(window.location.pathname.slice(1,8) === 'prompts'){
+            return <PromptsFeed 
+                        sort={this.sort} 
+                        order={this.state.sortOrder}
+                        sortOrder={this.sortOrder} 
+                        sortBy={this.state.sort} 
+                        getAll={this.state.getAll} 
+                        query={this.state.query}
+                    />
+        }else if(window.location.pathname.slice(1,8) === 'profile'){
             return <UserProfile auth={this.props.auth} isOwnProfile={true}/>
         }else{
-            return <StoriesFeed sort={this.sort} sortBy={this.state.sort} getAll={this.state.getAll} query={this.state.query} yposition={this.state.yposition}/>
+            return <StoriesFeed 
+                        sort={this.sort} 
+                        order={this.state.sortOrder}
+                        sortOrder={this.sortOrder} 
+                        sortBy={this.state.sort} 
+                        getAll={this.state.getAll} 
+                        query={this.state.query} 
+                        yposition={this.state.yposition}
+                    />
         }
     }    
 

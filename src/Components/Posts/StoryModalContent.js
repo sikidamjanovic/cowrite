@@ -2,7 +2,7 @@ import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
 import StoryComment from '../Posts/StoryComment'
-import { Radio, Button, Icon, Tag, Divider, message, Tooltip, BackTop, Avatar, Popover, Steps} from 'antd';
+import { Button, Icon, Tag, Divider, message, Tooltip, BackTop, Popover, Steps} from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import '../../App.css'
@@ -20,10 +20,8 @@ class StoryModalContent extends React.Component {
             likes: [],
             amountOfLikes: 0,
             userLiked: false,
-            userSaved: false,
             submissions: [],
             submissionsLoaded: false,
-            photoURL: null,
             userSubmitted: true,
             selectedChapter: 0
         }
@@ -35,8 +33,6 @@ class StoryModalContent extends React.Component {
         this.onChange = this.onChange.bind(this)
         this.like = this.like.bind(this)
         this.userLiked = this.userLiked.bind(this)
-        this.save = this.save.bind(this)
-        this.userSaved = this.userSaved.bind(this)
         this.hasUserSubmitted = this.hasUserSubmitted.bind(this)
     }
 
@@ -47,9 +43,7 @@ class StoryModalContent extends React.Component {
             selectedChapter: this.props.currentChapter - 1
         })
         this.userLiked()
-        this.userSaved()
         this.getDisabledRadios()
-        this.getAvatar()
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -133,11 +127,12 @@ class StoryModalContent extends React.Component {
 
     getDisabledRadios(){
         var current = this.props.currentChapter
+        var numberOfChapters = this.props.numberOfChapters
         var disabled = []
         var submissionDate = ''
         var { Step } = Steps;
 
-        for (let i = current + 1; i <= 4; i++) {
+        for (let i = current + 1; i <= numberOfChapters; i++) {
 
             if(i == 2){
                 submissionDate = this.timeUntilNextChapter(this.props.chapter2.toDate())
@@ -370,90 +365,7 @@ class StoryModalContent extends React.Component {
         }
     }
 
-    save(){
-        if (this.props.auth.isEmpty == false) {
-            if(this.state.userSaved == false){
-                this.setState({
-                    userSaved: true
-                })
-                getFirestore().collection('stories').doc(this.props.id).update({
-                    saves: firebase.firestore.FieldValue.arrayUnion(
-                        {
-                            uid: this.props.auth.uid
-                        }
-                    )
-                })
-                getFirestore().collection('users').doc(this.props.auth.displayName).collection('saved').doc().set({
-                    type: 'story',
-                    postId: this.props.id,
-                    author: this.props.author,
-                    content: this.props.prompt,
-                    genre: this.props.genre,
-                    title: this.props.title
-                })
-                message.success('Story saved!')
-            }else{
-                this.setState({
-                    userSaved: false
-                })
-                // Delete user from posts 'likes' collection
-                getFirestore().collection('stories').doc(this.props.id).update({
-                    saves: firebase.firestore.FieldValue.arrayRemove(
-                        {
-                            uid: this.props.auth.uid
-                        }
-                    )
-                })
-                // Delete post from users 'liked' collection
-                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('saved').where('postId','==',this.props.id)
-                delete_query.get().then(function(querySnapshot){
-                    querySnapshot.forEach(function(doc){
-                        doc.ref.delete();
-                    })
-                })
-            }
-        }else{
-            message.warning('Please login or sign up to save stories.')
-        } 
-    }
-
-    userSaved(){
-        const saves = this.props.saves
-        for (let i = 0; i < saves.length; i++) {
-            if(saves[i].uid === this.props.auth.uid){
-                this.setState({
-                    userSaved: true
-                })
-            }else{
-                this.setState({
-                    userSaved: false
-                })
-            }
-        }
-    }
-
-    renderSaveIcon(){
-        if(this.state.userSaved){
-            return(
-                <Icon 
-                    type="save"
-                    theme="filled"
-                    size="large"
-                    key="save" 
-                    style={{ color:'rgba(255, 255, 255, 0.4)' }}
-                />
-            )
-        }else{
-            return(
-                <Icon 
-                    type="save" 
-                    key="save" 
-                    style={{ color:'rgba(255, 255, 255, 0.4)' }}
-                />
-            )
-        }
-    }
-
+    
     timeLeftForSubmission(){
         var currentChapter = this.props.currentChapter
         var currentTime = new Date() 
@@ -488,7 +400,7 @@ class StoryModalContent extends React.Component {
 
     endSubmissionProcess(topSubmission){
         // If story is not on last chapter do following
-        if(this.props.currentChapter !== 4){
+        if(this.props.currentChapter !== this.props.numberOfChapters){
             getFirestore().collection('stories').doc(this.props.id).update({
                 currentChapter: this.props.currentChapter + 1,
                 selectedChapters: firebase.firestore.FieldValue.arrayUnion(
@@ -496,30 +408,6 @@ class StoryModalContent extends React.Component {
                 )
             })
         }
-    }
-
-    getAvatar(){
-        var that = this
-        getFirestore().collection('users').doc(this.props.author).get()
-        .then(function(doc) {
-            if (doc.exists) {
-                console.log("DOC: ", doc.data());
-                if(doc.data().photoURL !== undefined){
-                    that.setState({
-                        photoURL: doc.data().photoURL
-                    })
-                }else{
-                    that.setState({
-                        photoURL: null
-                    })
-                }
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
     }
 
     render() { 
@@ -583,18 +471,15 @@ class StoryModalContent extends React.Component {
                             </Button>
                         }
 
-                        <Popover content={this.props.author} title="">
-                            {this.state.photoURL !== null ?
-                                <Avatar src={this.state.photoURL} style={{ marginRight: '14px' }} /> :
-                                <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
-                            }
-                        </Popover>
-
                         <Button type="link" onClick={this.like}>
                             {this.renderHeart()}
                             <span id="likes">
-                                <small>{this.state.amountOfLikes}</small>
+                                {this.state.amountOfLikes}
                             </span>
+                        </Button>
+
+                        <Button type="link">
+                            <Icon type="user"/>
                         </Button>
 
                         <Button type="link">

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
-import { Row, Col, Breadcrumb, Select, Spin } from 'antd'
+import { Row, Col, Breadcrumb, Select, Spin, Icon, Button } from 'antd'
 import StoryCard from '../Posts/StoryCard'
 import '../../App.css'
 import StoriesFeedHeader from './StoriesFeedHeader'
@@ -14,9 +14,11 @@ class StoriesFeed extends Component {
         this.state={
             sort: "new",
             loaded: false,
-            yposition: 0
+            yposition: 0,
+            sortOrder: 'desc'
         }
         this.handleSort = this.handleSort.bind(this)
+        this.handleSortOrder = this.handleSortOrder.bind(this)
     }
 
     handleSort(value){
@@ -84,6 +86,7 @@ class StoriesFeed extends Component {
                                 title={post.title} 
                                 genre={post.genre}
                                 content={post.prompt}
+                                numberOfChapters={post.numberOfChapters}
                                 author={post.author}
                                 authorPic={post.authorPic ? post.authorPic : null}
                                 createdAt={post.createdAt}
@@ -94,7 +97,6 @@ class StoriesFeed extends Component {
                                 chapter3={post.chapter3}
                                 chapter4={post.chapter4}
                                 likes={post.likes}
-                                saves={post.saves}
                                 yposition={this.state.yposition}
                                 query={this.props.query}
                             />
@@ -120,6 +122,19 @@ class StoriesFeed extends Component {
         }
     }
 
+    getSortOrder(){
+        var order = this.props.order
+        if(order === 'desc'){
+            return <Button onClick={this.handleSortOrder}><Icon type="down"/></Button>
+        }else{
+            return <Button onClick={this.handleSortOrder}><Icon type="up"/></Button>
+        }
+    }
+
+    handleSortOrder(){
+        return this.props.sortOrder()
+    }
+
     render() {
         const { Option } = Select;
         return (
@@ -138,17 +153,18 @@ class StoriesFeed extends Component {
                             </Breadcrumb>
                         </div>
                         <div>
-                            <Select defaultValue="createdAt" style={{ width: 100 }} onChange={this.handleSort}>
+                            <Select showArrow={false} defaultValue="createdAt" style={{ width: 100 }} onChange={this.handleSort}>
                                 <Option value="createdAt">
                                     New
                                 </Option>
-                                <Option value="Hot">
-                                    Hot
+                                <Option value="likeCount">
+                                    Top
                                 </Option>
-                                <Option value="author">
-                                    Author
+                                <Option value="numberOfChapters">
+                                    Chapters
                                 </Option>
                             </Select>
+                            {this.getSortOrder()}
                         </div>
                     </div>
                     {this.getStories()}
@@ -168,19 +184,17 @@ const mapStateToProps = (state, props) => {
 export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
-        
-        const { getAll, sortBy, query } = props
-
+        const { getAll, sortBy, query, order } = props
         if(getAll == true){
             return [
                 { collection: 'stories',
-                  orderBy: [sortBy, 'desc']
+                  orderBy: [sortBy, order]
                 }
             ]
         }else{
             return [{ 
                 collection: 'stories', 
-                orderBy: [sortBy, 'desc'],
+                orderBy: [sortBy, order],
                 where: ["genre", "==", query] 
             }]
         }

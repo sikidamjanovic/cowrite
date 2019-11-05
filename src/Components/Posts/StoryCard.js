@@ -14,13 +14,10 @@ class StoryCard extends Component {
             likes: [],
             amountOfLikes: 0,
             userLiked: false,
-            userSaved: false,
             photoURL: null
         }
         this.like = this.like.bind(this)
-        this.save = this.save.bind(this)
         this.userLiked = this.userLiked.bind(this)
-        this.userSaved = this.userSaved.bind(this)
         this.getAvatar = this.getAvatar.bind(this)
     }
 
@@ -29,13 +26,12 @@ class StoryCard extends Component {
             amountOfLikes: this.props.likes.length
         })
         this.userLiked()
-        this.userSaved()
         this.getAvatar()
     }
 
     like(){
         if (this.props.auth.isEmpty === false) {
-            if(this.state.userLiked == false){
+            if(this.state.userLiked === false){
                 this.setState({
                     userLiked: true,
                     amountOfLikes: this.state.amountOfLikes + 1
@@ -56,7 +52,6 @@ class StoryCard extends Component {
                     genre: this.props.genre,
                     title: this.props.title,
                     likes: this.props.likes,
-                    saves: this.props.saves,
                     createdAt: this.props.createdAt
                 })
                 message.success('Story liked!')
@@ -85,72 +80,6 @@ class StoryCard extends Component {
         }else{
             message.warning('Please login or sign up to like prompts')
         } 
-    }
-
-    save(){
-        if (this.props.auth.isEmpty === false) {
-            if(this.state.userSaved === false){
-                this.setState({
-                    userSaved: true
-                })
-                getFirestore().collection('stories').doc(this.props.id).update({
-                    saves: firebase.firestore.FieldValue.arrayUnion(
-                        {
-                            uid: this.props.auth.uid
-                        }
-                    )
-                })
-                getFirestore().collection('users').doc(this.props.auth.displayName).collection('saved').doc().set({
-                    type: 'story',
-                    postId: this.props.id,
-                    author: this.props.author,
-                    content: this.props.content,
-                    genre: this.props.genre,
-                    title: this.props.title,
-                    time: this.props.time,
-                    likes: this.props.likes,
-                    likeCount: this.props.likes.length,
-                    saves: this.props.saves
-                })
-                message.success('Story saved!')
-            }else{
-                this.setState({
-                    userSaved: false
-                })
-                // Delete user from posts 'likes' collection
-                getFirestore().collection('stories').doc(this.props.id).update({
-                    saves: firebase.firestore.FieldValue.arrayRemove(
-                        {
-                            uid: this.props.auth.uid
-                        }
-                    )
-                })
-                // Delete post from users 'liked' collection
-                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('saved').where('postId','==',this.props.id)
-                delete_query.get().then(function(querySnapshot){
-                    querySnapshot.forEach(function(doc){
-                        doc.ref.delete();
-                    })
-                })
-            }
-        }else{
-            message.warning('Please login or sign up to save stories.')
-        } 
-    }
-
-    userSaved(){
-        const saves = this.props.saves
-        for (let i = 0; i < saves.length; i++) {
-            if(saves[i].uid === this.props.auth.uid){
-                this.setState({
-                    userSaved: true
-                })
-            }else{
-                this.setState({
-                    userSaved: false
-                })
-            }
-        }
     }
 
     userLiked(){
@@ -194,28 +123,6 @@ class StoryCard extends Component {
                         {this.state.amountOfLikes}
                     </span>
                 </span>
-            )
-        }
-    }
-
-    renderSaveIcon(){
-        if(this.state.userSaved){
-            return(
-                <Icon 
-                    type="save"
-                    theme="filled"
-                    size="large"
-                    key="save" 
-                    style={{ color:'rgba(255,255,255,0.5)' }}
-                />
-            )
-        }else{
-            return(
-                <Icon 
-                    type="save" 
-                    key="save" 
-                    style={{ color:'rgba(255,255,255,0.5)' }}
-                />
             )
         }
     }
@@ -295,97 +202,97 @@ class StoryCard extends Component {
     render() {
         const { Meta } = Card;
         return (
-                    <Card
-                        actions={[     
-                            
-                            <Tooltip title="Like story">
-                                <button id="cardActionBtn" onClick={this.like}>
-                                    <span className="heart-hover">
-                                        {this.renderHeart()}
-                                    </span>
-                                </button>
-                            </Tooltip>,
+                <Card
+                    actions={[     
+                        
+                        <Tooltip title="Like story">
+                            <button id="cardActionBtn" onClick={this.like}>
+                                <span className="heart-hover">
+                                    {this.renderHeart()}
+                                </span>
+                            </button>
+                        </Tooltip>,
 
-                            <Tooltip title="Share story">
-                                <CopyToClipboard text={'cowrite.io/story/' + this.props.id}
-                                    onCopy={() => message.success('Link copied to clipboard')}
-                                >
-                                    <button id="cardActionBtn">
-                                        <Icon type="share-alt"/>
-                                    </button>
-                                </CopyToClipboard>
-                            </Tooltip>,
-
-                            <Tooltip title={this.props.author}>
+                        <Tooltip title="Share story">
+                            <CopyToClipboard text={'cowrite.io/story/' + this.props.id}
+                                onCopy={() => message.success('Link copied to clipboard')}
+                            >
                                 <button id="cardActionBtn">
-                                    <Icon type="user"/>
+                                    <Icon type="share-alt"/>
                                 </button>
-                            </Tooltip>,
+                            </CopyToClipboard>
+                        </Tooltip>,
 
-                            <Tooltip title="Report this prompt">
-                                <button id="cardActionBtn">
-                                    <Icon type="warning" key="warning" />
-                                </button>
-                            </Tooltip>
-                        ]}
-                        hoverable={true}
-                    >
-                        <Link to={{ pathname: '/story/' + this.props.id, 
-                            state: { 
-                                id: this.props.id,
-                                auth: this.props.auth,
-                                yposition: this.props.yposition,
-                                query: this.props.query
-                            } 
-                        }}>
-                        <Meta
-                            avatar={
-                                <span>
-                                    <Popover content={this.props.author} title="">
-                                        {this.state.photoURL !== null ?
-                                            <Avatar src={this.state.photoURL}/> :
-                                            <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                        <Tooltip title={this.props.author}>
+                            <button id="cardActionBtn">
+                                <Icon type="user"/>
+                            </button>
+                        </Tooltip>,
+
+                        <Tooltip title="Report this prompt">
+                            <button id="cardActionBtn">
+                                <Icon type="warning" key="warning" />
+                            </button>
+                        </Tooltip>
+                    ]}
+                    hoverable={true}
+                >
+                    <Link to={{ pathname: '/story/' + this.props.id, 
+                        state: { 
+                            id: this.props.id,
+                            auth: this.props.auth,
+                            yposition: this.props.yposition,
+                            query: this.props.query
+                        } 
+                    }}>
+                    <Meta
+                        avatar={
+                            <span>
+                                <Popover content={this.props.author} title="">
+                                    {this.state.photoURL !== null ?
+                                        <Avatar src={this.state.photoURL}/> :
+                                        <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                                }
+                                </Popover>
+                            </span>
+                        }
+                        title = {
+                            <span id="title-container">
+                                <span id="card-title">{this.props.title}</span>
+
+                                <Tag style={{
+                                    background: 'none',
+                                    border: '1px solid rgb(135, 232, 222, 0.5)',
+                                    color: '#87e8de'
+                                }}>
+                                    {this.props.currentChapter !== this.props.numberOfChapters ?
+                                        <Tooltip title="Current chapter">
+                                            <span style={{ display: 'flex', alignItems: 'center'}}>
+                                                <Icon type="book" style={{ marginRight: '4px' }}/>
+                                                {this.props.currentChapter +  '/' + this.props.numberOfChapters}
+                                            </span>
+                                        </Tooltip> :
+                                        'FINAL CHAPTER'
                                     }
-                                    </Popover>
-                                </span>
-                            }
-                            title = {
-                                <span id="title-container">
-                                    <span id="card-title">{this.props.title}</span>
+                                </Tag>
 
-                                    <Tag style={{
-                                        background: 'none',
-                                        border: '1px solid rgb(135, 232, 222, 0.5)',
-                                        color: '#87e8de'
-                                    }}>
-                                        {this.props.currentChapter !== 4 ?
-                                            <Tooltip title="Current chapter">
-                                                <span style={{ display: 'flex', alignItems: 'center'}}>
-                                                    <Icon type="book" style={{ marginRight: '4px' }}/>
-                                                    {this.props.currentChapter +  '/4'}
-                                                </span>
-                                            </Tooltip> :
-                                            'FINAL CHAPTER'
-                                        }
-                                    </Tag>
-
-                                    {this.getTimeLeft()}
-                                </span>
-                            }
-                            description =  { 
-                                <div>
-                                    
-                                    <small>
-                                        {this.props.genre}
-                                    </small>
-                                    <br></br><br></br>
-                                    <span id="card-content">{this.props.content}</span>
-                                    <br></br>
-                                </div>
-                            }
-                        />
-                        </Link>
-                    </Card>
+                                {this.getTimeLeft()}
+                            </span>
+                        }
+                        description =  { 
+                            <div>
+                                
+                                <small>
+                                    {this.props.genre}
+                                </small>
+                                <br></br><br></br>
+                                <span id="card-content">{this.props.content}</span>
+                                <br></br>
+                            </div>
+                        }
+                    />
+                    </Link>
+                </Card>
             )
     }
 }

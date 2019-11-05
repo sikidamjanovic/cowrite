@@ -50,7 +50,6 @@ class ProfilePostFeed extends Component {
                                         authorPic={post.authorPic ? post.authorPic : null}
                                         time={post.createdAt}
                                         likes={post.likes}
-                                        saves={post.saves}
                                     />
                                 :
                                     <Prompt

@@ -17,6 +17,7 @@ class PromptsFeed extends Component {
             loaded: false
         }
         this.handleSort = this.handleSort.bind(this)
+        this.handleSortOrder = this.handleSortOrder.bind(this)
     }
 
     handleSort(value){
@@ -80,6 +81,19 @@ class PromptsFeed extends Component {
         }
     }
 
+    getSortOrder(){
+        var order = this.props.order
+        if(order === 'desc'){
+            return <Button onClick={this.handleSortOrder}><Icon type="down"/></Button>
+        }else{
+            return <Button onClick={this.handleSortOrder}><Icon type="up"/></Button>
+        }
+    }
+
+    handleSortOrder(){
+        return this.props.sortOrder()
+    }
+
     render() {
         const { Option } = Select;
         return (
@@ -98,7 +112,7 @@ class PromptsFeed extends Component {
                             </Breadcrumb>
                         </div>
                         <div>
-                            <Select defaultValue="createdAt" style={{ width: 100 }} onChange={this.handleSort}>
+                            <Select showArrow={false} defaultValue="createdAt" style={{ width: 100 }} onChange={this.handleSort}>
                                 <Option value="createdAt">
                                     {/* <Icon type="bulb"/> */}
                                     New
@@ -113,6 +127,7 @@ class PromptsFeed extends Component {
                                 </Option>
                             </Select>
                         </div>
+                        {this.getSortOrder()}
                     </div>
                     <div>
                         {this.getPrompts()}
@@ -134,18 +149,18 @@ export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
 
-        const { getAll, query, sortBy } = props
+        const { getAll, query, sortBy, order } = props
 
         if(getAll == true){
             return [
                 { collection: 'posts',
-                  orderBy: [sortBy, 'desc']
+                  orderBy: [sortBy, order]
                 }
             ]
         }else{
             return [{ 
                 collection: 'posts', 
-                orderBy: [sortBy, 'desc'],
+                orderBy: [sortBy, order],
                 where: ["genre", "==", query] 
             }]
         }

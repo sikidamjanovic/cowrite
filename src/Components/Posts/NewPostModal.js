@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, Icon, Form, Input, Select, message } from 'antd';
+import { Button, Modal, Icon, Form, Input, Select, message, Radio } from 'antd';
 import { connect } from 'react-redux'
 import { createPost } from '../../Store/Actions/postActions'
 import { FaPlus } from 'react-icons/fa'
@@ -13,7 +13,9 @@ class NewPostModal extends React.Component {
             content: '',
             genre: '',
             likes: [],
-            visible: false
+            visible: false,
+            remainingCharacters: 500,
+            numberOfChapters: null
         }
         this.handleCancel = this.handleCancel.bind(this)
         this.showModal = this.showModal.bind(this)
@@ -32,6 +34,12 @@ class NewPostModal extends React.Component {
     }
 
     handleChange = (e) => {
+        if(e.target.id === 'content'){
+            var content = e.target.value.toString()
+            this.setState({
+                remainingCharacters: 500 - content.length
+            })
+        }
         this.setState({
             [e.target.id]: e.target.value
         })
@@ -40,6 +48,12 @@ class NewPostModal extends React.Component {
     handleSelectChange = (e) => {
         this.setState({
             genre: e
+        })
+    }
+
+    handleRadioChange = (e) => {
+        this.setState({
+            numberOfChapters: e.target.value
         })
     }
 
@@ -52,8 +66,12 @@ class NewPostModal extends React.Component {
     validateForm(state){
         if(state.title.length < 4 || state.content.length < 10){
             return message.error('Title or content length is too short.')
-        }else if(state.genre.length == 0){
+        }else if(state.genre.length === 0){
             return message.error('Please select a category.')
+        }else if(state.numberOfChapters === null){
+            return message.error('Please select amount of chapters')
+        }else if(state.remainingCharacters < 0){
+            return message.error('Content is too long.')
         }else{
             this.props.createPost(state)
             this.handleCancel()
@@ -94,13 +112,31 @@ class NewPostModal extends React.Component {
                                 placeholder="Title"
                             />
                         </Form.Item>
-                        <Form.Item>
+                        <Form.Item style={{ marginBottom: 0 }}>
                             <TextArea
                                 id="content" 
                                 onChange={this.handleChange}
                                 rows={5}
                                 placeholder="Prompt"
                             />
+                        </Form.Item>
+                        <span 
+                            style={
+                                this.state.remainingCharacters < 0 ? 
+                                    { color: '#fa541c', opacity: 0.5} : 
+                                    { opacity: 0.5 }
+                            }
+                        >
+                            <small>{this.state.remainingCharacters} characters left</small>
+                        </span>
+                        <br></br><br></br>
+                        <Form.Item>
+                            <small>Number of chapters</small><br></br>
+                            <Radio.Group buttonStyle="solid" onChange={this.handleRadioChange}>
+                                <Radio.Button value={2}>2</Radio.Button>
+                                <Radio.Button value={3}>3</Radio.Button>
+                                <Radio.Button value={4}>4</Radio.Button>
+                            </Radio.Group>
                         </Form.Item>
                         <Form.Item>
                             <Select

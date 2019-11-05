@@ -40,14 +40,14 @@ const evaluateLikes = ((data, id) => {
             prompt: data.content,
             genre: data.genre,
             title: data.title,
+            numberOfChapters: data.numberOfChapters,
             createdAt: posted,
             currentChapter: 1,
             chapter2: chapter2,
             chapter3: chapter3,
             chapter4: chapter4,
             likes: [],
-            likeCount: 0,
-            saves: []
+            likeCount: 0
         }
 
         // TODO: UPDATE USERS LIKE COLLECTION
@@ -64,7 +64,14 @@ const evaluateLikes = ((data, id) => {
 const createStory = ((story, id )=> {
     return db.collection('stories')
         .add(story)
-        .then(
-            db.collection('posts').doc(id).delete()
-        )
+        .then(docRef => {
+            db.collection('posts').doc(id).delete(),
+            db.collection('notifications').doc().set({
+                title: story.title,
+                notification: 'converted to story',
+                id: docRef.id,
+                time: new Date()
+            })
+            return null
+        })
 })

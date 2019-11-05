@@ -100,7 +100,6 @@ class UserProfile extends Component {
                     <Radio.Group defaultValue="posts" buttonStyle="solid">
                         <Radio.Button value="posts">Your Posts</Radio.Button>
                         <Radio.Button value="liked">Liked</Radio.Button>
-                        <Radio.Button value="saved">Saved</Radio.Button>
                         <Radio.Button value="Delete">Delete</Radio.Button>
                     </Radio.Group>
                 </Row>

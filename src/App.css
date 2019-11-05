@@ -98,6 +98,27 @@ SCROLL STYLING
     margin-left: 10px;
 }
 
+#notification:hover{
+    color: #006d75 !important;
+    transform: scale(1.025);
+}
+
+#notification{
+    transition: 0.4s;
+    background-color: #101618;
+    color: rgba(255, 255, 255, 0.8) !important
+}
+
+#notification-badge{
+    color: white;
+    transition: 0.3s;
+}
+
+#notification-badge:hover{
+    color: #006d75;
+    cursor: pointer;
+}
+
 #navBar{
     display: flex;
     position: fixed;
@@ -323,9 +344,6 @@ SCROLL STYLING
     margin-right: 21px;
 }
 
-.chapter-steps{
-}
-
 /* 
 ------------------
 **  HELP CAROUSEL STYLING ***
@@ -534,4 +552,9 @@ SCROLL STYLING
     border: 1px solid #00000075 !important;
     border-left: none !important;
     border-bottom: none !important;
+}
+
+.ant-badge-count{
+    background: #ff7a45 !important;
+    font-weight: bold !important;
 }
