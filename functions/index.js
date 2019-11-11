@@ -62,7 +62,8 @@ const createStory = ((story, id )=> {
                 title: story.title,
                 notification: 'converted to story',
                 id: docRef.id,
-                time: now.toString()
+                time: now.toString(),
+                date: now
             })
             return null
         })

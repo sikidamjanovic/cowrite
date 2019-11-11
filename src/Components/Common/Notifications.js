@@ -92,7 +92,7 @@ class Notifications extends Component {
                                 <small 
                                     style={{ opacity: 0.6 }}
                                 >
-                                {notifications[i].notification} - {this.getTime(new Date(), notifications[i])}
+                                {notifications[i].notification} - {this.getTime(new Date(), notifications[i].date.toDate())}
                                 </small>
                             </div>
                         </Menu.Item>
@@ -113,17 +113,12 @@ class Notifications extends Component {
     }
 
     getTime(current, posted){
-        var diffMs = (current - posted); // milliseconds between now & Christmas
-        var diffDays = Math.floor(diffMs / 86400000); // days
-        var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-        var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-
-        if(diffDays > 1){
-            return diffDays + ' days ago'
-        }else if(diffHrs > 1){
-            return diffHrs + ' hours ago'
-        }else if(diffMins > 1){
-            return diffMins + ' min ago'
+        var diffMin = (current - posted) / 60000
+        
+        if(diffMin > 60){
+            return Math.round(diffMin * 60) + 'h ago'
+        }else if(diffMin > 1){
+            return Math.round(diffMin) + ' min ago'
         }else{
             return 'now'
         }
@@ -163,7 +158,8 @@ export default compose(
         return [
             { 
                 collection: 'notifications',
-                sortBy: 'time'
+                sortBy: 'time',
+                limit: 10
             }
         ]
     })

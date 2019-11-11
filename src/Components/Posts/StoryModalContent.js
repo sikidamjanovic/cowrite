@@ -65,7 +65,7 @@ class StoryModalContent extends React.Component {
         var current = this.state.currentChapter
 
         if(current){
-            if((radio + 1) < current || this.props.complete){
+            if((radio + 1) < current){
                 return (
                     <div style={{ 
                         paddingBottom: '24px', 
