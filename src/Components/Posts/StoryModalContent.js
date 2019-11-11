@@ -2,7 +2,7 @@ import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
 import StoryComment from '../Posts/StoryComment'
-import { Button, Icon, Tag, Divider, message, Tooltip, BackTop, Popover, Steps} from 'antd';
+import { Button, Icon, Divider, message, Tooltip, BackTop, Steps } from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import '../../App.css'
@@ -23,7 +23,8 @@ class StoryModalContent extends React.Component {
             submissions: [],
             submissionsLoaded: false,
             userSubmitted: true,
-            selectedChapter: 0
+            selectedChapter: 0,
+            timeLeft: 0 // Minutes left in chapter
         }
         this.updateCommentSort = this.updateCommentSort.bind(this)
         this.updateCommentSortOrder = this.updateCommentSortOrder.bind(this)
@@ -34,6 +35,7 @@ class StoryModalContent extends React.Component {
         this.like = this.like.bind(this)
         this.userLiked = this.userLiked.bind(this)
         this.hasUserSubmitted = this.hasUserSubmitted.bind(this)
+        this.timeLeft = this.timeLeft.bind(this)
     }
 
     componentDidMount(){
@@ -43,15 +45,16 @@ class StoryModalContent extends React.Component {
             selectedChapter: this.props.currentChapter - 1
         })
         this.userLiked()
-        this.getDisabledRadios()
     }
 
     componentDidUpdate(prevProps, prevState){
         if(prevState.submissions !== this.state.submissions){
             this.setState({
                 submissionsLoaded: true
+            },() => {
+                this.hasUserSubmitted()
+                this.timeLeft()
             })
-            this.hasUserSubmitted()
         }
     }
 
@@ -62,7 +65,7 @@ class StoryModalContent extends React.Component {
         var current = this.state.currentChapter
 
         if(current){
-            if((radio + 1) < current){
+            if((radio + 1) < current || this.props.complete){
                 return (
                     <div style={{ 
                         paddingBottom: '24px', 
@@ -71,8 +74,8 @@ class StoryModalContent extends React.Component {
                         paddingRight: '24px',
                         backgroundColor: '#111717'
                     }}>
-                        <h3 style={{ marginBottom: '12px' }}>Chapter {this.state.selectedChapter}</h3>
-                        <Divider/>
+                        {/* <h3 style={{ marginBottom: '12px' }}>Chapter {this.state.selectedChapter + 1}</h3>
+                        <Divider/> */}
                         <StoryComment 
                             id={selected[radio].id}
                             postId={selected[radio].postId}
@@ -110,15 +113,29 @@ class StoryModalContent extends React.Component {
     getEnabledRadios(){
         var current = this.props.currentChapter
         var enabled = []
+        var timeLeft = this.state.timeLeft
         var { Step } = Steps;
         for (let i = 1; i <= current; i++) {
-            if(i === current){
+            if(i === current && this.props.complete === false){
                 enabled.push(
-                    <Step icon={<Icon type="hourglass" />} title={"Chapter " + i} description={this.timeLeftForSubmission()}/>
+                    <Step 
+                        icon={<Icon type="hourglass" />} 
+                        title={"Chapter " + i} 
+                        description={
+                            timeLeft > 60 ? 
+                                Math.round(timeLeft * 60) + ' Hrs Left' 
+                            : 
+                                Math.round(timeLeft) + ' Min Left'
+                        }
+                    />
                 )
             }else{
                 enabled.push(
-                    <Step icon={<Icon type="check-circle" />}title={"Chapter " + i} description={"Click To See"}/>
+                    <Step 
+                        icon={<Icon type="check-circle" />}
+                        title={"Chapter " + i} 
+                        description={this.props.complete ? null : "Complete"}
+                    />
                 )
             }
         }
@@ -129,37 +146,24 @@ class StoryModalContent extends React.Component {
         var current = this.props.currentChapter
         var numberOfChapters = this.props.numberOfChapters
         var disabled = []
-        var submissionDate = ''
         var { Step } = Steps;
 
         for (let i = current + 1; i <= numberOfChapters; i++) {
-
-            if(i == 2){
-                submissionDate = this.timeUntilNextChapter(this.props.chapter2.toDate())
-            }else if(i == 3){
-                submissionDate = this.timeUntilNextChapter(this.props.chapter3.toDate())
-            }else if(i == 4){
-                submissionDate = this.timeUntilNextChapter(this.props.chapter4.toDate())
-            }
-
             disabled.push(
-                <Step title={"Chapter " + i} style={{ opacity: 0.3 }} disabled={true} description={"In " + submissionDate}/>
+                <Step 
+                    title={"Chapter " + i} 
+                    style={{ opacity: 0.3 }} 
+                    disabled={true} 
+                    description={
+                        i === current + 1 ?
+                            'Up Next'
+                        :
+                            ''
+                    }
+                />
             )
         }
         return disabled
-    }
-
-    timeUntilNextChapter(nextChapterDate){
-        var now = new Date()
-        var diffMin = nextChapterDate - now / 1000
-        var diffHours = Math.abs(now - nextChapterDate) / 36e5
-        if(diffHours > 24){
-            return Math.round(diffHours / 24)  + ' days'
-        }else if(diffHours < 24){
-            return Math.round(diffHours) + ' hours'
-        }else if(diffHours < 1 && diffHours > 0){
-            return Math.round(diffMin) + ' minutes'
-        }
     }
 
     onChange = selectedChapter => {
@@ -199,15 +203,14 @@ class StoryModalContent extends React.Component {
     }
 
     getTopSubmission(){
+        var submissions = this.state.submissions
+        var equalAmountOfLikes = []
+        // Sort submissions by like count
+        submissions.sort(function(a, b){
+            return b.likeCount - a.likeCount
+        })
 
-        if(this.state.submissionsLoaded && this.state.submissions.length > 0){
-
-            var submissions = this.state.submissions
-            var equalAmountOfLikes = []
-            // Sort submissions by like count
-            submissions.sort(function(a, b){
-                return b.likeCount - a.likeCount
-            })
+        if(submissions.length > 0 && this.state.submissionsLoaded){
             // If top likes are equal, push to array
             if(submissions.length > 1){
                 for (let i = 0; i < submissions.length - 1; i++) {
@@ -228,7 +231,10 @@ class StoryModalContent extends React.Component {
             }else{
                 this.endSubmissionProcess(submissions[0])
             }
+        }else{
+            getFirestore().collection('stories').doc(this.props.id).delete()
         }
+
     }
 
     openSubmitPanel(){
@@ -366,34 +372,39 @@ class StoryModalContent extends React.Component {
     }
 
     
-    timeLeftForSubmission(){
-        var currentChapter = this.props.currentChapter
-        var currentTime = new Date() 
-        var diffHours = String
+    timeLeft(){
+        var current = this.props.currentChapter
+        var created = this.props.createdAt.toDate()
+        var diffMins
+        var now = new Date()
+        var chapter2 = new Date(created.getTime() + 3*60000);
+        var chapter3 = new Date(chapter2.getTime() + 3*60000);
+        var chapter4 = new Date(chapter3.getTime() + 3*60000);
+        var final = new Date(chapter4.getTime() + 3*60000);
 
-        if(currentChapter === 1){
-            diffHours = Math.abs(currentTime - this.props.createdAt.toDate()) / 36e5
-        }else if(currentChapter === 2){
-            diffHours = Math.abs(currentTime - this.props.chapter2.toDate()) / 36e5
-        }else if(currentChapter === 3){
-            diffHours = Math.abs(currentTime - this.props.chapter3.toDate()) / 36e5
-        }else if(currentChapter === 4){
-            diffHours = Math.abs(currentTime - this.props.chapter4.toDate()) / 36e5
+        switch(current) {
+            case 1:
+                diffMins = (chapter2 - now) / 60000;
+                break;
+            case 2:
+                diffMins = (chapter3 - now) / 60000;
+                break;
+            case 3:
+                diffMins = (chapter4 - now) / 60000;
+                break;
+            case 4:
+                diffMins = (final - now) / 60000;
+                break;    
+            default:
+                break;
         }
 
-        var hoursLeft = 48 - diffHours
-        var minutesLeft = hoursLeft * 60
-
-        if(hoursLeft > 12){
-            return Math.round(hoursLeft) + ' Hours Left'
-        }else if(hoursLeft > 4){
-            return Math.round(hoursLeft) + ' Hours Left'
-        }else if(hoursLeft > 1){
-            return Math.round(hoursLeft) + ' Hours Left'
-        }else if(hoursLeft > 0) {
-            return Math.round(minutesLeft) + ' Hours Left'
-        }else if(minutesLeft <= 0){
+        if(diffMins < 0){
             this.getTopSubmission()
+        }else{
+            this.setState({
+                timeLeft: diffMins
+            })
         }
 
     }
@@ -403,6 +414,13 @@ class StoryModalContent extends React.Component {
         if(this.props.currentChapter !== this.props.numberOfChapters){
             getFirestore().collection('stories').doc(this.props.id).update({
                 currentChapter: this.props.currentChapter + 1,
+                selectedChapters: firebase.firestore.FieldValue.arrayUnion(
+                    topSubmission
+                )
+            })
+        }else{
+            getFirestore().collection('stories').doc(this.props.id).update({
+                complete: true,
                 selectedChapters: firebase.firestore.FieldValue.arrayUnion(
                     topSubmission
                 )
@@ -512,7 +530,6 @@ class StoryModalContent extends React.Component {
                         </CopyToClipboard>
 
                     </div>
-
                     {this.renderSubmitHeader()}
                     <Divider/>
                     {this.renderChapterRadios()}

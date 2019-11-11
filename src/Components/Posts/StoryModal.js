@@ -112,6 +112,7 @@ class StoryModal extends Component {
                         likes = {data.likes}
                         numberOfChapters = {data.numberOfChapters}
                         selectedChapters = {data.selectedChapters}
+                        complete= {data.complete}
                     />      
                 </Modal>
             );

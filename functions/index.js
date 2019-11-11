@@ -25,16 +25,10 @@ const evaluateLikes = ((data, id) => {
     if(data.likes.length >= 1){
 
         var posted = new Date()
-        var chapter2 = new Date()
-        var chapter3 = new Date()
-        var chapter4 = new Date()
-
-        chapter2.setDate(chapter2.getDate() + 2);
-        chapter3.setDate(chapter3.getDate() + 4);
-        chapter4.setDate(chapter4.getDate() + 6);
 
         story = {
             promptId: id,
+            complete: false,
             author: data.author,
             authorPic: data.authorPic,
             prompt: data.content,
@@ -43,9 +37,6 @@ const evaluateLikes = ((data, id) => {
             numberOfChapters: data.numberOfChapters,
             createdAt: posted,
             currentChapter: 1,
-            chapter2: chapter2,
-            chapter3: chapter3,
-            chapter4: chapter4,
             likes: [],
             likeCount: 0
         }
@@ -62,6 +53,7 @@ const evaluateLikes = ((data, id) => {
     Delete the original prompt (now a story)
 */
 const createStory = ((story, id )=> {
+    var now = new Date()
     return db.collection('stories')
         .add(story)
         .then(docRef => {
@@ -70,7 +62,7 @@ const createStory = ((story, id )=> {
                 title: story.title,
                 notification: 'converted to story',
                 id: docRef.id,
-                time: new Date()
+                time: now.toString()
             })
             return null
         })

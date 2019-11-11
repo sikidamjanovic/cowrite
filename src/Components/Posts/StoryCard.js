@@ -151,25 +151,33 @@ class StoryCard extends Component {
     }
 
     getTimeLeft(){
-        var currentChapter = this.props.currentChapter
-        var currentTime = new Date() 
-        var diffHours = String
+        var current = this.props.currentChapter
+        var created = this.props.createdAt.toDate()
+        var diffMins
+        var now = new Date()
+        var chapter2 = new Date(created.getTime() + 3*60000);
+        var chapter3 = new Date(chapter2.getTime() + 3*60000);
+        var chapter4 = new Date(chapter3.getTime() + 3*60000);
+        var final = new Date(chapter4.getTime() + 3*60000);
 
-        if(currentChapter === 1){
-            diffHours = Math.abs(currentTime - this.props.createdAt.toDate()) / 36e5
-        }else if(currentChapter === 2){
-            diffHours = Math.abs(currentTime - this.props.chapter2.toDate()) / 36e5
-        }else if(currentChapter === 3){
-            diffHours = Math.abs(currentTime - this.props.chapter3.toDate()) / 36e5
-        }else if(currentChapter === 4){
-            currentChapter += 5
-            diffHours = Math.abs(currentTime - this.props.chapter4.toDate()) / 36e5
+        switch(current) {
+            case 1:
+                diffMins = (chapter2 - now) / 60000;
+                break;
+            case 2:
+                diffMins = (chapter3 - now) / 60000;
+                break;
+            case 3:
+                diffMins = (chapter4 - now) / 60000;
+                break;
+            case 4:
+                diffMins = (final - now) / 60000;
+                break;    
+            default:
+                break;
         }
 
-        var hoursLeft = 48 - diffHours
-        var minutesLeft = hoursLeft * 60
-
-        if(hoursLeft > 1){
+        if(diffMins > 60){
             return(
                 <Tooltip title="Hours left until chapter selection">
                     <Tag style={{
@@ -179,12 +187,12 @@ class StoryCard extends Component {
                     }}>
                         <span style={{ display: 'flex', alignItems: 'center'}}>
                             <Icon style={{ marginRight: '4px' }}type="clock-circle" />
-                            {Math.round(hoursLeft) + 'h '}
+                            {Math.round(diffMins * 60) + 'h '}
                         </span>
                     </Tag>
                 </Tooltip>
             )
-        }else if(hoursLeft > 0) {
+        }else if(diffMins > 0) {
             return(
                 <Tooltip title="Minutes left until chapter selection">
                     <Tag style={{
@@ -192,7 +200,10 @@ class StoryCard extends Component {
                         border: '1px solid rgb(135, 232, 222, 0.5)',
                         color: '#87e8de'
                     }}>
-                        {Math.round(minutesLeft) + ' min'}
+                        <span style={{ display: 'flex', alignItems: 'center'}}>
+                            <Icon style={{ marginRight: '4px' }}type="clock-circle" />
+                            {Math.round(diffMins) + ' min'}
+                        </span>
                     </Tag>
                 </Tooltip>
             )
@@ -265,14 +276,18 @@ class StoryCard extends Component {
                                     border: '1px solid rgb(135, 232, 222, 0.5)',
                                     color: '#87e8de'
                                 }}>
-                                    {this.props.currentChapter !== this.props.numberOfChapters ?
-                                        <Tooltip title="Current chapter">
-                                            <span style={{ display: 'flex', alignItems: 'center'}}>
-                                                <Icon type="book" style={{ marginRight: '4px' }}/>
-                                                {this.props.currentChapter +  '/' + this.props.numberOfChapters}
-                                            </span>
-                                        </Tooltip> :
-                                        'FINAL CHAPTER'
+                                    {this.props.complete ? 
+                                        'COMPLETE'
+                                    :
+                                        this.props.currentChapter !== this.props.numberOfChapters ?
+                                            <Tooltip title="Current chapter">
+                                                <span style={{ display: 'flex', alignItems: 'center'}}>
+                                                    <Icon type="book" style={{ marginRight: '4px' }}/>
+                                                    {this.props.currentChapter +  '/' + this.props.numberOfChapters}
+                                                </span>
+                                            </Tooltip> 
+                                        :
+                                            'FINAL CHAPTER'
                                     }
                                 </Tag>
 

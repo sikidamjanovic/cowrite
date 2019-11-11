@@ -133,10 +133,9 @@ SCROLL STYLING
 #navBar{
     display: flex;
     position: fixed;
-    background: none;
     border: none;
-    height: 100px;
-    line-height: 100px;
+    height: 60px;
+    line-height: 60px;
     top: 0;
     left: 0;
     width: 100%;
@@ -241,6 +240,21 @@ SCROLL STYLING
 ** PROMPT STYLING ***
 ------------------
 */
+
+.post-modal{
+    width: 50% !important;
+}
+
+.post-modal-form{
+    background-color: #1A1A1A !important;
+    padding: 0 !important;
+}
+
+.post-modal-form h2{
+    padding-left: 24px;
+    padding-top: 24px;
+    margin: 0;
+}
 
 #prompt{
     margin-bottom: 3%;
@@ -577,7 +591,7 @@ SCROLL STYLING
 }
 
 .ant-steps-item::after{
-    border: 1px solid #00000075 !important;
+    border: 1px solid #006d7575 !important;
     border-left: none !important;
     border-bottom: none !important;
 }

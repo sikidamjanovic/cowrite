@@ -92,7 +92,7 @@ class Notifications extends Component {
                                 <small 
                                     style={{ opacity: 0.6 }}
                                 >
-                                {notifications[i].notification} - {this.getTime(new Date(), notifications[i].time.toDate())}
+                                {notifications[i].notification} - {this.getTime(new Date(), notifications[i])}
                                 </small>
                             </div>
                         </Menu.Item>

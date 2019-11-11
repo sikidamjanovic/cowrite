@@ -193,29 +193,15 @@ class StoryComment extends Component {
     expandStyle(){
         if(this.state.expanded){
             return({
-                height: 'auto'
+                height: 'auto',
+                paddingRight: '48px'
             })
         }else{
             return({
-                height: '6.3em',
-                overflow: 'hidden'
+                maxHeight: '6.3em',
+                overflow: 'hidden',
+                paddingRight: '48px'
             })
-        }
-    }
-
-    expandIcon(){
-        if(this.state.expanded){
-            return(
-                <Tooltip title="See less">
-                    <Icon style={{ color: "#006d75" }} type="minus-square"/>
-                </Tooltip>
-            )
-        }else{
-            return(
-                <Tooltip title="See full submission">
-                    <Icon style={{ color: "#006d75" }} type="plus-square"/>
-                </Tooltip>
-            )
         }
     }
 
@@ -249,19 +235,35 @@ class StoryComment extends Component {
                                 <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
                         }
                         </Popover>
-                        <div onClick={this.expandComment} style={{ marginTop: '14px' }}>
-                            {this.expandIcon()}
-                        </div>
                     </span>
                 }
                 content={
                     this.props.selected ?
-                    <div style={{ paddingRight: '48px'}}>
-                        <p>{this.props.comment}</p>
-                    </div> :
-                    <div style={this.expandStyle()}>
-                        {this.props.comment}
-                    </div>
+                        <div style={{ paddingRight: '48px'}}>
+                            <p>{this.props.comment}</p>
+                        </div> 
+                    :
+                        <div>
+                            <div style={this.expandStyle()}>
+                                <p>{this.props.comment}</p>
+                            </div>
+                            <div>
+                                {this.state.expanded ? 
+                                    <span
+                                        onClick={this.expandComment} 
+                                        style={{opacity: 0.6}}
+                                    >
+                                        <small style={{ cursor: 'pointer '}}>less</small>
+                                    </span> : 
+                                    <span 
+                                        onClick={this.expandComment} 
+                                        style={{opacity: 0.6}}
+                                    >
+                                        <small style={{ cursor: 'pointer '}}>more</small>
+                                    </span>
+                                }
+                            </div>
+                        </div>
                 }
                 datetime={
                     this.props.selected ? 

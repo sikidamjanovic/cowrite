@@ -99,6 +99,7 @@ class StoriesFeed extends Component {
                                 likes={post.likes}
                                 yposition={this.state.yposition}
                                 query={this.props.query}
+                                complete={post.complete}
                             />
                         </Col> 
                     )

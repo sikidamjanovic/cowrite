@@ -96,28 +96,33 @@ class NewPostModal extends React.Component {
 
                 </Button>
                 <Modal
-                    title="New Prompt"
+                    className="post-modal"
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
                     footer={null}
                 >
 
                 {/* **** MODAL DETAILS (FORM) ****/}
-                <div style={{ padding: '24px'}}>
+                <div className="post-modal-form" style={{ padding: '24px'}}>
+                    <h2>New Prompt</h2>
                     <Form onSubmit={this.handleSubmit} className="login-form">
                         <Form.Item>
+                            <label for="title">
+                                <small>Title</small>
+                            </label>
                             <Input
                                 id="title"
                                 onChange={this.handleChange} 
-                                placeholder="Title"
                             />
                         </Form.Item>
                         <Form.Item style={{ marginBottom: 0 }}>
+                            <label for="content">
+                                <small>Content</small>
+                            </label>
                             <TextArea
                                 id="content" 
                                 onChange={this.handleChange}
                                 rows={5}
-                                placeholder="Prompt"
                             />
                         </Form.Item>
                         <span 
