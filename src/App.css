@@ -7,6 +7,9 @@ input:-webkit-autofill:active  {
     border-color: #006d75;
 }
 
+h1, h2, h3, h4{
+    font-family: 'Poppins';
+}
 
 /* 
 ---------------
@@ -111,6 +114,7 @@ SCROLL STYLING
 
 #notification:hover{
     color: #006d75 !important;
+    background-color: rgba(255, 255, 255, 0.01) !important;
     transform: scale(1.025);
 }
 
@@ -194,6 +198,7 @@ SCROLL STYLING
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-top: 48px;
 }
 
 #feed-header-img{
@@ -208,10 +213,15 @@ SCROLL STYLING
     min-height: 300px;
 }
 
+#feed-header-text{
+    margin-top: 48px;
+}
+
 #feed-header-text h1{
     color: rgba(255, 255, 255, 0.85);
     font-weight: bold;
     font-size: 1.8em;
+    margin-right: 14px !important;
 }
 
 #feed-header-button{
@@ -398,6 +408,15 @@ SCROLL STYLING
 ------------------
 */
 
+.help-carousel{
+    padding: 48px;
+    background: #111717;
+}
+
+.help-carousel p{
+    font-size: 1.1em;
+}
+
 .ant-carousel {
     text-align: center;
     overflow: hidden;
@@ -574,7 +593,10 @@ SCROLL STYLING
 
 @media screen and (min-width: 1200px) {
     .ant-steps{
-        width: 70% !important;
+        max-width: 60% !important;
+    }
+    .steps-few{
+        width: 30% !important;
     }
     .ant-steps-item-title{
         font-size: 14px !important;
@@ -587,11 +609,10 @@ SCROLL STYLING
 .ant-steps{
     padding: 0px 28px 0px 0px !important;
     padding-top: 24px !important;
-    padding-bottom: 24px !important;
 }
 
 .ant-steps-item::after{
-    border: 1px solid #006d7575 !important;
+    border: 1px solid #00000075 !important;
     border-left: none !important;
     border-bottom: none !important;
 }
@@ -603,4 +624,20 @@ SCROLL STYLING
 
 .ant-modal-content{
     box-shadow: none !important;
+}
+
+.ant-modal-header{
+    background-color: #111717 !important;
+    padding: 24px !important;
+    border: none !important;
+}
+
+.ant-modal-title{
+    font-weight: bold !important;
+    font-size: 1.5em !important;
+    margin-top: 24px !important;
+}
+
+.ant-steps-item-title::after{
+    background: #006d755e !important;
 }

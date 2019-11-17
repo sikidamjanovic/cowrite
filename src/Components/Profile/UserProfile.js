@@ -9,7 +9,7 @@ class UserProfile extends Component {
     constructor(props){
         super(props)
         this.state = {
-            selected: 'likes'
+            selected: 'yourPrompts'
         }
         this.handleRadioChange = this.handleRadioChange.bind(this)
     }
@@ -70,7 +70,7 @@ class UserProfile extends Component {
     }
 
     showRelevantFeed(){
-        return(<ProfilePostFeed type={this.state.selected} id={this.props.auth.displayName}/>)
+        return(<ProfilePostFeed type={this.state.selected} auth={this.props.auth}/>)
     }
 
     getAvatar(){
@@ -97,10 +97,11 @@ class UserProfile extends Component {
                     <Button type="primary" onClick={this.fileUploadHandler}>Upload</Button> */}
                 </Row>
                 <Row style={{ marginTop: '48px' }} onChange={this.handleRadioChange}>
-                    <Radio.Group defaultValue="posts" buttonStyle="solid">
-                        <Radio.Button value="posts">Your Posts</Radio.Button>
-                        <Radio.Button value="liked">Liked</Radio.Button>
-                        <Radio.Button value="Delete">Delete</Radio.Button>
+                    <Radio.Group defaultValue="yourPrompts" buttonStyle="solid">
+                        <Radio.Button value="yourPrompts">Your Prompts</Radio.Button>
+                        <Radio.Button value="yourStories">Your Stories</Radio.Button>
+                        <Radio.Button value="likedPrompts">Liked Prompts</Radio.Button>
+                        <Radio.Button value="likedStories">Liked Stories</Radio.Button>
                     </Radio.Group>
                 </Row>
                 <Row style={{ marginTop: '48px' }}>

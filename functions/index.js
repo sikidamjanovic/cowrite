@@ -22,7 +22,7 @@ exports.convertToStory = functions.firestore
 */
 const evaluateLikes = ((data, id) => {
     // TODO: Add another parameter for time
-    if(data.likes.length >= 1){
+    if(data.likes.length >= 2){
 
         var posted = new Date()
 
@@ -37,8 +37,9 @@ const evaluateLikes = ((data, id) => {
             numberOfChapters: data.numberOfChapters,
             createdAt: posted,
             currentChapter: 1,
-            likes: [],
-            likeCount: 0
+            likes: data.likes,
+            likeCount: data.likes.length,
+            type: 'story'
         }
 
         // TODO: UPDATE USERS LIKE COLLECTION

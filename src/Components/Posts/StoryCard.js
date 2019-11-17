@@ -38,21 +38,9 @@ class StoryCard extends Component {
                 })
                 getFirestore().collection('stories').doc(this.props.id).update({
                     likes: firebase.firestore.FieldValue.arrayUnion(
-                        {
-                            uid: this.props.auth.uid
-                        }
+                        this.props.auth.displayName
                     ),
                     likeCount: firebase.firestore.FieldValue.increment(1)
-                })
-                getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').doc().set({
-                    type: 'story',
-                    postId: this.props.id,
-                    author: this.props.author,
-                    content: this.props.content,
-                    genre: this.props.genre,
-                    title: this.props.title,
-                    likes: this.props.likes,
-                    createdAt: this.props.createdAt
                 })
                 message.success('Story liked!')
             }else{
@@ -63,18 +51,9 @@ class StoryCard extends Component {
                 // Delete user from posts 'likes' collection
                 getFirestore().collection('stories').doc(this.props.id).update({
                     likes: firebase.firestore.FieldValue.arrayRemove(
-                        {
-                            uid: this.props.auth.uid
-                        }
+                        this.props.auth.displayName
                     ),
                     likeCount: firebase.firestore.FieldValue.increment(-1)
-                })
-                // Delete post from users 'liked' collection
-                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').where('postId','==',this.props.id)
-                delete_query.get().then(function(querySnapshot){
-                    querySnapshot.forEach(function(doc){
-                        doc.ref.delete();
-                    })
                 })
             }
         }else{
@@ -85,10 +64,11 @@ class StoryCard extends Component {
     userLiked(){
         const likes = this.props.likes
         for (let i = 0; i < likes.length; i++) {
-            if(likes[i].uid === this.props.auth.uid){
+            if(likes[i] === this.props.auth.displayName){
                 this.setState({
                     userLiked: true
                 })
+                break
             }else{
                 this.setState({
                     userLiked: false
@@ -155,10 +135,10 @@ class StoryCard extends Component {
         var created = this.props.createdAt.toDate()
         var diffMins
         var now = new Date()
-        var chapter2 = new Date(created.getTime() + 3*60000);
-        var chapter3 = new Date(chapter2.getTime() + 3*60000);
-        var chapter4 = new Date(chapter3.getTime() + 3*60000);
-        var final = new Date(chapter4.getTime() + 3*60000);
+        var chapter2 = new Date(created.getTime() + (1440 * 2)*60000);
+        var chapter3 = new Date(chapter2.getTime() + (1440 * 4)*60000);
+        var chapter4 = new Date(chapter3.getTime() + (1440 * 6)*60000);
+        var final = new Date(chapter4.getTime() + (1440 * 8)*60000);
 
         switch(current) {
             case 1:
@@ -187,7 +167,7 @@ class StoryCard extends Component {
                     }}>
                         <span style={{ display: 'flex', alignItems: 'center'}}>
                             <Icon style={{ marginRight: '4px' }}type="clock-circle" />
-                            {Math.round(diffMins * 60) + 'h '}
+                            {Math.round(diffMins / 60) + 'h '}
                         </span>
                     </Tag>
                 </Tooltip>

@@ -116,7 +116,7 @@ class Notifications extends Component {
         var diffMin = (current - posted) / 60000
         
         if(diffMin > 60){
-            return Math.round(diffMin * 60) + 'h ago'
+            return Math.round(diffMin / 60) + 'h ago'
         }else if(diffMin > 1){
             return Math.round(diffMin) + ' min ago'
         }else{
@@ -158,8 +158,8 @@ export default compose(
         return [
             { 
                 collection: 'notifications',
-                sortBy: 'time',
-                limit: 10
+                limit: 20,
+                orderBy: ['date', 'desc']
             }
         ]
     })

@@ -36,13 +36,24 @@ class StoryModalContent extends React.Component {
         this.userLiked = this.userLiked.bind(this)
         this.hasUserSubmitted = this.hasUserSubmitted.bind(this)
         this.timeLeft = this.timeLeft.bind(this)
+        this.next = this.next.bind(this)
+        this.prev = this.prev.bind(this)
     }
 
     componentDidMount(){
+        var current = this.props.currentChapter
+        var selected
+
+        if(this.props.complete){
+            selected = 0
+        }else{
+            selected = current - 1
+        }
+
         this.setState({
             amountOfLikes: this.props.likes.length,
-            currentChapter: this.props.currentChapter,
-            selectedChapter: this.props.currentChapter - 1
+            currentChapter: current,
+            selectedChapter: selected
         })
         this.userLiked()
     }
@@ -65,17 +76,13 @@ class StoryModalContent extends React.Component {
         var current = this.state.currentChapter
 
         if(current){
-            if((radio + 1) < current){
+            if((radio + 1) < current || this.props.complete){
                 return (
-                    <div style={{ 
-                        paddingBottom: '24px', 
-                        paddingTop: '14px',
+                    <div style={{
                         paddingLeft: '24px',
                         paddingRight: '24px',
                         backgroundColor: '#111717'
                     }}>
-                        {/* <h3 style={{ marginBottom: '12px' }}>Chapter {this.state.selectedChapter + 1}</h3>
-                        <Divider/> */}
                         <StoryComment 
                             id={selected[radio].id}
                             postId={selected[radio].postId}
@@ -121,18 +128,13 @@ class StoryModalContent extends React.Component {
                     <Step 
                         icon={<Icon type="hourglass" />} 
                         title={"Chapter " + i} 
-                        description={
-                            timeLeft > 60 ? 
-                                Math.round(timeLeft * 60) + ' Hrs Left' 
-                            : 
-                                Math.round(timeLeft) + ' Min Left'
-                        }
+                        description={timeLeft}
                     />
                 )
             }else{
                 enabled.push(
                     <Step 
-                        icon={<Icon type="check-circle" />}
+                        icon={this.props.complete ? null : <Icon type="check-circle" />}
                         title={"Chapter " + i} 
                         description={this.props.complete ? null : "Complete"}
                     />
@@ -174,7 +176,12 @@ class StoryModalContent extends React.Component {
         const { selectedChapter } = this.state;
         return(
             <div>
-                <Steps type="navigation" size="small" status="process" current={selectedChapter} onChange={this.onChange}>
+                <Steps
+                    size="small"
+                    current={selectedChapter} 
+                    onChange={this.onChange}
+                    className= {this.props.numberOfChapters < 3 ? "steps-few" : "steps-many"}
+                >
                     {this.getEnabledRadios()}
                     {this.getDisabledRadios()}
                 </Steps>
@@ -292,21 +299,10 @@ class StoryModalContent extends React.Component {
                 })
                 getFirestore().collection('stories').doc(this.props.id).update({
                     likes: firebase.firestore.FieldValue.arrayUnion(
-                        {
-                            uid: this.props.auth.uid
-                        }
+                        this.props.auth.displayName
                     ),
                     likeCount: firebase.firestore.FieldValue.increment(1)
                 })
-                getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').doc().set({
-                    type: 'story',
-                    postId: this.props.id,
-                    author: this.props.author,
-                    content: this.props.prompt,
-                    genre: this.props.genre,
-                    title: this.props.title
-                })
-                message.success('Story Liked!')
             }else{
                 this.setState({
                     userLiked: false,
@@ -315,18 +311,9 @@ class StoryModalContent extends React.Component {
                 // Delete user from posts 'likes' collection
                 getFirestore().collection('stories').doc(this.props.id).update({
                     likes: firebase.firestore.FieldValue.arrayRemove(
-                        {
-                            uid: this.props.auth.uid
-                        }
+                        this.props.auth.displayName
                     ),
                     likeCount: firebase.firestore.FieldValue.increment(-1)
-                })
-                // Delete post from users 'liked' collection
-                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').where('postId','==',this.props.id)
-                delete_query.get().then(function(querySnapshot){
-                    querySnapshot.forEach(function(doc){
-                        doc.ref.delete();
-                    })
                 })
             }
         }else{
@@ -337,10 +324,11 @@ class StoryModalContent extends React.Component {
     userLiked(){
         const likes = this.props.likes
         for (let i = 0; i < likes.length; i++) {
-            if(likes[i].uid === this.props.auth.uid){
+            if(likes[i] === this.props.auth.displayName){
                 this.setState({
                     userLiked: true
                 })
+                break
             }else{
                 this.setState({
                     userLiked: false
@@ -377,10 +365,10 @@ class StoryModalContent extends React.Component {
         var created = this.props.createdAt.toDate()
         var diffMins
         var now = new Date()
-        var chapter2 = new Date(created.getTime() + 3*60000);
-        var chapter3 = new Date(chapter2.getTime() + 3*60000);
-        var chapter4 = new Date(chapter3.getTime() + 3*60000);
-        var final = new Date(chapter4.getTime() + 3*60000);
+        var chapter2 = new Date(created.getTime() + (1440 * 2)*60000);
+        var chapter3 = new Date(chapter2.getTime() + (1440 * 4)*60000);
+        var chapter4 = new Date(chapter3.getTime() + (1440 * 6)*60000);
+        var final = new Date(chapter4.getTime() + (1440*8)*60000);
 
         switch(current) {
             case 1:
@@ -400,16 +388,27 @@ class StoryModalContent extends React.Component {
         }
 
         if(diffMins < 0){
-            this.getTopSubmission()
-        }else{
+            if(this.props.complete === false){
+                this.getTopSubmission()
+            }else{
+                this.setState({
+                    timeLeft: null
+                })
+            }
+        }else if(diffMins > 60){
             this.setState({
-                timeLeft: diffMins
+                timeLeft: Math.round(diffMins / 60) + ' hours left'
+            })
+        }else if(diffMins > 0){
+            this.setState({
+                timeLeft: Math.round(diffMins) + ' min left'
             })
         }
 
     }
 
     endSubmissionProcess(topSubmission){
+        var now = new Date()
         // If story is not on last chapter do following
         if(this.props.currentChapter !== this.props.numberOfChapters){
             getFirestore().collection('stories').doc(this.props.id).update({
@@ -418,6 +417,13 @@ class StoryModalContent extends React.Component {
                     topSubmission
                 )
             })
+            getFirestore().collection('notifications').doc().set({
+                title: this.props.title,
+                notification: 'is now on chapter ' + (this.props.currentChapter + 1),
+                id: this.props.id,
+                time: now.toString(),
+                date: now
+            })
         }else{
             getFirestore().collection('stories').doc(this.props.id).update({
                 complete: true,
@@ -425,25 +431,60 @@ class StoryModalContent extends React.Component {
                     topSubmission
                 )
             })
+            getFirestore().collection('notifications').doc().set({
+                title: this.props.title,
+                notification: 'has been completed',
+                id: this.props.id,
+                time: now.toString(),
+                date: now
+            })
+        }
+    }
+
+    next(){
+        this.setState({
+            selectedChapter: this.state.selectedChapter + 1
+        })
+    }
+
+    prev(){
+        this.setState({
+            selectedChapter: this.state.selectedChapter - 1
+        })
+    }
+
+    renderButtons(){
+        var selected = this.state.selectedChapter + 1
+        var chapters = this.props.numberOfChapters
+        if(selected < chapters){
+            if(selected > 1){
+                return(
+                    <div>
+                        <Button style={{ marginRight: '7px' }} onClick={this.prev}>Prev</Button>
+                        <Button onClick={this.next}>Next</Button>
+                    </div>
+                )
+            }else{
+                return(
+                    <div>
+                        <Button onClick={this.next}>Next</Button>
+                    </div>
+                )
+            }
+        }else{
+            return(
+                <div>
+                    <Button onClick={this.prev}>Prev</Button>
+                </div>
+            )
         }
     }
 
     render() { 
-
         return (
             <div>
                 <BackTop/>
                 <div className="modal-body">
-
-                    {/* HEADER */}
-
-                    <div>
-                        <span style={{ display: 'flex', flexDirection: 'row' }}>
-                            <h2>{this.props.title}</h2>
-                        </span>
-                    </div>
-
-                    <br></br>
 
                     {/* PROMPT STYLING */}
                     <div>
@@ -531,12 +572,15 @@ class StoryModalContent extends React.Component {
 
                     </div>
                     {this.renderSubmitHeader()}
-                    <Divider/>
+                    <br></br>
                     {this.renderChapterRadios()}
                 </div>
-
                 {this.getComments()}
-
+                {this.props.complete ? 
+                    <div style={{ backgroundColor: '#111717', padding: '24px' }}>
+                        {this.renderButtons()}
+                    </div> : null
+                }
             </div>
     );
   }

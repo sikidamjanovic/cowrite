@@ -93,7 +93,7 @@ class Comments extends Component {
         const { Option } = Select;
         return(
             <div style={{marginBottom: '24px'}}>
-                {this.state.submissions.length + ' Submissions'}
+                <small>{this.state.submissions.length + ' submissions'}</small>
                 <Select 
                     defaultValue="time" 
                     style={{ width: 80, marginLeft: '20px'}} 
@@ -106,6 +106,7 @@ class Comments extends Component {
                 <Button style={{ marginLeft: '5px' }} onClick={this.handleSortOrder}>
                     {this.renderSortArrow()}
                 </Button>
+                <Divider/>
             </div>
         )
     }

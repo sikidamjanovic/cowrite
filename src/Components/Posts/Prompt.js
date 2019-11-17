@@ -82,15 +82,22 @@ class Prompt extends Component {
                 )
             }else if(minutesLeft <= 0){
                 //Delete prompt after time runs out
-                getFirestore().collection('posts').doc(this.props.id).delete()
+                this.delete()
             }
+        }
+    }
+
+    delete(){
+        getFirestore().collection('posts').doc(this.props.id).delete()
+        for (let i = 0; i < this.props.likes.length; i++) {
+            getFirestore().collection('users').doc(this.props.likes[i].displayName).liked.doc(this.props.id).delete()
         }
     }
 
     userLiked(){
         const likes = this.props.likes
         for (let i = 0; i < likes.length; i++) {
-            if(likes[i].uid == this.props.uid){
+            if(likes[i] === this.props.auth.displayName){
                 this.setState({
                     userLiked: true
                 })
@@ -126,28 +133,15 @@ class Prompt extends Component {
 
     like(){
         if (this.props.auth.isEmpty === false) {
-            if(this.state.userLiked == false){
+            if(this.state.userLiked === false){
                 this.setState({
                     userLiked: true,
                     amountOfLikes: this.state.amountOfLikes + 1
                 })
                 getFirestore().collection('posts').doc(this.props.id).update({
                     likes: firebase.firestore.FieldValue.arrayUnion(
-                        {
-                            uid: this.props.auth.uid
-                        }
+                        this.props.auth.displayName
                     )
-                })
-                getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').doc().set({
-                    type: 'prompt',
-                    postId: this.props.id,
-                    author: this.props.author,
-                    content: this.props.content,
-                    genre: this.props.genre,
-                    title: this.props.title,
-                    time: this.props.time,
-                    likes: this.props.likes,
-                    likeCount: this.state.amountOfLikes
                 })
             }else{
                 this.setState({
@@ -157,17 +151,8 @@ class Prompt extends Component {
                 // Delete user from posts 'likes' collection
                 getFirestore().collection('posts').doc(this.props.id).update({
                     likes: firebase.firestore.FieldValue.arrayRemove(
-                        {
-                            uid: this.props.auth.uid
-                        }
+                        this.props.auth.displayName
                     )
-                })
-                // Delete post from users 'liked' collection
-                var delete_query = getFirestore().collection('users').doc(this.props.auth.displayName).collection('liked').where('postId','==',this.props.id)
-                delete_query.get().then(function(querySnapshot){
-                    querySnapshot.forEach(function(doc){
-                        doc.ref.delete();
-                    })
                 })
             }
         }else{
@@ -195,14 +180,6 @@ class Prompt extends Component {
             }
         }).catch(function(error) {
             console.log("Error getting document:", error);
-        });
-    }
-
-    delete(){
-        getFirestore().collection('posts').doc(this.props.id).delete().then(function() {
-            message.success('Prompt deleted')
-        }).catch(function(error) {
-            message.error('Prompt could not be deleted. Try again.')
         });
     }
 

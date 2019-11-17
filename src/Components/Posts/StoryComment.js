@@ -243,31 +243,12 @@ class StoryComment extends Component {
                             <p>{this.props.comment}</p>
                         </div> 
                     :
-                        <div>
-                            <div style={this.expandStyle()}>
-                                <p>{this.props.comment}</p>
-                            </div>
-                            <div>
-                                {this.state.expanded ? 
-                                    <span
-                                        onClick={this.expandComment} 
-                                        style={{opacity: 0.6}}
-                                    >
-                                        <small style={{ cursor: 'pointer '}}>less</small>
-                                    </span> : 
-                                    <span 
-                                        onClick={this.expandComment} 
-                                        style={{opacity: 0.6}}
-                                    >
-                                        <small style={{ cursor: 'pointer '}}>more</small>
-                                    </span>
-                                }
-                            </div>
-                        </div>
+                        <p>{this.props.comment}</p>
                 }
                 datetime={
                     this.props.selected ? 
-                        <span></span>: 
+                        <span></span>
+                    : 
                         this.getTime()
                 }
             />

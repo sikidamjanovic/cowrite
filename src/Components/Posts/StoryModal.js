@@ -27,9 +27,15 @@ class StoryModal extends Component {
 
         getFirestore().collection('stories').doc(storyId).get()
         .then(function(doc){
-            that.setState({
-                data: doc.data()
-            })
+            if(doc.data() !== undefined){
+                that.setState({
+                    data: doc.data()
+                })
+            }else{
+                that.setState({
+                    error: true
+                })
+            }
         }).catch(function(error){
             that.setState({
                 error: true
@@ -61,23 +67,24 @@ class StoryModal extends Component {
     }
 
     handleCancel(){
-        console.log(document.referrer.substring(0,12))
-        if(document.referrer.substring(0,12) === 'http://local'){
-            this.props.history.push({
-                pathname: '/stories/' + this.props.location.state.query.toLowerCase(),
-                state: { 
-                    query: this.props.location.state.query,
-                    yposition: this.props.location.state.yposition
-                }
-            })
-        }else{
-            this.props.history.push({
-                pathname: '/stories/all',
-                state: { 
-                    query: 'all',
-                }
-            })
-        }
+        // console.log(document.referrer.substring(0,12))
+        // if(document.referrer.substring(0,12) === 'http://local'){
+        //     this.props.history.push({
+        //         pathname: '/stories/' + this.props.location.state.query.toLowerCase(),
+        //         state: { 
+        //             query: this.props.location.state.query,
+        //             yposition: this.props.location.state.yposition
+        //         }
+        //     })
+        // }else{
+        //     this.props.history.push({
+        //         pathname: '/stories/all',
+        //         state: { 
+        //             query: 'all',
+        //         }
+        //     })
+        // }
+        this.props.history.goBack();
     }
     
     render() {
@@ -91,6 +98,7 @@ class StoryModal extends Component {
                 <Modal
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
+                    title={data.title}
                     footer={null}
                     style={{ top: 0, padding: 0 }}
                     className={"story-modal"}
@@ -118,12 +126,20 @@ class StoryModal extends Component {
             );
         }else{
             return(
-                <Modal 
-                    visible={this.state.visible}
+                <Modal
+                    visible={true}
                     onCancel={this.handleCancel}
-                    footer={null} 
-                    className={"story-modal"}
+                    footer={null}
+                    style={{ display: 'flex', textAlign: 'center'}}
                 >
+                    {this.state.error ?
+                        <div style={{ padding: '48px' }}>
+                            <h1>Story not found.</h1>
+                            <small>* Stories that receive no submissions are automatically deleted.</small>
+                        </div>
+                    : 
+                        null
+                    }
                 </Modal>
             )
         }

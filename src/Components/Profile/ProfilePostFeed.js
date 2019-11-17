@@ -43,13 +43,15 @@ class ProfilePostFeed extends Component {
                                         auth={this.props.auth}
                                         key={post.id} 
                                         id={post.id} 
+                                        createdAt={post.createdAt}
                                         title={post.title} 
                                         genre={post.genre}
-                                        content={post.content}
+                                        content={post.prompt}
                                         author={post.author}
                                         authorPic={post.authorPic ? post.authorPic : null}
                                         time={post.createdAt}
                                         likes={post.likes}
+                                        amountOfLikes={post.likes.length}
                                     />
                                 :
                                     <Prompt
@@ -62,6 +64,7 @@ class ProfilePostFeed extends Component {
                                         authorPic={post.authorPic ? post.authorPic : null}
                                         time={post.createdAt}
                                         likes={post.likes}
+                                        amountOfLikes={post.likes.length}
                                     />
                                 }
                             </Col> 
@@ -97,12 +100,33 @@ const mapStateToProps = (state, props) => {
 export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
-        const { type, id } = props
-        return [{ 
-            collection: 'users', 
-            doc: id,
-            subcollections: [{ collection: type }],
+        const {auth, type} = props
+        console.log(type)
+        if(type === "yourPrompts"){
+            return [{ 
+                collection: 'posts',
+                where: ['author', '==', auth.displayName],
+                storeAs: 'posts'
+            }]
+        }else if(type === "yourStories"){
+            return [{ 
+                collection: 'stories',
+                where: ['author', '==', auth.displayName],
+                storeAs: 'posts'
+            }]
+        }else if(type === "likedPrompts"){
+            return [{
+                collection: 'posts',
+                where: ['likes', 'array-contains', auth.displayName],
+                storeAs: 'posts'
+            }]
+        }
+        else if(type === "likedStories"){
+        return [{
+            collection: 'stories',
+            where: ['likes', 'array-contains', auth.displayName],
             storeAs: 'posts'
         }]
+    }
     })
 )(ProfilePostFeed)

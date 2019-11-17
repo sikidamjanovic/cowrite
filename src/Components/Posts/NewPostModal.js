@@ -15,7 +15,8 @@ class NewPostModal extends React.Component {
             likes: [],
             visible: false,
             remainingCharacters: 500,
-            numberOfChapters: null
+            numberOfChapters: null,
+            type: 'prompt'
         }
         this.handleCancel = this.handleCancel.bind(this)
         this.showModal = this.showModal.bind(this)

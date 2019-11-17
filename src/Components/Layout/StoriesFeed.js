@@ -146,7 +146,7 @@ class StoriesFeed extends Component {
                         <div id="breadcrumb-container">
                             <Breadcrumb>
                                 <Breadcrumb.Item>
-                                    Prompts
+                                    Stories
                                 </Breadcrumb.Item>
                                 <Breadcrumb.Item>
                                     {this.props.query}
