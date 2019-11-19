@@ -25,7 +25,7 @@ const Nav = (props) => {
                         </Col>
                     </NavLink>
 
-                    <Col xs={22} md={19} offset={1} className="nav-col-right">
+                    <Col xs={24} md={20} className="nav-col-right">
                         { links }
                     </Col>
                 </Row>

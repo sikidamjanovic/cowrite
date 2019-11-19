@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Menu, Dropdown, Icon, Button, Avatar } from 'antd';
 import { NavLink } from 'react-router-dom'
-import { getFirestore } from 'redux-firestore'
+import { getFirestore } from "redux-firestore";
 
 class AccountDropdown extends Component {
 
@@ -16,7 +16,8 @@ class AccountDropdown extends Component {
     componentDidMount(){
         this.getAvatar()
     }
-    
+
+
     getAvatar(){
         var that = this
         getFirestore().collection('users').doc(this.props.auth.displayName).get()
@@ -49,7 +50,7 @@ class AccountDropdown extends Component {
                 </Menu.Item>
                 <Menu.Item>
                     <NavLink to={{
-                        pathname: "/profile"
+                        pathname: "/user/" + this.props.auth.displayName
                     }}>
                         Profile
                     </NavLink>

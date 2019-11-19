@@ -48,6 +48,7 @@ class Sidebar extends Component {
                 } : {
                     position: 'fixed',
                     width: '100%',
+                    marginTop: '24px',
                     left: '0',
                     zIndex: 100
                 }}

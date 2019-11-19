@@ -2,9 +2,10 @@ import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
 import StoryComment from '../Posts/StoryComment'
-import { Button, Icon, Divider, message, Tooltip, BackTop, Steps } from 'antd';
+import { Button, Icon, Popover, message, BackTop, Steps } from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { NavLink } from 'react-router-dom'
 import '../../App.css'
 var firebase = require('firebase');
 
@@ -365,10 +366,10 @@ class StoryModalContent extends React.Component {
         var created = this.props.createdAt.toDate()
         var diffMins
         var now = new Date()
-        var chapter2 = new Date(created.getTime() + (1440 * 2)*60000);
-        var chapter3 = new Date(chapter2.getTime() + (1440 * 4)*60000);
-        var chapter4 = new Date(chapter3.getTime() + (1440 * 6)*60000);
-        var final = new Date(chapter4.getTime() + (1440*8)*60000);
+        var chapter2 = new Date(created.getTime() + 2880*60000);
+        var chapter3 = new Date(chapter2.getTime() + 2880*60000);
+        var chapter4 = new Date(chapter3.getTime() + 2880*60000);
+        var final = new Date(chapter4.getTime() + 2880*60000);
 
         switch(current) {
             case 1:
@@ -420,6 +421,7 @@ class StoryModalContent extends React.Component {
             getFirestore().collection('notifications').doc().set({
                 title: this.props.title,
                 notification: 'is now on chapter ' + (this.props.currentChapter + 1),
+                type: 'chapter',
                 id: this.props.id,
                 time: now.toString(),
                 date: now
@@ -434,6 +436,7 @@ class StoryModalContent extends React.Component {
             getFirestore().collection('notifications').doc().set({
                 title: this.props.title,
                 notification: 'has been completed',
+                type: 'complete',
                 id: this.props.id,
                 time: now.toString(),
                 date: now
@@ -546,13 +549,17 @@ class StoryModalContent extends React.Component {
                             </span>
                         </Button>
 
-                        <Tooltip title={this.props.author}>
+                        <Popover content={this.props.author} title="">
                             <Button type="link">
-                                <span style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Icon type="user"/>
-                                </span>
+                                <NavLink to={{
+                                    pathname: "/user/" + this.props.author
+                                }}>
+                                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                                        <Icon type="user" key="user" />
+                                    </span>
+                                </NavLink>
                             </Button>
-                        </Tooltip>
+                        </Popover>
 
                         <Button type="link">
                             <span style={{ display: 'flex', alignItems: 'center' }}>

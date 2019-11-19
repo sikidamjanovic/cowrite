@@ -3,6 +3,7 @@ import { Card, Icon, Avatar, Tag, Popover, Tooltip, message } from 'antd';
 import { Link } from 'react-router-dom'
 import { getFirestore } from "redux-firestore";
 import CopyToClipboard from 'react-copy-to-clipboard'
+import { NavLink } from 'react-router-dom'
 import '../../App.css'
 var firebase = require('firebase');
 
@@ -42,7 +43,6 @@ class StoryCard extends Component {
                     ),
                     likeCount: firebase.firestore.FieldValue.increment(1)
                 })
-                message.success('Story liked!')
             }else{
                 this.setState({
                     userLiked: false,
@@ -135,10 +135,10 @@ class StoryCard extends Component {
         var created = this.props.createdAt.toDate()
         var diffMins
         var now = new Date()
-        var chapter2 = new Date(created.getTime() + (1440 * 2)*60000);
-        var chapter3 = new Date(chapter2.getTime() + (1440 * 4)*60000);
-        var chapter4 = new Date(chapter3.getTime() + (1440 * 6)*60000);
-        var final = new Date(chapter4.getTime() + (1440 * 8)*60000);
+        var chapter2 = new Date(created.getTime() + 2880*60000);
+        var chapter3 = new Date(chapter2.getTime() + 2880*60000);
+        var chapter4 = new Date(chapter3.getTime() + 2880*60000);
+        var final = new Date(chapter4.getTime() + 2880*60000);
 
         switch(current) {
             case 1:
@@ -238,14 +238,16 @@ class StoryCard extends Component {
                     }}>
                     <Meta
                         avatar={
-                            <span>
+                            <NavLink to={{
+                                pathname: "/user/" + this.props.author
+                            }}> 
                                 <Popover content={this.props.author} title="">
                                     {this.state.photoURL !== null ?
                                         <Avatar src={this.state.photoURL}/> :
                                         <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
                                 }
                                 </Popover>
-                            </span>
+                            </NavLink>
                         }
                         title = {
                             <span id="title-container">

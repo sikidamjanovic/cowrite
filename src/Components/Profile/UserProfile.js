@@ -1,66 +1,51 @@
 import React, { Component } from 'react';
-import { Button, Input,  Radio, Avatar, Row, Col, message } from 'antd'
+import { Radio, Avatar, Row } from 'antd'
 import ProfilePostFeed from '../Profile/ProfilePostFeed'
+import DisplayPicUploader from './DisplayPicUploader';
 import { getFirestore } from "redux-firestore";
-var firebase = require('firebase');
+import {withRouter} from 'react-router-dom';
 
 class UserProfile extends Component {
 
     constructor(props){
         super(props)
         this.state = {
-            selected: 'yourPrompts'
+            selected: 'yourPrompts',
+            isOwnProfile: false,
+            displayName: ''
         }
         this.handleRadioChange = this.handleRadioChange.bind(this)
     }
 
-    fileSelectedHandler = event => {
-        this.fileUploadHandler(event.target.files[0])
+    componentDidMount(){
+        this.isOwnProfile()
     }
 
-    fileUploadHandler = (file) => {
+    componentDidUpdate(prevProps) {
+        if (this.props.location.pathname !== prevProps.location.pathname) {
+            this.isOwnProfile()
+        }
+    }
 
-        var user = firebase.auth().currentUser;
-        var userName = user.displayName
-        var storageRef = firebase.storage().ref(userName + '/profilePicture/' + file)
-        var uploadTask = storageRef.put(file)
+    isOwnProfile(){
+        var path = window.location.pathname.split('/')
+        var displayName = path[2]
 
-        uploadTask.on('state_changed', function(snapshot){
-            // Observe state change events such as progress, pause, and resume
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-            
-            switch (snapshot.state) {
-                case firebase.storage.TaskState.PAUSED: // or 'paused'
-                    console.log('Upload is paused');
-                    break;
-                case firebase.storage.TaskState.RUNNING: // or 'running'
-                    console.log('Upload is running');
-                    break;
-                default: console.log('default')
-            }
-        }, function(error) {
-            // Handle unsuccessful uploads
-        }, function() {
-            // Handle successful uploads on complete
-            uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                user.updateProfile({
-                    photoURL: downloadURL
-                }).then(function() {
-                    message.success('Display Pic Successfully Changed!')
-                    getFirestore().collection('users').doc(userName).update({
-                        photoURL: downloadURL
-                    })
-                    .then(function(){
-                        window.location.reload()
-                    })
-                }).catch(function(error) {
-                    console.log('ERROR Uploading pic')
-                });
-            });
-        });
+        console.log('NAME:', displayName)
 
+        if(displayName === this.props.auth.displayName){
+            this.setState({
+                isOwnProfile: true,
+                displayName: displayName
+            })
+            this.getAvatar(displayName)
+        }else{
+            this.setState({
+                isOwnProfile: false,
+                displayName: displayName
+            })
+            this.getAvatar(displayName)
+        }
     }
 
     handleRadioChange(e){
@@ -70,38 +55,67 @@ class UserProfile extends Component {
     }
 
     showRelevantFeed(){
-        return(<ProfilePostFeed type={this.state.selected} auth={this.props.auth}/>)
+        var path = window.location.pathname.split('/')
+        var displayName = path[2]
+        return(<ProfilePostFeed type={this.state.selected} displayName={displayName}/>)
     }
 
-    getAvatar(){
-        if(this.props.auth.photoURL !== null){
-            return <Avatar shape="square" size={100} src={this.props.auth.photoURL} />
-        }
+    getAvatar(displayName){
+        var that = this
+        getFirestore().collection('users').doc(displayName).get()
+        .then(function(doc) {
+            if (doc.exists) {
+                if(doc.data().photoURL !== undefined){
+                    that.setState({
+                        photoURL: doc.data().photoURL
+                    })
+                }else{
+                    that.setState({
+                        photoURL: null
+                    })
+                }
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
     }
 
-    render(){
+    renderProfile(){
+        var path = window.location.pathname.split('/')
+        var displayName = path[2]
         return(
             <div>
-                <Row type="flex" align="middle">
-                    <Col md={2}>
-                        {this.getAvatar()}
-                    </Col>
-                    <Col md={4} style={{ marginLeft: '15px'}}>
-                        <h1>{this.props.auth.displayName}</h1>
-                        <Button style={{ padding: 0, margin: 0}}>
-                            <label style={{ width: '100%', height: '100%', padding: '10px'}} for="upload">Change DP</label>
-                        </Button>
-                        <Input type="file" id="upload" style={{ visibility: 'hidden', width: 0 }} onChange={this.fileSelectedHandler}/>
-                    </Col>
-                    {/* <input type="file" onChange={this.fileSelectedHandler}/>
-                    <Button type="primary" onClick={this.fileUploadHandler}>Upload</Button> */}
+                <Row style={{ marginTop: '48px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '24px' }}>
+                        {this.state.photoURL !== null ?
+                            <Avatar shape="square" size={98} src={this.state.photoURL}/>:
+                            <Avatar icon='user'/>
+                        }
+                        <h1 style={{ marginLeft: '24px' }}>{displayName}</h1>
+                    </div>
+                    {this.state.isOwnProfile ? 
+                        <DisplayPicUploader auth={this.props.auth}/> :
+                        null
+                    }
                 </Row>
                 <Row style={{ marginTop: '48px' }} onChange={this.handleRadioChange}>
                     <Radio.Group defaultValue="yourPrompts" buttonStyle="solid">
-                        <Radio.Button value="yourPrompts">Your Prompts</Radio.Button>
-                        <Radio.Button value="yourStories">Your Stories</Radio.Button>
-                        <Radio.Button value="likedPrompts">Liked Prompts</Radio.Button>
-                        <Radio.Button value="likedStories">Liked Stories</Radio.Button>
+                        {this.state.isOwnProfile ? 
+                            <span>
+                                <Radio.Button value="yourPrompts">Your Prompts</Radio.Button>
+                                <Radio.Button value="yourStories">Your Stories</Radio.Button>
+                                <Radio.Button value="likedPrompts">Liked Prompts</Radio.Button>
+                                <Radio.Button value="likedStories">Liked Stories</Radio.Button>
+                            </span>
+                        :
+                            <span>
+                                <Radio.Button value="yourPrompts">{displayName}'s Prompts</Radio.Button>
+                                <Radio.Button value="yourStories">{displayName}'s Stories</Radio.Button>
+                            </span>
+                        }
                     </Radio.Group>
                 </Row>
                 <Row style={{ marginTop: '48px' }}>
@@ -110,6 +124,14 @@ class UserProfile extends Component {
             </div>
         )
     }
+
+    render(){
+        return(
+            <div>
+                {this.renderProfile()}
+            </div>
+        )
+    }
 }
 
-export default UserProfile
+export default withRouter(props => <UserProfile {...props}/>);

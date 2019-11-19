@@ -3,6 +3,7 @@ import { Card, Icon, Avatar, Tag, Popover, Tooltip, message, Popconfirm } from '
 import '../../App.css'
 import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
+import { NavLink } from 'react-router-dom'
 var firebase = require('firebase');
 
 class Prompt extends Component {
@@ -112,21 +113,29 @@ class Prompt extends Component {
     renderHeart(){
         if(this.state.userLiked){
             return(
-                <Icon 
-                    type="heart"
-                    theme="filled"
-                    size="large"
-                    key="heart" 
-                    style={{ color:'#ff7a45' }}
-                />
+                <span className="heart-filled">
+                    <Icon 
+                        type="heart"
+                        theme="filled"
+                        size="large"
+                        key="heart"
+                    />
+                    <span id="likes">
+                        {this.state.amountOfLikes}
+                    </span>
+                </span>
             )
         }else{
             return(
-                <Icon 
-                    type="heart" 
-                    key="heart" 
-                    style={{ color:'white' }}
-                />
+                <span className="heart">
+                    <Icon
+                        type="heart" 
+                        key="heart"
+                    />
+                    <span id="likes">
+                        {this.state.amountOfLikes}
+                    </span>
+                </span>
             )
         }
     }
@@ -227,26 +236,31 @@ class Prompt extends Component {
                 actions={[
                     <button id="cardActionBtn" onClick= {this.like}>
                         {this.renderHeart()}
-                        <span id="likes">
-                            {this.state.amountOfLikes}
-                        </span>
                     </button>,
-                    <button id="cardActionBtn">
-                        <Icon type="book" key="book" />
-                    </button>,
+                    <Popover content={this.props.author} title="">
+                        <button id="cardActionBtn">
+                            <NavLink to={{
+                                pathname: "/user/" + this.props.author
+                            }}>
+                                <Icon type="user" key="book" />
+                            </NavLink>
+                        </button>
+                    </Popover>,
                     this.deletePromptButton()
                 ]}
             >
                 <Meta
                     avatar={
-                        <span>
+                        <NavLink to={{
+                            pathname: "/user/" + this.props.author
+                        }}> 
                             <Popover content={this.props.author} title="">
                                 {this.state.photoURL !== null ?
                                     <Avatar src={this.state.photoURL}/>:
                                     <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
                             }
                             </Popover>
-                        </span>
+                        </NavLink>
                     }
                     title = {
                         <span id="title-container">

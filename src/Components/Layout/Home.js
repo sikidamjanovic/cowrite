@@ -83,7 +83,7 @@ class Home extends Component {
                         getAll={this.state.getAll} 
                         query={this.state.query}
                     />
-        }else if(window.location.pathname.slice(1,8) === 'profile'){
+        }else if(window.location.pathname.slice(1,5) === 'user'){
             return <UserProfile auth={this.props.auth} isOwnProfile={true}/>
         }else{
             return <StoriesFeed 

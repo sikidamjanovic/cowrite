@@ -40,6 +40,17 @@ class Notifications extends Component {
         }
     }
 
+    getIcon(i){
+        var type = this.props.notifications[i].type
+        if(type === 'conversion'){
+            return <Icon type='sync'></Icon>
+        }else if(type === 'chapter'){
+            return <Icon type='forward'></Icon>
+        }else{
+            return <Icon type='check'></Icon>
+        }
+    }
+
     getNotifications(){
 
         var loaded = this.state.loaded
@@ -78,7 +89,7 @@ class Notifications extends Component {
                                     alignItems: 'center'
                                 }}
                             >
-                                <Icon type="sync"/>
+                                {this.getIcon(i)}
                             </div>
                             <div 
                                 style={{ 

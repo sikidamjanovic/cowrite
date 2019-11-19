@@ -52,6 +52,8 @@ class ProfilePostFeed extends Component {
                                         time={post.createdAt}
                                         likes={post.likes}
                                         amountOfLikes={post.likes.length}
+                                        currentChapter={post.currentChapter}
+                                        numberOfChapters={post.numberOfChapters}
                                     />
                                 :
                                     <Prompt
@@ -100,31 +102,31 @@ const mapStateToProps = (state, props) => {
 export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
-        const {auth, type} = props
+        const {displayName, type} = props
         console.log(type)
         if(type === "yourPrompts"){
             return [{ 
                 collection: 'posts',
-                where: ['author', '==', auth.displayName],
+                where: ['author', '==', displayName],
                 storeAs: 'posts'
             }]
         }else if(type === "yourStories"){
             return [{ 
                 collection: 'stories',
-                where: ['author', '==', auth.displayName],
+                where: ['author', '==', displayName],
                 storeAs: 'posts'
             }]
         }else if(type === "likedPrompts"){
             return [{
                 collection: 'posts',
-                where: ['likes', 'array-contains', auth.displayName],
+                where: ['likes', 'array-contains', displayName],
                 storeAs: 'posts'
             }]
         }
         else if(type === "likedStories"){
         return [{
             collection: 'stories',
-            where: ['likes', 'array-contains', auth.displayName],
+            where: ['likes', 'array-contains', displayName],
             storeAs: 'posts'
         }]
     }

@@ -62,6 +62,7 @@ const createStory = ((story, id )=> {
             db.collection('notifications').doc().set({
                 title: story.title,
                 notification: 'converted to story',
+                type: 'conversion',
                 id: docRef.id,
                 time: now.toString(),
                 date: now

@@ -59,7 +59,7 @@ class HelpModal extends Component {
                         <br></br>
                         <p>
                             Post and like story ideas (called prompts).<br></br>
-                            Prompts that get 15 likes within 2 days become stories!<br></br>
+                            Prompts that get <bold>15</bold> likes within 2 days become stories!<br></br>
                             Those that don't get deleted.
                         </p>
                         <br></br>

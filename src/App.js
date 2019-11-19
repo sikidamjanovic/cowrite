@@ -30,7 +30,7 @@ const App = () => (
             <Route path="/stories/romance" component={Home}/>
             <Route path="/stories/scifi" component={Home}/>
             
-            <Route path="/profile" component={Home}/>
+            <Route path="/user/:id" component={Home}/>
             <Route path="/story/:id" component={StoryModal}/>
         </div>
         </Layout>
