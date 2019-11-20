@@ -371,7 +371,7 @@ SCROLL STYLING
 */
 
 .story-modal{
-    width: 60% !important;
+    width: 55% !important;
 }
 
 #number-of-submissions{
@@ -429,10 +429,22 @@ SCROLL STYLING
 */
 
 #comments{
-    background-color: #111717;
-    padding-left: 24px;
+    background-color: #0E1314;
     padding-right: 24px;
     padding-bottom: 24px;
+}
+
+.comment-text-hover:hover{
+    cursor: pointer;
+    color: white;
+}
+
+.comment-hover{
+    transition: 0.4s;
+}
+
+.comment-hover:hover{
+    transform: scale(1.025);
 }
 
 .ant-card-actions{
@@ -640,4 +652,8 @@ SCROLL STYLING
 
 .ant-steps-item-title::after{
     background: #006d755e !important;
+}
+
+.ant-dropdown-menu-item:hover{
+    background-color: rgb(0, 0, 0, 0.3);
 }

@@ -98,7 +98,6 @@ class StoryModal extends Component {
                 <Modal
                     visible={this.state.visible}
                     onCancel={this.handleCancel}
-                    title={data.title}
                     footer={null}
                     style={{ top: 0, padding: 0 }}
                     className={"story-modal"}

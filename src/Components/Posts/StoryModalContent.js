@@ -1,8 +1,8 @@
 import React from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
-import StoryComment from '../Posts/StoryComment'
-import { Button, Icon, Popover, message, BackTop, Steps } from 'antd';
+import SelectedComment from '../Posts/SelectedComment'
+import { Button, Icon, Popover, message, Radio, Row, Col, Divider, Tag } from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { NavLink } from 'react-router-dom'
@@ -14,6 +14,7 @@ class StoryModalContent extends React.Component {
     constructor(props){
         super(props)
         this.state={
+            panelOpen: false,
             chapter: 1,
             sort: 'time',
             sortOrder: 'desc',
@@ -80,11 +81,9 @@ class StoryModalContent extends React.Component {
             if((radio + 1) < current || this.props.complete){
                 return (
                     <div style={{
-                        paddingLeft: '24px',
-                        paddingRight: '24px',
-                        backgroundColor: '#111717'
+                        backgroundColor: '#0E1314'
                     }}>
-                        <StoryComment 
+                        <SelectedComment 
                             id={selected[radio].id}
                             postId={selected[radio].postId}
                             uid={this.props.auth.uid}
@@ -93,7 +92,7 @@ class StoryModalContent extends React.Component {
                             likes={selected[radio].likes}
                             likeCount={selected[radio].likeCount}
                             auth={this.props.auth}
-                            selected={true}
+                            time={this.props.createdAt.toDate()}
                         />
                     </div>
                 )
@@ -122,23 +121,27 @@ class StoryModalContent extends React.Component {
         var current = this.props.currentChapter
         var enabled = []
         var timeLeft = this.state.timeLeft
-        var { Step } = Steps;
         for (let i = 1; i <= current; i++) {
             if(i === current && this.props.complete === false){
                 enabled.push(
-                    <Step 
-                        icon={<Icon type="hourglass" />} 
-                        title={"Chapter " + i} 
+                    <Radio.Button 
+                        style={{ marginRight: '14px' }}
+                        value={i - 1} 
                         description={timeLeft}
-                    />
+                    >
+                        <Icon style={{ marginRight: '7px' }} type="hourglass" />
+                        {"Chapter " + i}
+                    </Radio.Button>
                 )
             }else{
                 enabled.push(
-                    <Step 
-                        icon={this.props.complete ? null : <Icon type="check-circle" />}
-                        title={"Chapter " + i} 
-                        description={this.props.complete ? null : "Complete"}
-                    />
+                    <Radio.Button  
+                        style={{ marginRight: '14px' }}
+                        value={i - 1}
+                    >
+                        <Icon style={{ marginRight: '7px' }} type="check" />
+                        {"Chapter " + i}
+                    </Radio.Button>
                 )
             }
         }
@@ -149,43 +152,36 @@ class StoryModalContent extends React.Component {
         var current = this.props.currentChapter
         var numberOfChapters = this.props.numberOfChapters
         var disabled = []
-        var { Step } = Steps;
 
         for (let i = current + 1; i <= numberOfChapters; i++) {
             disabled.push(
-                <Step 
-                    title={"Chapter " + i} 
-                    style={{ opacity: 0.3 }} 
+                <Radio.Button 
+                    value={i - 1}
+                    style={{ opacity: 0.3, marginRight: '14px' }} 
                     disabled={true} 
-                    description={
-                        i === current + 1 ?
-                            'Up Next'
-                        :
-                            ''
-                    }
-                />
+                >
+                    Chapter {i}
+                </Radio.Button>
             )
         }
         return disabled
     }
 
-    onChange = selectedChapter => {
-        this.setState({ selectedChapter });
+    onChange = e => {
+        this.setState({ selectedChapter: e.target.value });
     };
 
     renderChapterRadios(){
-        const { selectedChapter } = this.state;
         return(
             <div>
-                <Steps
-                    size="small"
-                    current={selectedChapter} 
+                <Radio.Group 
+                    defaultValue={this.props.currentChapter - 1}
+                    buttonStyle="solid"
                     onChange={this.onChange}
-                    className= {this.props.numberOfChapters < 3 ? "steps-few" : "steps-many"}
                 >
                     {this.getEnabledRadios()}
                     {this.getDisabledRadios()}
-                </Steps>
+                </Radio.Group>
             </div>
         )
     }
@@ -263,18 +259,21 @@ class StoryModalContent extends React.Component {
             for (let i = 0; i < submissions.length; i++) {
                 if(submissions[i].author === this.props.auth.displayName && submissions[i].chapter === this.props.currentChapter){
                     this.setState({
-                        userSubmitted: true
+                        userSubmitted: true,
+                        panelOpen: false
                     })
                     break
                 }else{
                     this.setState({
-                        userSubmitted: false
+                        userSubmitted: false,
+                        panelOpen: true
                     })
                 }
             }
         }else{
             this.setState({
-                userSubmitted: false
+                userSubmitted: false,
+                panelOpen: true
             })
         }
     }
@@ -483,111 +482,138 @@ class StoryModalContent extends React.Component {
         }
     }
 
+    renderModalButtons(){
+        return(
+            <div className="modal-buttons">
+                <Button 
+                    type="link" 
+                    onClick={this.like} 
+                >
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                        {this.renderHeart()}
+                        <span id="likes">
+                            {this.state.amountOfLikes}
+                        </span>
+                    </span>
+                </Button>
+                <Popover content={this.props.author} title="">
+                    <Button type="link">
+                        <NavLink to={{
+                            pathname: "/user/" + this.props.author
+                        }}>
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                                <Icon type="user" key="user" />
+                            </span>
+                        </NavLink>
+                    </Button>
+                </Popover>
+                <Button type="link">
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                        <Icon type="warning"/>
+                    </span>
+                </Button>
+                <CopyToClipboard text={window.location.href}
+                    onCopy={() => message.success('Link copied to clipboard')}
+                >
+                    <Button type="link">
+                        <span style={{ display: 'flex', alignItems: 'center' }}>
+                            <Icon type="share-alt"/>
+                        </span>
+                    </Button>
+                </CopyToClipboard>
+            </div>
+        )
+    }
+
+    renderSubmitButton(){
+        return(
+            this.props.auth.isEmpty ? 
+                <Button
+                    onClick={function(){ message.error('Please login to submit chapters.')}}
+                    style={{ 
+                        paddingBottom: '30px',
+                        paddingRight: '10px',
+                        paddingLeft: '10px',
+                        paddingTop: '10px',
+                        marginRight: '14px'
+                    }} 
+                    type="primary"
+                >
+                    <Icon type="plus"/> Submit Chapter {this.props.currentChapter}</Button>    
+                :
+                <Button 
+                    onClick={this.openSubmitPanel} 
+                    style={{ 
+                        paddingBottom: '30px',
+                        paddingRight: '10px',
+                        paddingLeft: '10px',
+                        paddingTop: '10px', 
+                        marginRight: '28px'
+                    }} 
+                    type={this.state.panelOpen ? 'dashed' : 'primary'}
+                    disabled={this.state.userSubmitted}
+                >
+                    {this.state.userSubmitted ? 
+                        <Icon type="check"/> : 
+                    this.state.panelOpen ? 
+                        <Icon type="minus"/> : 
+                        <Icon type="plus"/>
+                    }
+                    {this.state.userSubmitted ?
+                        'Chapter Submitted':
+                        'Submit Chapter ' + this.props.currentChapter     
+                    }
+                </Button>
+        )
+    }
+
     render() { 
         return (
-            <div>
-                <BackTop/>
-                <div className="modal-body">
-
-                    {/* PROMPT STYLING */}
-                    <div>
-                        <div style={{ marginBottom: '48px' }}>
-                            {this.props.prompt}
-                        </div>
-                    </div>        
-
-                    <div className="modal-buttons">
-                        
-                        {this.props.auth.isEmpty ? 
-                            <Button
-                                onClick={function(){ message.error('Please login to submit chapters.')}}
-                                style={{ 
-                                    paddingBottom: '30px',
-                                    paddingRight: '10px',
-                                    paddingLeft: '10px',
-                                    paddingTop: '10px',
-                                    marginRight: '14px'
-                                }} 
-                                type="primary"
-                            >
-                                <Icon type="plus"/> Submit Chapter {this.props.currentChapter}</Button>    
-                            :
-                            <Button 
-                                onClick={this.openSubmitPanel} 
-                                style={{ 
-                                    paddingBottom: '30px',
-                                    paddingRight: '10px',
-                                    paddingLeft: '10px',
-                                    paddingTop: '10px', 
-                                    marginRight: '28px'
-                                }} 
-                                type="primary"
-                                disabled={this.state.userSubmitted}
-                            >
-                                {this.state.userSubmitted ? 
-                                    <Icon type="check"/> : 
-                                this.state.panelOpen ? 
-                                    <Icon type="minus"/> : 
-                                    <Icon type="plus"/>
-                                }
-                                {this.state.userSubmitted ?
-                                    'Chapter Submitted':
-                                    'Submit Chapter ' + this.props.currentChapter     
-                                }
-                            </Button>
-                        }
-
-                        <Button 
-                            type="link" 
-                            onClick={this.like} 
-                        >
-                            <span style={{ display: 'flex', alignItems: 'center' }}>
-                                {this.renderHeart()}
-                                <span id="likes">
-                                    {this.state.amountOfLikes}
-                                </span>
-                            </span>
-                        </Button>
-
-                        <Popover content={this.props.author} title="">
-                            <Button type="link">
-                                <NavLink to={{
-                                    pathname: "/user/" + this.props.author
-                                }}>
-                                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                                        <Icon type="user" key="user" />
-                                    </span>
-                                </NavLink>
-                            </Button>
-                        </Popover>
-
-                        <Button type="link">
-                            <span style={{ display: 'flex', alignItems: 'center' }}>
-                                <Icon type="warning"/>
-                            </span>
-                        </Button>
-
-                        <CopyToClipboard text={window.location.href}
-                            onCopy={() => message.success('Link copied to clipboard')}
-                        >
-                            <Button type="link">
-                                <span style={{ display: 'flex', alignItems: 'center' }}>
-                                    <Icon type="share-alt"/>
-                                </span>
-                            </Button>
-                        </CopyToClipboard>
-
-                    </div>
+            <div style={{ padding: '48px', backgroundColor: '#0E1314' }}>
+                <Row type="flex" align="middle">
+                    <Col>
+                        <Row type="flex" align="middle">
+                            <Col>
+                                <h1 style={{ margin: 0 }}>{this.props.title}</h1>
+                                <p style={{ margin: 0, opacity: 0.8 }}>created by <b>{this.props.author}</b></p>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+                <Divider/>
+                <Row style={{ marginTop: '24px'}} type="flex" align="middle">
+                    <Col>
+                        <p>{this.props.prompt}</p>
+                    </Col>
+                </Row>
+                <Row style={{ marginTop: '24px'}} type="flex" align="middle">
+                    <Col>
+                        {this.renderSubmitButton()}
+                    </Col>
+                    <Col>
+                        {this.renderModalButtons()}
+                    </Col>
+                </Row>
+                <Row>
                     {this.renderSubmitHeader()}
-                    <br></br>
-                    {this.renderChapterRadios()}
-                </div>
-                {this.getComments()}
-                {this.props.complete ? 
-                    <div style={{ backgroundColor: '#111717', padding: '24px' }}>
-                        {this.renderButtons()}
-                    </div> : null
-                }
+                </Row>
+                <Row style={{ marginTop: '48px'}}>
+                    <Col>
+                        {this.renderChapterRadios()}
+                    </Col>
+                </Row>
+                <Row style={{ marginTop: '24px'}}>
+                    {this.getComments()}
+                </Row>
+                <Row>
+                    {this.props.complete ? 
+                        <div style={{ backgroundColor: '#111717', padding: '24px' }}>
+                            {this.renderButtons()}
+                        </div> 
+                        : 
+                        null
+                    }
+                </Row>
             </div>
     );
   }

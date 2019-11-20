@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Comment, Tooltip, Icon, Avatar, message, Popover, Popconfirm } from 'antd'
+import { Comment, Tooltip, Icon, Avatar, message, Popover, Popconfirm, Row } from 'antd'
 import { getFirestore } from "redux-firestore";
 var firebase = require('firebase');
 
@@ -76,9 +76,8 @@ class StoryComment extends Component {
                 <Icon 
                     type="heart"
                     theme="filled"
-                    size="large"
                     key="heart" 
-                    style={{ color:'#ff7a45' }}
+                    style={{ color:'#ff7a45', fontSize: '20px' }}
                 />
             )
         }else{
@@ -86,7 +85,7 @@ class StoryComment extends Component {
                 <Icon 
                     type="heart" 
                     key="heart" 
-                    style={{ color:'white' }}
+                    style={{ color:'rgba(255,255,255,0.3)', fontSize: '20px' }}
                 />
             )
         }
@@ -194,64 +193,71 @@ class StoryComment extends Component {
         if(this.state.expanded){
             return({
                 height: 'auto',
-                paddingRight: '48px'
             })
         }else{
             return({
                 maxHeight: '6.3em',
                 overflow: 'hidden',
-                paddingRight: '48px'
             })
         }
     }
 
     render() {  
         const actions = [
-            <span onClick={this.like} key="comment-basic-like">
-                <Tooltip title="Like">
-                    {this.renderHeart()}
-                    <span style={{ marginLeft: '5px' }}>
-                        {this.state.amountOfLikes}
-                    </span>
-                </Tooltip>
-                {/* <span style={{ paddingLeft: 8, cursor: 'auto' }}>{this.props.likes.length}</span> */}
-            </span>,
             this.isOwnSubmission()
         ]
         return (
-            <Comment
-                author={<a>{this.props.author}</a>}
-                actions={this.props.selected ? '' : actions}
-                avatar={
-                    <span 
-                    style={{ 
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        alignItems: 'center'
-                    }}>
-                        <Popover content={this.props.author} title="">
-                            {this.state.photoURL !== null ?
-                                <Avatar src={this.state.photoURL}/> :
-                                <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
-                        }
-                        </Popover>
-                    </span>
-                }
-                content={
-                    this.props.selected ?
-                        <div style={{ paddingRight: '48px'}}>
-                            <p>{this.props.comment}</p>
-                        </div> 
-                    :
-                        <p>{this.props.comment}</p>
-                }
-                datetime={
-                    this.props.selected ? 
-                        <span></span>
-                    : 
-                        this.getTime()
-                }
-            />
+            <div className="comment-hover">
+                <Comment
+                    author={<a>{this.props.author}</a>}
+                    actions={actions}
+                    avatar={
+                        <div style={{ height: '100%' }}>
+                            <Row style={{ display: 'flex', flexDirection: 'column' }}>
+                                <Popover content={this.props.author} title="">
+                                    {this.state.photoURL !== null ?
+                                        <Avatar src={this.state.photoURL}/> :
+                                        <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                                }
+                                </Popover>
+                            </Row>
+                            <Row 
+                                style={{ 
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center',
+                                    marginTop: '14px'
+                                }}
+                            >
+                                <div onClick={this.like} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                    <Tooltip title="Like">
+                                        {this.renderHeart()}
+                                    </Tooltip>
+                                </div>
+                                <div>
+                                    <small style={{ color: 'rgba(255,255,255,0.6)' }}>
+                                        {this.state.amountOfLikes}
+                                    </small>
+                                </div>
+                            </Row>
+                        </div>
+                    }
+                    content={
+                        <div>
+                            <div onClick={this.expandComment} style={this.expandStyle()} className="comment-text-hover">
+                                {this.props.comment}
+                            </div>
+                            <div>
+                                {this.state.expanded ? 
+                                    null :
+                                    <p>...</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                    datetime={this.getTime()}
+                />
+            </div>
         )
     }
 }
