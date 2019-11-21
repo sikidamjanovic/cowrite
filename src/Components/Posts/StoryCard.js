@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { getFirestore } from "redux-firestore";
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { NavLink } from 'react-router-dom'
+import ReportModal from '../Posts/ReportModal'
 import '../../App.css'
 var firebase = require('firebase');
 
@@ -221,9 +222,12 @@ class StoryCard extends Component {
                         </Tooltip>,
 
                         <Tooltip title="Report this prompt">
-                            <button id="cardActionBtn">
-                                <Icon type="warning" key="warning" />
-                            </button>
+                            <ReportModal 
+                                title={this.props.title} 
+                                type="story"
+                                id={this.props.id}
+                                component="card"
+                            />
                         </Tooltip>
                     ]}
                     hoverable={true}

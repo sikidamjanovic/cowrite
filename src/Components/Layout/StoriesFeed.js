@@ -192,6 +192,12 @@ export default compose(
                   orderBy: [sortBy, order]
                 }
             ]
+        }else if(query === "complete"){
+            return [{ 
+                collection: 'stories', 
+                orderBy: [sortBy, order],
+                where: ["complete", "==", true] 
+            }]
         }else{
             return [{ 
                 collection: 'stories', 

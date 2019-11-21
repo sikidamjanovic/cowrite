@@ -164,6 +164,17 @@ class Sidebar extends Component {
                             All
                         </NavLink>
                     </Menu.Item>
+                    <Menu.Item key="/stories/complete">
+                        <NavLink to={{
+                            pathname: "/stories/complete",
+                            state: {
+                                query: 'complete'
+                            }
+                        }}>
+                            <Icon type="check-circle" style={styles.IconStyle}/>
+                            Complete
+                        </NavLink>
+                    </Menu.Item>
                     <Menu.Item key="/stories/comedy">
                         <NavLink to={{
                             pathname: "/stories/comedy",

@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Modal, Button, Carousel, Icon } from 'antd';
 import NewPostModal from '../Posts/NewPostModal'
+import { NavLink, withRouter } from 'react-router-dom'
 import '../../App.css'
 
 class HelpModal extends Component {
     constructor(props){
         super(props)
         this.state = {
-            visible: false
+            visible: false,
+            slide: 1
         }
         this.showModal = this.showModal.bind(this)
         this.handleClose = this.handleClose.bind(this)
@@ -31,10 +33,47 @@ class HelpModal extends Component {
 
     next() {
         this.carousel.next();
+        this.setState({
+            slide: this.state.slide + 1
+        })
     }
 
     previous() {
         this.carousel.prev();
+        this.setState({
+            slide: this.state.slide - 1
+        })
+    }
+
+    renderButtons(){
+        if(this.state.slide === 1){
+            return(
+                <Button onClick={this.next}>
+                    Next
+                    <Icon type="right"/>
+                </Button>
+            )        
+        }else if(this.state.slide === 2){
+            return(
+                <Fragment>
+                    <Button onClick={this.previous} style={{ marginRight: '7px' }}>
+                        <Icon type="left"/>
+                        Prev
+                    </Button>
+                    <Button onClick={this.next}>
+                        Next
+                        <Icon type="right"/>
+                    </Button>
+                </Fragment>
+            )
+        }else{
+            return(
+                <Button onClick={this.previous} style={{ marginRight: '7px' }}>
+                    <Icon type="left"/>
+                    Prev
+                </Button>
+            )
+        }
     }
 
     render() {
@@ -53,6 +92,7 @@ class HelpModal extends Component {
                     ref={node => (this.carousel = node)}
                     dots={false}
                     className="help-carousel"
+                    effect="fade"
                 >
                     <div>
                         <h1>Step 1: Prompts</h1>
@@ -69,28 +109,35 @@ class HelpModal extends Component {
                         <h1>Step 2: Stories</h1>
                         <br></br>
                         <p>
-                            Stories are divided into multiple chapters.<br></br>
-                            Users then submit their versions 
+                            Stories are divided into multiple chapters<br></br>
+                            Users have 48 hours per chapter to submit their versions!
                         </p>
+                        <br></br>
+                        <NavLink to={{
+                            pathname: "/stories/all"
+                        }}>
+                            <Button type="primary" onClick={this.handleClose}>
+                                All Stories
+                            </Button>
+                        </NavLink>
                     </div>
                     <div>
-                        <h1>Step 3</h1>
+                        <h1>Step 3: Done!</h1>
                         <p>
-                            Users submit written chapters for these stories. The highest ranked submission
-                            is chosen as that chapter. Then, the next chapter submission process begins until the story
-                            is complete.
+                            After all the chapters have been submitted and ranked, the story is complete!
                         </p>
+                        <br></br>
+                        <NavLink to={{
+                            pathname: "/stories/complete"
+                        }}>
+                            <Button type="primary" onClick={this.handleClose}>
+                                Complete stories
+                            </Button>
+                        </NavLink>
                     </div>
                 </Carousel>
                 <div style={{ textAlign: "center", paddingBottom: '24px', backgroundColor: '#111717' }}>
-                    <Button onClick={this.previous} style={{ marginRight: '7px' }}>
-                        <Icon type="left"/>
-                        Prev
-                    </Button>
-                    <Button onClick={this.next}>
-                        Next
-                        <Icon type="right"/>
-                    </Button>
+                    {this.renderButtons()}
                 </div>
                 </Modal>
             </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
 import SelectedComment from '../Posts/SelectedComment'
@@ -6,10 +6,11 @@ import { Button, Icon, Popover, message, Radio, Row, Col, Divider, Tag } from 'a
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { NavLink } from 'react-router-dom'
+import ReportModal from '../Posts/ReportModal'
 import '../../App.css'
 var firebase = require('firebase');
 
-class StoryModalContent extends React.Component {
+class StoryModalContent extends Component {
 
     constructor(props){
         super(props)
@@ -108,6 +109,7 @@ class StoryModalContent extends React.Component {
                         updateSortOrder={this.updateCommentSortOrder}
                         submissions={this.state.submissions}
                         getSubmissions={this.getSubmissions}
+                        timeLeft={this.state.timeLeft}
                     />
                 )
             }
@@ -124,14 +126,16 @@ class StoryModalContent extends React.Component {
         for (let i = 1; i <= current; i++) {
             if(i === current && this.props.complete === false){
                 enabled.push(
-                    <Radio.Button 
-                        style={{ marginRight: '14px' }}
-                        value={i - 1} 
-                        description={timeLeft}
-                    >
-                        <Icon style={{ marginRight: '7px' }} type="hourglass" />
-                        {"Chapter " + i}
-                    </Radio.Button>
+                    <Popover content={timeLeft + ' until chapter ' + i + ' is chosen'} title="">
+                        <Radio.Button 
+                            style={{ marginRight: '14px' }}
+                            value={i - 1} 
+                            description={timeLeft}
+                        >
+                            <Icon style={{ marginRight: '7px' }} type="hourglass" />
+                            {"Chapter " + i}
+                        </Radio.Button>
+                    </Popover>
                 )
             }else{
                 enabled.push(
@@ -255,26 +259,30 @@ class StoryModalContent extends React.Component {
 
     hasUserSubmitted(){
         var submissions = this.state.submissions
-        if(submissions.length > 0){
-            for (let i = 0; i < submissions.length; i++) {
-                if(submissions[i].author === this.props.auth.displayName && submissions[i].chapter === this.props.currentChapter){
-                    this.setState({
-                        userSubmitted: true,
-                        panelOpen: false
-                    })
-                    break
-                }else{
-                    this.setState({
-                        userSubmitted: false,
-                        panelOpen: true
-                    })
-                }
-            }
+        if(this.props.auth.isEmpty){
+           return null 
         }else{
-            this.setState({
-                userSubmitted: false,
-                panelOpen: true
-            })
+            if(submissions.length > 0){
+                for (let i = 0; i < submissions.length; i++) {
+                    if(submissions[i].author === this.props.auth.displayName && submissions[i].chapter === this.props.currentChapter){
+                        this.setState({
+                            userSubmitted: true,
+                            panelOpen: false
+                        })
+                        break
+                    }else{
+                        this.setState({
+                            userSubmitted: false,
+                            panelOpen: true
+                        })
+                    }
+                }
+            }else{
+                this.setState({
+                    userSubmitted: false,
+                    panelOpen: true
+                })
+            }
         }
     }
 
@@ -397,11 +405,11 @@ class StoryModalContent extends React.Component {
             }
         }else if(diffMins > 60){
             this.setState({
-                timeLeft: Math.round(diffMins / 60) + ' hours left'
+                timeLeft: Math.round(diffMins / 60) + 'hrs left'
             })
         }else if(diffMins > 0){
             this.setState({
-                timeLeft: Math.round(diffMins) + ' min left'
+                timeLeft: Math.round(diffMins) + 'min left'
             })
         }
 
@@ -507,11 +515,12 @@ class StoryModalContent extends React.Component {
                         </NavLink>
                     </Button>
                 </Popover>
-                <Button type="link">
-                    <span style={{ display: 'flex', alignItems: 'center' }}>
-                        <Icon type="warning"/>
-                    </span>
-                </Button>
+                <ReportModal
+                    title={this.props.title} 
+                    type="story"
+                    id={this.props.id}
+                    component="modal"
+                />
                 <CopyToClipboard text={window.location.href}
                     onCopy={() => message.success('Link copied to clipboard')}
                 >
@@ -575,7 +584,13 @@ class StoryModalContent extends React.Component {
                         <Row type="flex" align="middle">
                             <Col>
                                 <h1 style={{ margin: 0 }}>{this.props.title}</h1>
-                                <p style={{ margin: 0, opacity: 0.8 }}>created by <b>{this.props.author}</b></p>
+                                <p style={{ margin: 0, opacity: 0.5 }}>created by 
+                                    <NavLink to={{
+                                        pathname: "/user/" + this.props.author
+                                    }}>
+                                        <b style={{ color: 'white', opacity: 0.9 }}> {this.props.author}</b>
+                                    </NavLink>
+                                </p>
                             </Col>
                         </Row>
                     </Col>

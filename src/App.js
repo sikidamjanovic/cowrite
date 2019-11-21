@@ -24,6 +24,7 @@ const App = () => (
             <Route path="/prompts/scifi" component={Home}/>
 
             <Route path="/stories/all" component={Home}/>
+            <Route path="/stories/complete" component={Home}/>
             <Route path="/stories/comedy" component={Home}/>
             <Route path="/stories/horror" component={Home}/>
             <Route path="/stories/fantasy" component={Home}/>

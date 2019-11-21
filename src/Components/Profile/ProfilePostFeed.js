@@ -72,6 +72,10 @@ class ProfilePostFeed extends Component {
                             </Col> 
                     )
                 )
+            }else{
+                return(
+                    <small>Nothing found</small>
+                )
             }
         }else{
             return(

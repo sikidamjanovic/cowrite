@@ -112,13 +112,13 @@ SCROLL STYLING
     margin-left: 10px;
 }
 
-#notification:hover{
+.notification:hover{
     color: #006d75 !important;
     background-color: rgba(255, 255, 255, 0.01) !important;
     transform: scale(1.025);
 }
 
-#notification{
+.notification{
     transition: 0.4s;
     background-color: #101618;
     color: rgba(255, 255, 255, 0.8) !important
@@ -371,7 +371,7 @@ SCROLL STYLING
 */
 
 .story-modal{
-    width: 55% !important;
+    width: 65% !important;
 }
 
 #number-of-submissions{

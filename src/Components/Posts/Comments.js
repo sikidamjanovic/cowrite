@@ -3,7 +3,7 @@ import StoryComment from '../Posts/StoryComment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
-import { List, Select, Button, Icon, Divider } from 'antd'
+import { List, Select, Button, Icon, Tag } from 'antd'
 
 
 class Comments extends Component {
@@ -105,7 +105,15 @@ class Comments extends Component {
                 <Button style={{ marginLeft: '5px', marginRight: '24px' }} onClick={this.handleSortOrder}>
                     {this.renderSortArrow()}
                 </Button>
-                <small>{this.state.submissions.length + ' submissions'}</small>
+                <small>
+                    <Tag>
+                        <Icon type="hourglass"/> 
+                        {' ' + this.props.timeLeft}
+                    </Tag>
+                    <Tag>
+                        {this.state.submissions.length + ' submissions'}
+                    </Tag>
+                </small>
             </div>
         )
     }

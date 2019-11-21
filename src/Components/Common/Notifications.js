@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
-import {Dropdown, Menu, Badge, Icon, Button, Divider } from 'antd'
+import {Dropdown, List, Badge, Icon, Button, Divider } from 'antd'
 
 class Notifications extends Component {
     constructor(props){
@@ -61,61 +61,61 @@ class Notifications extends Component {
             for (let i = 0; i < notifications.length; i++) {
                 menuItems.push(
                     <div>
-                    <Link to={{ 
-                        pathname: '/story/' + notifications[i].id, 
-                        state: { 
-                            id: notifications[i].id,
-                            auth: this.props.auth,
-                            yposition: 0,
-                            query: 'all'
-                        }
-                    }}>
-                        <Menu.Item 
-                            key={i}
-                            id='notification'
-                            onClick={this.closeMenu}
-                            style={{ 
-                                minHeight: '75px', 
-                                minWidth: '250px',
-                                display: 'flex', 
-                                justifyContent: 'center',
-                                flexDirection: 'row'
+                        <Link to={{ 
+                            pathname: '/story/' + notifications[i].id, 
+                            state: { 
+                                id: notifications[i].id,
+                                auth: this.props.auth,
+                                yposition: 0,
+                                query: 'all'
+                            }
                         }}>
-                            <div 
+                            <List.Item 
+                                key={i}
+                                onClick={this.closeMenu}
                                 style={{ 
-                                    width: '20%',
+                                    minHeight: '75px', 
+                                    minWidth: '250px',
                                     display: 'flex', 
                                     justifyContent: 'center',
-                                    alignItems: 'center'
+                                    flexDirection: 'row'
                                 }}
+                                className="notification"
                             >
-                                {this.getIcon(i)}
-                            </div>
-                            <div 
-                                style={{ 
-                                    width: '75%',
-                                    display: 'flex', 
-                                    justifyContent: 'center',
-                                    flexDirection: 'column'
-                                }}
-                            >
-                                <b>{notifications[i].title}</b>
-                                <small 
-                                    style={{ opacity: 0.6 }}
+                                <div 
+                                    style={{ 
+                                        width: '20%',
+                                        display: 'flex', 
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                    }}
                                 >
-                                {notifications[i].notification} - {this.getTime(new Date(), notifications[i].date.toDate())}
-                                </small>
-                            </div>
-                        </Menu.Item>
-                    </Link>
-                    <Menu.Divider />
+                                    {this.getIcon(i)}
+                                </div>
+                                <div 
+                                    style={{ 
+                                        width: '75%',
+                                        display: 'flex', 
+                                        justifyContent: 'center',
+                                        flexDirection: 'column'
+                                    }}
+                                >
+                                    <b>{notifications[i].title}</b>
+                                    <small 
+                                        style={{ opacity: 0.6 }}
+                                    >
+                                    {notifications[i].notification} - {this.getTime(new Date(), notifications[i].date.toDate())}
+                                    </small>
+                                </div>
+                            </List.Item>
+                        </Link>
                     </div>
                 )
             }
             return(
-                <Menu style={{ maxHeight: '80vh', overflowY: 'scroll', overflowX: 'hidden'}}>
+                <List style={{ maxHeight: '80vh', overflowY: 'scroll', overflowX: 'hidden'}}>
                     {menuItems}
-                </Menu>
+                </List>
             )
         }else{
             return <small>Loading...</small>

@@ -4,6 +4,7 @@ import '../../App.css'
 import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
 import { NavLink } from 'react-router-dom'
+import ReportModal from '../Posts/ReportModal'
 var firebase = require('firebase');
 
 class Prompt extends Component {
@@ -37,9 +38,9 @@ class Prompt extends Component {
             var diffHours = Math.abs(new Date() - postedTime.toDate()) / 36e5;
             var hoursLeft = 48 - diffHours
             var minutesLeft = hoursLeft * 60
-            const tooltipTitle = "The time left until this prompt possibly becomes a story"
+            const tooltipTitle = "The time remaining for this prompt to get 10 likes!"
 
-            if(hoursLeft > 12){
+            if(hoursLeft > 1){
                 return(
                     <Tooltip title={tooltipTitle}>
                         <Tag style={{
@@ -47,38 +48,16 @@ class Prompt extends Component {
                             border: '1px solid rgb(135, 232, 222, 0.5)',
                             color: '#87e8de'
                         }}>
-                            {Math.round(hoursLeft) + 'h Left'}
-                        </Tag>
-                    </Tooltip>
-                )
-            }else if(hoursLeft > 4){
-                return(
-                    <Tooltip title={tooltipTitle}>
-                        <Tag style={{
-                            background: 'none',
-                            border: '1px solid rgb(135, 232, 222, 0.5)',
-                            color: '#87e8de'
-                        }}>
-                            {Math.round(hoursLeft) + 'h Left'}
-                        </Tag>
-                    </Tooltip>
-                )
-            }else if(hoursLeft > 1){
-                return(
-                    <Tooltip title={tooltipTitle}>
-                        <Tag style={{
-                            background: 'none',
-                            border: '1px solid rgb(135, 232, 222, 0.5)',
-                            color: '#87e8de'
-                        }}>
-                            {Math.round(hoursLeft) + 'h Left'}
+                            <Icon style={{ marginRight: '4px' }}type="clock-circle" />
+                            {Math.round(hoursLeft) + 'h'}
                         </Tag>
                     </Tooltip>
                 )
             }else if(hoursLeft > 0) {
                 return(
                     <Tooltip title={tooltipTitle}>
-                        <Tag color="#cf1322">{60 - Math.round(minutesLeft) + 'min Left'}</Tag>
+                        <Icon style={{ marginRight: '4px' }}type="clock-circle" />
+                        <Tag color="#cf1322">{60 - Math.round(minutesLeft) + 'min'}</Tag>
                     </Tooltip>
                 )
             }else if(minutesLeft <= 0){
@@ -221,9 +200,12 @@ class Prompt extends Component {
         }else{
             return(
                 <Tooltip title="Report this prompt">
-                    <button id="cardActionBtn">
-                        <Icon type="warning" key="warning" />
-                    </button>
+                    <ReportModal 
+                        title={this.props.title} 
+                        type="prompt"
+                        id={this.props.id}
+                        component="card"
+                    />
                 </Tooltip>
             )
         }
