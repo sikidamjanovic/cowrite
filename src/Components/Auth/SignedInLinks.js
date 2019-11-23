@@ -14,7 +14,7 @@ class SignedInLinks extends Component {
             <Fragment>
 
                 <div className="nav-link">
-                    <NewPostModal title="New Prompt"/>
+                    <NewPostModal title="Prompt"/>
                 </div>
 
                 <div className="nav-link">

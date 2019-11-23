@@ -20,16 +20,16 @@ const App = () => (
             <Route path="/prompts/comedy" component={Home}/>
             <Route path="/prompts/horror" component={Home}/>
             <Route path="/prompts/fantasy" component={Home}/>
-            <Route path="/prompts/romance" component={Home}/>
             <Route path="/prompts/scifi" component={Home}/>
+            <Route path="/prompts/other" component={Home}/>
 
             <Route path="/stories/all" component={Home}/>
             <Route path="/stories/complete" component={Home}/>
             <Route path="/stories/comedy" component={Home}/>
             <Route path="/stories/horror" component={Home}/>
             <Route path="/stories/fantasy" component={Home}/>
-            <Route path="/stories/romance" component={Home}/>
             <Route path="/stories/scifi" component={Home}/>
+            <Route path="/stories/other" component={Home}/>
             
             <Route path="/user/:id" component={Home}/>
             <Route path="/story/:id" component={StoryModal}/>

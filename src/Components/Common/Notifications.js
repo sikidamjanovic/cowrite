@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { firestoreConnect } from 'react-redux-firebase'
-import {Dropdown, List, Badge, Icon, Button, Divider } from 'antd'
+import {Dropdown, List, Badge, Icon } from 'antd'
 
 class Notifications extends Component {
     constructor(props){

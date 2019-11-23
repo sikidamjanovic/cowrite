@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button,  Select, message } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 import { connect } from 'react-redux';
 import { signIn } from '../../Store/Actions/authActions'
-import logo from '../../img/logo.png'
 import '../../App.css'
-import { ninvoke } from 'q';
 
 class SignInModalDetails extends Component {
   
@@ -46,7 +44,8 @@ class SignInModalDetails extends Component {
         return (
             <div>
             <Form onSubmit={this.handleSubmit} className="login-form">
-                <h3>LOGIN</h3>
+                <h2>Login</h2>
+                <br></br>
                 <Form.Item>
                     <Input
                         id="email"

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
 import SelectedComment from '../Posts/SelectedComment'
-import { Button, Icon, Popover, message, Radio, Row, Col, Divider, Tag } from 'antd';
+import { Button, Icon, Popover, message, Radio, Row, Col, Divider } from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { NavLink } from 'react-router-dom'
@@ -300,7 +300,7 @@ class StoryModalContent extends Component {
 
     like(){
         if (this.props.auth.isEmpty === false) {
-            if(this.state.userLiked == false){
+            if(this.state.userLiked === false){
                 this.setState({
                     userLiked: true,
                     amountOfLikes: this.state.amountOfLikes + 1
@@ -538,7 +538,7 @@ class StoryModalContent extends Component {
         return(
             this.props.auth.isEmpty ? 
                 <Button
-                    onClick={function(){ message.error('Please login to submit chapters.')}}
+                    onClick={function(){ message.error('Please login to submit chapters')}}
                     style={{ 
                         paddingBottom: '30px',
                         paddingRight: '10px',

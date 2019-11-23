@@ -1,5 +1,5 @@
 import React, { Component} from 'react'
-import { Button, Input, Row, Col, message } from 'antd'
+import { Button, Input, Row, message } from 'antd'
 import { getFirestore } from "redux-firestore";
 var firebase = require('firebase');
 

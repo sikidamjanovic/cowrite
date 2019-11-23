@@ -12,7 +12,9 @@ class UserProfile extends Component {
         this.state = {
             selected: 'yourPrompts',
             isOwnProfile: false,
-            displayName: ''
+            displayName: '',
+            photoURL: null
+            
         }
         this.handleRadioChange = this.handleRadioChange.bind(this)
     }
@@ -92,7 +94,7 @@ class UserProfile extends Component {
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '24px' }}>
                         {this.state.photoURL !== null ?
                             <Avatar shape="square" size={98} src={this.state.photoURL}/>:
-                            <Avatar icon='user'/>
+                            <Avatar shape="square" size={98} style={{ background: '#111717', color: '#171F22' }} icon="user" />
                         }
                         <h1 style={{ marginLeft: '24px' }}>{displayName}</h1>
                     </div>

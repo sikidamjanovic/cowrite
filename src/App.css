@@ -164,7 +164,7 @@ SCROLL STYLING
         padding-top: 100px;
     }
     #feed-container{
-        margin-top: 150px !important;
+        margin-top: 200px !important;
     }
 }
 
@@ -348,7 +348,6 @@ SCROLL STYLING
 
 .left-side-signup h1{
     font-weight: bold;
-    font-size: 4.1em;
     opacity: 0.9;
     margin-bottom: 48px;
 }

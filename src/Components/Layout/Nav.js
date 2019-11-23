@@ -4,7 +4,7 @@ import '../../App.css'
 import SignedInLinks from '../Auth/SignedInLinks';
 import SignedOutLinks from '../Auth/SignedOutLinks';
 import { connect } from 'react-redux';
-import { NavLink, withRouter } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import logo from '../../img/logo.png'
 
 const Nav = (props) => {

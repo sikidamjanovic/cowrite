@@ -1,4 +1,5 @@
-import firebase from 'firebase/app'
+import * as firebase from 'firebase/app';
+import 'firebase/analytics';
 import 'firebase/firestore'
 import 'firebase/auth'
 
@@ -10,10 +11,12 @@ var firebaseConfig = {
     projectId: "writingrelay",
     storageBucket: "writingrelay.appspot.com",
     messagingSenderId: "549963888326",
-    appId: "1:549963888326:web:65281ab754acef09"
+    appId: "1:549963888326:web:65281ab754acef09",
+    measurementId: 'G-6WJBXYLBZY'
 };
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+var fb = firebase.initializeApp(firebaseConfig);
+firebase.analytics(fb);
 firebase.firestore().settings({ timestampsInSnapshots: true })
 
 export default firebase

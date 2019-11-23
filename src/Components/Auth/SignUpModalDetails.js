@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button,  Row, Col } from 'antd';
+import { Form, message, Input, Button,  Row, Col } from 'antd';
 import { connect } from 'react-redux';
 import { signUp } from '../../Store/Actions/authActions'
 import signupbg from '../../img/signupbg.png'
@@ -16,6 +16,13 @@ class SignUpModalDetails extends Component {
         }
     }
 
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.authError !== this.props.authError){
+            this.forceUpdate()
+            message.error(this.props.authError)
+        }
+    }
+
     handleChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
@@ -28,13 +35,13 @@ class SignUpModalDetails extends Component {
     }
 
     render() {
-        const { authError } = this.props
         return (
             <Row style= {{ backgroundColor: '#1a1a1a', height: '100%'}}>
 
                 <Col xs={24} md={12} className="left-side-signup">
 
-                    <h1>Start Writing.</h1>
+                    <h1>Welcome to cowrite!</h1>
+                    <br></br>
 
                     <div className="signup-form">
                         <Form onSubmit={this.handleSubmit}>
@@ -65,10 +72,6 @@ class SignUpModalDetails extends Component {
                             <Button type="primary" htmlType="submit" className="sign-up-submit">    
                                 Join
                             </Button>
-                            
-                            <div className="red-text center">
-                                { authError ? <p>{authError}</p> : null }
-                            </div>
 
                         </Form>
                     </div>

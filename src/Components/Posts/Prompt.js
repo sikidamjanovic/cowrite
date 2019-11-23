@@ -129,7 +129,8 @@ class Prompt extends Component {
                 getFirestore().collection('posts').doc(this.props.id).update({
                     likes: firebase.firestore.FieldValue.arrayUnion(
                         this.props.auth.displayName
-                    )
+                    ),
+                    likeCount: firebase.firestore.FieldValue.increment(1)
                 })
             }else{
                 this.setState({
@@ -140,7 +141,8 @@ class Prompt extends Component {
                 getFirestore().collection('posts').doc(this.props.id).update({
                     likes: firebase.firestore.FieldValue.arrayRemove(
                         this.props.auth.displayName
-                    )
+                    ),
+                    likeCount: firebase.firestore.FieldValue.increment(-1)
                 })
             }
         }else{

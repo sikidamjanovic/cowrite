@@ -113,17 +113,13 @@ class PromptsFeed extends Component {
                         </div>
                         <div>
                             <Select showArrow={false} defaultValue="createdAt" style={{ width: 100 }} onChange={this.handleSort}>
-                                <Option value="createdAt">
-                                    {/* <Icon type="bulb"/> */}
+                                <Option value="createdAt" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon type="clock-circle" style={{ marginRight: '7px'}} />
                                     New
                                 </Option>
-                                <Option value="Hot">
-                                    {/* <Icon type="fire"/> */}
-                                    Hot
-                                </Option>
-                                <Option value="author">
-                                    {/* <Icon type="arrow-up"/> */}
-                                    Author
+                                <Option value="likeCount" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon type="star" style={{ marginRight: '7px'}} />
+                                    Top
                                 </Option>
                             </Select>
                         </div>
@@ -151,7 +147,7 @@ export default compose(
 
         const { getAll, query, sortBy, order } = props
 
-        if(getAll == true){
+        if(getAll === true){
             return [
                 { collection: 'posts',
                   orderBy: [sortBy, order]

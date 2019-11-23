@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { Modal, Button, Carousel, Icon } from 'antd';
 import NewPostModal from '../Posts/NewPostModal'
-import { NavLink, withRouter } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import '../../App.css'
 
 class HelpModal extends Component {

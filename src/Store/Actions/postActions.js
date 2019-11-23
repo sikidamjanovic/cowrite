@@ -1,5 +1,3 @@
-import { getFirestore } from "redux-firestore";
-import * as firebase from "firebase";
 import 'firebase/firestore'
 import { message } from 'antd'
 
@@ -11,6 +9,7 @@ export const createPost = (post) => {
         var today = new Date();
         firestore.collection('posts').add({ 
             ...post,
+            likeCount: 0,
             author: getFirebase().auth().currentUser.displayName,
             authorPic: getFirebase().auth().currentUser.photoURL,
             createdAt: new Date(),

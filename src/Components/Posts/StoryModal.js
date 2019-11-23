@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import StoryModalContent from './StoryModalContent'
-import { Modal, Button, Icon, Tag } from 'antd';
+import { Modal } from 'antd';
 import { connect } from 'react-redux'
 import { getFirestore } from 'redux-firestore'
 import '../../App.css'

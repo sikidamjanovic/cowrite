@@ -41,9 +41,9 @@ class ReportModal extends Component {
         var value = this.state.value
 
         if(value === null){
-            message.error('Please select a type.')
+            message.error('Please select a type')
         }else if(text.length === 0){
-            message.error('Please provide reasoning.')
+            message.error('Please provide reasoning')
         }else{
             getFirestore().collection('reports').doc().set({
                 postId: this.props.id,

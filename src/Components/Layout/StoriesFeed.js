@@ -154,14 +154,17 @@ class StoriesFeed extends Component {
                             </Breadcrumb>
                         </div>
                         <div>
-                            <Select showArrow={false} defaultValue="createdAt" style={{ width: 100 }} onChange={this.handleSort}>
-                                <Option value="createdAt">
+                            <Select showArrow={false} defaultValue="createdAt" style={{ width: 120 }} onChange={this.handleSort}>
+                                <Option value="createdAt" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon type="clock-circle" style={{ marginRight: '7px'}} />
                                     New
                                 </Option>
-                                <Option value="likeCount">
+                                <Option value="likeCount" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon type="star" style={{ marginRight: '7px'}} />
                                     Top
                                 </Option>
-                                <Option value="numberOfChapters">
+                                <Option value="numberOfChapters" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Icon type="read" style={{ marginRight: '7px'}} />
                                     Chapters
                                 </Option>
                             </Select>
@@ -186,7 +189,7 @@ export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
         const { getAll, sortBy, query, order } = props
-        if(getAll == true){
+        if(getAll === true){
             return [
                 { collection: 'stories',
                   orderBy: [sortBy, order]

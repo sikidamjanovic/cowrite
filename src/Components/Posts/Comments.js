@@ -35,7 +35,7 @@ class Comments extends Component {
 
     handleSortOrder(){
         var order = this.props.sortOrder
-        if(order == 'desc'){
+        if(order === 'desc'){
             return this.props.updateSortOrder('asc')
         }else{
             return this.props.updateSortOrder('desc')
@@ -44,7 +44,7 @@ class Comments extends Component {
     
     renderSortArrow(){
         var order = this.props.sortOrder
-        if(order == 'desc'){
+        if(order === 'desc'){
             return <Icon type="down"/>
         }else{
             return <Icon type="up"/>

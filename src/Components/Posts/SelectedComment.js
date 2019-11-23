@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Comment, Tooltip, Icon, Avatar, Popover, Row } from 'antd'
+import { Comment, Avatar, Popover, Row } from 'antd'
 import { getFirestore } from "redux-firestore";
+import { NavLink } from 'react-router-dom'
 
 class SelectedComments extends Component {
 
@@ -79,7 +80,13 @@ class SelectedComments extends Component {
         return (
             <div className="comment-hover" style={{ marginTop: '24px', paddingRight: '24px'}}>
                 <Comment
-                    author={<a>{this.props.author}</a>}
+                    author={
+                        <NavLink to={{
+                            pathname: "/user/" + this.props.author
+                        }}>
+                            {this.props.author}
+                        </NavLink>
+                    }
                     avatar={
                         <div style={{ height: '100%' }}>
                             <Row style={{ display: 'flex', flexDirection: 'column' }}>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, Button, Divider, Form, message } from 'antd';
+import { Input, Button, Form, message } from 'antd';
 import { connect } from 'react-redux'
 import { submitChapter } from '../../Store/Actions/postActions'
 
@@ -22,7 +22,7 @@ class SubmitChapter extends Component {
     }
 
     handleChange = (e) => {
-        if(e.target.id == 'content'){
+        if(e.target.id === 'content'){
             var content = e.target.value.toString()
             this.setState({
                 remainingCharacters: 2000 - content.length
@@ -35,11 +35,14 @@ class SubmitChapter extends Component {
 
     handleSubmit = (e) =>{
         e.preventDefault();
-        if(this.state.remainingCharacters > 0){
+        if(this.state.content.length < 10){
+            message.error('Chapter submission is too short')
+        }
+        else if(this.state.remainingCharacters > 0){
             this.props.closePanel()
             this.props.submitChapter(this.state)
         }else{
-            message.error('Chapter is too long.')
+            message.error('Chapter submission is too long')
         }
     }
 

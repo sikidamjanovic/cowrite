@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Comment, Tooltip, Icon, Avatar, message, Popover, Popconfirm, Row } from 'antd'
 import { getFirestore } from "redux-firestore";
+import { NavLink } from 'react-router-dom'
 var firebase = require('firebase');
 
 class StoryComment extends Component {
@@ -58,7 +59,7 @@ class StoryComment extends Component {
     userLiked(){
         const likes = this.props.likes
         for (let i = 0; i < likes.length; i++) {
-            if(likes[i].uid == this.props.uid){
+            if(likes[i].uid === this.props.uid){
                 this.setState({
                     userLiked: true
                 })
@@ -99,7 +100,7 @@ class StoryComment extends Component {
 
     like(){
         if (this.props.uid) {
-            if(this.state.userLiked == false){
+            if(this.state.userLiked === false){
                 this.setState({
                     userLiked: true,
                     amountOfLikes: this.state.amountOfLikes + 1
@@ -113,7 +114,6 @@ class StoryComment extends Component {
                     ),
                     likeCount: firebase.firestore.FieldValue.increment(1)
                 })
-                message.success('Comment Liked!')
             }else{
                 this.setState({
                     userLiked: false,
@@ -130,7 +130,7 @@ class StoryComment extends Component {
                 })
             }
         }else{
-            message.error('Please Login To Like Submissions')
+            message.error('Please login to like submissions')
         }
 
     }
@@ -209,16 +209,26 @@ class StoryComment extends Component {
         return (
             <div className="comment-hover">
                 <Comment
-                    author={<a>{this.props.author}</a>}
+                    author={
+                        <NavLink to={{
+                            pathname: "/user/" + this.props.author
+                        }}>
+                            {this.props.author}
+                        </NavLink>
+                    }
                     actions={actions}
                     avatar={
                         <div style={{ height: '100%' }}>
                             <Row style={{ display: 'flex', flexDirection: 'column' }}>
                                 <Popover content={this.props.author} title="">
-                                    {this.state.photoURL !== null ?
-                                        <Avatar src={this.state.photoURL}/> :
-                                        <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
-                                }
+                                    <NavLink to={{
+                                        pathname: "/user/" + this.props.author
+                                    }}>
+                                        {this.state.photoURL !== null ?
+                                            <Avatar src={this.state.photoURL}/> :
+                                            <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
+                                        }
+                                    </NavLink>
                                 </Popover>
                             </Row>
                             <Row 

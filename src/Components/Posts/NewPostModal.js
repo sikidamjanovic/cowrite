@@ -66,13 +66,13 @@ class NewPostModal extends React.Component {
 
     validateForm(state){
         if(state.title.length < 4 || state.content.length < 10){
-            return message.error('Title or content length is too short.')
+            return message.error('Title or content length is too short')
         }else if(state.genre.length === 0){
-            return message.error('Please select a category.')
+            return message.error('Please select a category')
         }else if(state.numberOfChapters === null){
             return message.error('Please select amount of chapters')
         }else if(state.remainingCharacters < 0){
-            return message.error('Content is too long.')
+            return message.error('Content is too long')
         }else{
             this.props.createPost(state)
             this.handleCancel()
@@ -80,8 +80,6 @@ class NewPostModal extends React.Component {
     }
 
     render() {
-        const { auth } = this.props;
-        //if (!auth.uid) return <redirect to= '/signin'/> //Use for actions that the user cant complete unless they are signed in
         const { TextArea } = Input;
         const { Option } = Select;
         return (
@@ -158,8 +156,8 @@ class NewPostModal extends React.Component {
                                 <Option value="Comedy">Comedy</Option>
                                 <Option value="Horror">Horror</Option>
                                 <Option value="Fantasy">Fantasy</Option>
-                                <Option value="Romance">Romance</Option>
                                 <Option value="SciFi">Sci-Fi</Option>
+                                <Option value="Other">Other</Option>
                             </Select>
                         </Form.Item>
                         <Button type="primary" htmlType="submit">    
