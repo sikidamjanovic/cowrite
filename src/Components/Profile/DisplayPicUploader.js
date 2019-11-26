@@ -15,22 +15,15 @@ class DisplayPicUploader extends Component {
         var storageRef = firebase.storage().ref(userName + '/profilePicture/' + file)
         var uploadTask = storageRef.put(file)
         uploadTask.on('state_changed', function(snapshot){
-            // Observe state change events such as progress, pause, and resume
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-            
             switch (snapshot.state) {
                 case firebase.storage.TaskState.PAUSED: // or 'paused'
-                    console.log('Upload is paused');
                     break;
                 case firebase.storage.TaskState.RUNNING: // or 'running'
-                    console.log('Upload is running');
                     break;
-                default: console.log('default')
+                default: console.log('.')
             }
         }, function(error) {
-            // Handle unsuccessful uploads
+            message.error('Upload error: ', error)
         }, function() {
             // Handle successful uploads on complete
             uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
@@ -45,7 +38,7 @@ class DisplayPicUploader extends Component {
                         window.location.reload()
                     })
                 }).catch(function(error) {
-                    console.log('ERROR Uploading pic')
+                    message.error('Error: ', error)
                 });
             });
         });
@@ -62,9 +55,6 @@ class DisplayPicUploader extends Component {
                     <label style={{ width: '100%', height: '100%', padding: '10px'}} for="upload">Change DP</label>
                 </Button>
                 <Input type="file" id="upload" style={{ visibility: 'hidden', width: 0, padding: 0 }} onChange={this.fileSelectedHandler}/>
-                <Button onClick={this.deleteProfile()}>
-                    Delete Profile
-                </Button>
             </Row>
         );
     }

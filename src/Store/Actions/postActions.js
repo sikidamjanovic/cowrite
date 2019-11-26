@@ -5,7 +5,6 @@ export const createPost = (post) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
         // make async call to db
         const firestore = getFirestore()
-        console.log(post)
         var today = new Date();
         firestore.collection('posts').add({ 
             ...post,

@@ -25,7 +25,6 @@ class HelpModal extends Component {
     }
 
     handleClose = e => {
-        console.log(e)
         this.setState({
             visible: false
         })

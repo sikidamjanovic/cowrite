@@ -34,10 +34,9 @@ export const signUp = (newUser) => {
         const firestore = getFirestore();
         let check = false;
         let usersRef = firestore.collection('users');
-        usersRef.get(
-        ).then(snapshot => {
+        usersRef.get()
+        .then(snapshot => {
             snapshot.forEach(doc => {
-                //console.log(doc.id, '=>', doc.data());
                 if (doc.id === newUser.username) { check = true; }
             });
             if (check === false) {
@@ -45,22 +44,18 @@ export const signUp = (newUser) => {
                     newUser.email,
                     newUser.password,
                 ).then((resp) => {
-                    firebase.auth().currentUser.updateProfile({
-                    displayName: newUser.username,
-                    });
                     return (
                         firestore.collection('users').doc(newUser.username).set({
-                            uid: resp.user.uid
+                            uid: resp.user.uid,
+                            displayName: newUser.username
                         }),
-                        firestore.collection('users').doc(newUser.username).collection('liked').doc().add({
-                            type: 'inital',
-                            postId: 'initial'
-                        }),
-                        window.location.reload()
+                        firebase.auth().currentUser.updateProfile({
+                            displayName: newUser.username,
+                        })
                     )
                 }).then(() => {
                     dispatch({ type: 'SIGNUP_SUCCESS'})
-                    window.document.reload()
+                    window.location.reload()
                 }).catch(err => {
                     dispatch({ type: 'SIGNUP_ERROR', err})
                 })

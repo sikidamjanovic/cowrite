@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Icon, Avatar, Tag, Popover, Tooltip, message, Popconfirm } from 'antd';
+import { Card, Icon, Avatar, Tag, Tooltip, message, Popconfirm } from 'antd';
 import '../../App.css'
 import { connect } from 'react-redux'
 import { getFirestore } from "redux-firestore";
@@ -165,11 +165,10 @@ class Prompt extends Component {
                     })
                 }
             } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
+                message.error("No such document!");
             }
         }).catch(function(error) {
-            console.log("Error getting document:", error);
+            message.error("Error getting document:", error);
         });
     }
 
@@ -221,7 +220,7 @@ class Prompt extends Component {
                     <button id="cardActionBtn" onClick= {this.like}>
                         {this.renderHeart()}
                     </button>,
-                    <Popover content={this.props.author} title="">
+                    <Tooltip title={this.props.author}>
                         <button id="cardActionBtn">
                             <NavLink to={{
                                 pathname: "/user/" + this.props.author
@@ -229,7 +228,7 @@ class Prompt extends Component {
                                 <Icon type="user" key="book" />
                             </NavLink>
                         </button>
-                    </Popover>,
+                    </Tooltip>,
                     this.deletePromptButton()
                 ]}
             >
@@ -238,12 +237,12 @@ class Prompt extends Component {
                         <NavLink to={{
                             pathname: "/user/" + this.props.author
                         }}> 
-                            <Popover content={this.props.author} title="">
+                            <Tooltip title={this.props.author}>
                                 {this.state.photoURL !== null ?
                                     <Avatar src={this.state.photoURL}/>:
                                     <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
                             }
-                            </Popover>
+                            </Tooltip>
                         </NavLink>
                     }
                     title = {

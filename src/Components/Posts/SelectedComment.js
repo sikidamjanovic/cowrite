@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Comment, Avatar, Popover, Row } from 'antd'
+import { Comment, Avatar, Tooltip, Row, message } from 'antd'
 import { getFirestore } from "redux-firestore";
 import { NavLink } from 'react-router-dom'
 
@@ -48,11 +48,10 @@ class SelectedComments extends Component {
                     })
                 }
             } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
+                message.error("No such document!");
             }
         }).catch(function(error) {
-            console.log("Error getting document:", error);
+            message.error("Error getting document:", error);
         });
     }
 
@@ -90,19 +89,19 @@ class SelectedComments extends Component {
                     avatar={
                         <div style={{ height: '100%' }}>
                             <Row style={{ display: 'flex', flexDirection: 'column' }}>
-                                <Popover content={this.props.author} title="">
+                                <Tooltip title={this.props.author}>
                                     {this.state.photoURL !== null ?
                                         <Avatar src={this.state.photoURL}/> :
                                         <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
                                 }
-                                </Popover>
+                                </Tooltip>
                             </Row>
                         </div>
                     }
                     content={
                         <div>
                             <div className="comment-text-hover">
-                                {this.props.comment}
+                                <p>{this.props.comment}</p>
                             </div>
                         </div>
                     }

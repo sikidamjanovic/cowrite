@@ -23,14 +23,12 @@ class ReportModal extends Component {
     };
   
     handleCancel = e => {
-      console.log(e);
       this.setState({
         visible: false,
       });
     };
 
     onChange = e => {
-        console.log('radio1 checked', e.target.value);
         this.setState({
           value: e.target.value,
         });

@@ -59,7 +59,6 @@ class StoriesFeed extends Component {
     }
 
     scrollTo(y){
-        console.log('SCROLLING:' , y)
         window.scrollTo({
             top: y,
             behavior: 'smooth'

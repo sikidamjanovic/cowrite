@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Menu, Dropdown, Icon, Button, Avatar } from 'antd';
+import { Menu, Dropdown, Icon, Button, Avatar, message } from 'antd';
 import { NavLink } from 'react-router-dom'
 import { getFirestore } from "redux-firestore";
 import { FiLogOut } from 'react-icons/fi'
@@ -18,6 +18,12 @@ class AccountDropdown extends Component {
         this.getAvatar()
     }
 
+    componentDidUpdate(prevProps, prevState){
+        if(prevProps.displayName !== this.props.displayName){
+            window.location.reload()
+        }
+    }
+
     getAvatar(){
         var that = this
         if(this.props.auth.displayName !== null){
@@ -34,14 +40,11 @@ class AccountDropdown extends Component {
                         })
                     }
                 } else {
-                    // doc.data() will be undefined in this case
-                    console.log("No such document!");
+                    message.error('Pic does not exist')
                 }
             }).catch(function(error) {
-                console.log("Error getting document:", error);
+                message.error(error)
             });
-        }else{
-            window.location.reload()
         }
     }
 

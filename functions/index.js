@@ -22,10 +22,8 @@ exports.convertToStory = functions.firestore
 */
 const evaluateLikes = ((data, id) => {
     // TODO: Add another parameter for time
-    if(data.likes.length >= 2){
-
+    if(data.likes.length >= 15){
         var posted = new Date()
-
         story = {
             promptId: id,
             complete: false,
@@ -41,12 +39,10 @@ const evaluateLikes = ((data, id) => {
             likeCount: data.likes.length,
             type: 'story'
         }
-
         // TODO: UPDATE USERS LIKE COLLECTION
-
         return createStory(story, id)
     }else{
-        return console.log('Not Enough Likes For Story')
+        return console.log('not enough likes.')
     }
 })
 

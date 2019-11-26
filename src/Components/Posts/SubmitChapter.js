@@ -10,7 +10,7 @@ class SubmitChapter extends Component {
         super(props);
         this.state = {
             content: '',
-            remainingCharacters: 4000
+            remainingCharacters: 10000
         }
     }
 
@@ -25,7 +25,7 @@ class SubmitChapter extends Component {
         if(e.target.id === 'content'){
             var content = e.target.value.toString()
             this.setState({
-                remainingCharacters: 2000 - content.length
+                remainingCharacters: 10000 - content.length
             })
         }
         this.setState({

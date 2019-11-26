@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Comments from './Comments'
 import SubmitChapter from './SubmitChapter'
 import SelectedComment from '../Posts/SelectedComment'
-import { Button, Icon, Popover, message, Radio, Row, Col, Divider } from 'antd';
+import { Button, Icon, message, Radio, Row, Col, Divider, Tooltip } from 'antd';
 import { getFirestore } from "redux-firestore";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { NavLink } from 'react-router-dom'
@@ -126,7 +126,7 @@ class StoryModalContent extends Component {
         for (let i = 1; i <= current; i++) {
             if(i === current && this.props.complete === false){
                 enabled.push(
-                    <Popover content={timeLeft + ' until chapter ' + i + ' is chosen'} title="">
+                    <Tooltip title={timeLeft + ' until chapter ' + i + ' is chosen'}>
                         <Radio.Button 
                             style={{ marginRight: '14px' }}
                             value={i - 1} 
@@ -135,7 +135,7 @@ class StoryModalContent extends Component {
                             <Icon style={{ marginRight: '7px' }} type="hourglass" />
                             {"Chapter " + i}
                         </Radio.Button>
-                    </Popover>
+                    </Tooltip>
                 )
             }else{
                 enabled.push(
@@ -504,7 +504,7 @@ class StoryModalContent extends Component {
                         </span>
                     </span>
                 </Button>
-                <Popover content={this.props.author} title="">
+                <Tooltip title={this.props.author}>
                     <Button type="link">
                         <NavLink to={{
                             pathname: "/user/" + this.props.author
@@ -514,7 +514,7 @@ class StoryModalContent extends Component {
                             </span>
                         </NavLink>
                     </Button>
-                </Popover>
+                </Tooltip>
                 <ReportModal
                     title={this.props.title} 
                     type="story"

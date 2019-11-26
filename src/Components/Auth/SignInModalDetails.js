@@ -55,7 +55,7 @@ class SignInModalDetails extends Component {
                     />
                 </Form.Item>
                 <Form.Item>
-                    <Input
+                    <Input.Password
                         id="password"
                         onChange={this.handleChange} 
                         prefix={<Icon type="lock" style={{ color: 'rgba(255,255,255,.25)' }} />}

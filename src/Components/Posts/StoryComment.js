@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Comment, Tooltip, Icon, Avatar, message, Popover, Popconfirm, Row } from 'antd'
+import { Comment, Tooltip, Icon, Avatar, message, Popconfirm, Row } from 'antd'
 import { getFirestore } from "redux-firestore";
 import { NavLink } from 'react-router-dom'
 var firebase = require('firebase');
@@ -150,11 +150,10 @@ class StoryComment extends Component {
                     })
                 }
             } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
+                message.error("No such document!");
             }
         }).catch(function(error) {
-            console.log("Error getting document:", error);
+            message.error("Error getting document:", error);
         });
     }
 
@@ -220,7 +219,7 @@ class StoryComment extends Component {
                     avatar={
                         <div style={{ height: '100%' }}>
                             <Row style={{ display: 'flex', flexDirection: 'column' }}>
-                                <Popover content={this.props.author} title="">
+                                <Tooltip title={this.props.author}>
                                     <NavLink to={{
                                         pathname: "/user/" + this.props.author
                                     }}>
@@ -229,7 +228,7 @@ class StoryComment extends Component {
                                             <Avatar style={{ background: '#111717', color: '#171F22' }} icon="user" />
                                         }
                                     </NavLink>
-                                </Popover>
+                                </Tooltip>
                             </Row>
                             <Row 
                                 style={{ 
@@ -255,7 +254,7 @@ class StoryComment extends Component {
                     content={
                         <div>
                             <div onClick={this.expandComment} style={this.expandStyle()} className="comment-text-hover">
-                                {this.props.comment}
+                                <p>{this.props.comment}</p>
                             </div>
                             <div>
                                 {this.state.expanded ? 

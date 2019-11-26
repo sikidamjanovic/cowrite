@@ -107,7 +107,6 @@ export default compose(
     connect(mapStateToProps),
     firestoreConnect( props => {
         const {displayName, type} = props
-        console.log(type)
         if(type === "yourPrompts"){
             return [{ 
                 collection: 'posts',

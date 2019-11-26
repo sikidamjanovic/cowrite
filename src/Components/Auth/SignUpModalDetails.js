@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, message, Input, Button,  Row, Col } from 'antd';
+import { Form, message, Input, Button,  Row, Col, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { signUp } from '../../Store/Actions/authActions'
 import signupbg from '../../img/signupbg.png'
@@ -31,7 +31,17 @@ class SignUpModalDetails extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.signUp(this.state);
+        let email = this.state.email
+        let password = this.state.password
+        let username = this.state.username
+
+        if(email.length === 0 || password.length === 0 || username.length === 0){
+            message.error('Some fields left empty')
+        }else if(username.length >= 20){
+            message.error('Username too long')
+        }else{
+            this.props.signUp(this.state);
+        }
     }
 
     render() {
@@ -48,6 +58,7 @@ class SignUpModalDetails extends Component {
                             <Form.Item>
                                 <Input
                                     id="username"
+                                    prefix={<Icon type="user" style={{ color: 'rgba(255,255,255,.25)' }} />}
                                     onChange={this.handleChange} 
                                     placeholder="Username"
                                 />
@@ -56,14 +67,16 @@ class SignUpModalDetails extends Component {
                             <Form.Item>
                                 <Input
                                     id="email"
+                                    prefix={<Icon type="mail" style={{ color: 'rgba(255,255,255,.25)' }} />}
                                     onChange={this.handleChange} 
                                     placeholder="Email"
                                 />
                             </Form.Item>
 
                             <Form.Item>
-                                <Input
+                                <Input.Password
                                     id="password"
+                                    prefix={<Icon type="lock" style={{ color: 'rgba(255,255,255,.25)' }} />}
                                     onChange={this.handleChange} 
                                     placeholder="Password"
                                 />
