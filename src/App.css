@@ -656,3 +656,16 @@ SCROLL STYLING
 .ant-dropdown-menu-item:hover{
     background-color: rgb(0, 0, 0, 0.3);
 }
+
+.ant-alert, .ant-alert-error, .ant-alert-with-description{
+    background-color: rgba(255, 0, 0, 0.103) !important;
+    margin-bottom: 24px !important;
+}
+
+.ant-alert-message{
+    color: white !important
+}
+
+.ant-modal-footer{
+    background-color: #111717 !important;
+}

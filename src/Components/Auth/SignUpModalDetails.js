@@ -16,13 +16,6 @@ class SignUpModalDetails extends Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState){
-        if(prevProps.authError !== this.props.authError){
-            this.forceUpdate()
-            message.error(this.props.authError)
-        }
-    }
-
     handleChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value

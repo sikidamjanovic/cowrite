@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Radio, Avatar, Row, Button, Popconfirm, message, Spin } from 'antd'
+import { Radio, Avatar, Row, Button, Popconfirm, message, Spin, Select } from 'antd'
 import ProfilePostFeed from '../Profile/ProfilePostFeed'
 import DisplayPicUploader from './DisplayPicUploader';
 import { getFirestore } from "redux-firestore";
@@ -18,6 +18,7 @@ class UserProfile extends Component {
             userExists: null
         }
         this.handleRadioChange = this.handleRadioChange.bind(this)
+        this.handleSelectChange = this.handleSelectChange.bind(this)
         this.deleteProfile = this.deleteProfile.bind(this)
         this.doesUserExist = this.doesUserExist.bind(this)
     }
@@ -58,6 +59,12 @@ class UserProfile extends Component {
         })
     }
 
+    handleSelectChange(value) {
+        this.setState({
+            selected: value
+        })
+    }
+
     showRelevantFeed(){
         var path = window.location.pathname.split('/')
         var displayName = path[2]
@@ -79,6 +86,7 @@ class UserProfile extends Component {
                 this.setState({
                     userExists: true
                 })
+                break
             }else{
                 this.setState({
                     userExists: false
@@ -125,6 +133,7 @@ class UserProfile extends Component {
     renderProfile(){
         var path = window.location.pathname.split('/')
         var displayName = path[2]
+        const { Option } = Select;
         if(this.state.userExists){
             return(
                 <div>
@@ -145,7 +154,7 @@ class UserProfile extends Component {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button>Delete</Button>
+                                    <Button>Delete Profile</Button>
                                 </Popconfirm>
                             </div>:
                             null
@@ -154,12 +163,12 @@ class UserProfile extends Component {
                     <Row style={{ marginTop: '48px' }} onChange={this.handleRadioChange}>
                         <Radio.Group defaultValue="yourPrompts" buttonStyle="solid">
                             {this.state.isOwnProfile ? 
-                                <span>
-                                    <Radio.Button value="yourPrompts">Your Prompts</Radio.Button>
-                                    <Radio.Button value="yourStories">Your Stories</Radio.Button>
-                                    <Radio.Button value="likedPrompts">Liked Prompts</Radio.Button>
-                                    <Radio.Button value="likedStories">Liked Stories</Radio.Button>
-                                </span>
+                                <Select defaultValue="yourPrompts" style={{ width: 150 }} onChange={this.handleSelectChange}>
+                                    <Option value="yourPrompts">Your Prompts</Option>
+                                    <Option value="yourStories">Your Stories</Option>
+                                    <Option value="likedPrompts">Liked Prompts</Option>
+                                    <Option value="likedStories">Liked Stories</Option>
+                                </Select>  
                             :
                                 <span>
                                     <Radio.Button value="yourPrompts">{displayName}'s Prompts</Radio.Button>

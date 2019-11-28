@@ -9,7 +9,6 @@ export const signIn = (credentials) => {
             credentials.password
         ).then(() => {
             dispatch({ type: 'LOGIN_SUCCESS'});
-            message.success('Logged in successfully')
             window.location.reload();
         }).catch((err) => {
             dispatch({ type: 'LOGIN_ERROR', err });

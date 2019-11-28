@@ -52,7 +52,7 @@ class DisplayPicUploader extends Component {
         return (
             <Row>
                 <Button style={{ padding: 0, margin: 0}}>
-                    <label style={{ width: '100%', height: '100%', padding: '10px'}} for="upload">Change DP</label>
+                    <label style={{ width: '100%', height: '100%', padding: '10px'}} for="upload">Change Profile Pic</label>
                 </Button>
                 <Input type="file" id="upload" style={{ visibility: 'hidden', width: 0, padding: 0 }} onChange={this.fileSelectedHandler}/>
             </Row>

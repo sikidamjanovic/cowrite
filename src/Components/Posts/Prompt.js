@@ -38,7 +38,7 @@ class Prompt extends Component {
             var diffHours = Math.abs(new Date() - postedTime.toDate()) / 36e5;
             var hoursLeft = 48 - diffHours
             var minutesLeft = hoursLeft * 60
-            const tooltipTitle = "The time remaining for this prompt to get 10 likes!"
+            const tooltipTitle = "Time left before prompt is deleted Needs " + (15 - this.state.amountOfLikes) + " more likes!"
 
             if(hoursLeft > 1){
                 return(
@@ -81,6 +81,7 @@ class Prompt extends Component {
                 this.setState({
                     userLiked: true
                 })
+                break
             }else{
                 this.setState({
                     userLiked: false
@@ -192,9 +193,12 @@ class Prompt extends Component {
             }else{
                 return(
                     <Tooltip title="Report this prompt">
-                        <button id="cardActionBtn">
-                            <Icon type="warning" key="warning" />
-                        </button>
+                        <ReportModal 
+                            title={this.props.title} 
+                            type="prompt"
+                            id={this.props.id}
+                            component="card"
+                        />
                     </Tooltip>
                 )    
             }

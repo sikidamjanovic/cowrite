@@ -6,7 +6,7 @@ const authReducer = (state = initState, action) => {
         case 'LOGIN_ERROR':
             return {
                 ...state,
-                authError: 'Login failed'
+                authError: 'Email or password is incorrect'
             }
             
         case 'LOGIN_SUCCESS':

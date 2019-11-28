@@ -53,9 +53,9 @@ class ReportModal extends Component {
                 visible: false
             },() => {
                 if(this.type === "story"){
-                    message.success("Story has been reported! We'll be looking into it.")
+                    message.success("Story has been reported! We'll look into it")
                 }else{
-                    message.success("Prompt has been reported! We'll be looking into it.")
+                    message.success("Prompt has been reported! We'll look into it")
                 }
             })
         }
@@ -87,7 +87,7 @@ class ReportModal extends Component {
                     onOk={this.handleReport}
                     okText="Report"
                 >
-                    <Row style={{ padding: '24px' }}>
+                    <Row style={{ backgroundColor: '#111717', padding: '24px' }}>
                         <Row style={{ marginBottom: '24px' }}>
                             <h3>Report '{this.props.title}'</h3>
                         </Row>

@@ -4,7 +4,7 @@ import '../../App.css'
 import SignedInLinks from '../Auth/SignedInLinks';
 import SignedOutLinks from '../Auth/SignedOutLinks';
 import { connect } from 'react-redux';
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import logo from '../../img/logo.png'
 
 const Nav = (props) => {
@@ -15,17 +15,15 @@ const Nav = (props) => {
             <Menu id="navBar" mode="horizontal">
 
                 <Row className="nav-row">
-                    <NavLink to={{
+                    <Col xs={24} md={5} xl={3} className="nav-col-left">
+                    <Link to={{
                         pathname: "/"
-                    }}> 
-                        <Col xs={24} md={3} className="nav-col-left">
-                            <Menu.Item key="app">
-                                    <img id="logo" src={logo} alt="logo"/>
-                            </Menu.Item>
-                        </Col>
-                    </NavLink>
+                    }}>
+                        <img id="logo" src={logo} alt="logo"/>
+                    </Link>
+                    </Col>
 
-                    <Col xs={24} md={20} className="nav-col-right">
+                    <Col xs={24} md={18} xl={20} className="nav-col-right">
                         { links }
                     </Col>
                 </Row>

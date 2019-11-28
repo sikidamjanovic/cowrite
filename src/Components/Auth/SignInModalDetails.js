@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Icon, Input, Button, message } from 'antd';
+import { Form, Icon, Input, Button, Alert } from 'antd';
 import { connect } from 'react-redux';
 import { signIn } from '../../Store/Actions/authActions'
 import '../../App.css'
@@ -12,20 +12,6 @@ class SignInModalDetails extends Component {
             email: '',
             password: '',
             error: null
-        }
-    }
-
-    componentDidUpdate(prevProps, prevState){
-        if(prevProps.authError !== this.props.authError){
-            this.setState({
-                error: this.props.authError
-            })
-        }
-        if(prevState.error !== this.state.error && this.state.error !== null){
-            message.error(this.state.error)
-            this.setState({
-                error: null
-            })
         }
     }
 
@@ -50,8 +36,8 @@ class SignInModalDetails extends Component {
                     <Input
                         id="email"
                         onChange={this.handleChange} 
-                        prefix={<Icon type="user" style={{ color: 'rgba(255,255,255,.25)' }} />}
-                        placeholder="Username"
+                        prefix={<Icon type="mail" style={{ color: 'rgba(255,255,255,.25)' }} />}
+                        placeholder="Email"
                     />
                 </Form.Item>
                 <Form.Item>
@@ -63,6 +49,15 @@ class SignInModalDetails extends Component {
                         placeholder="Password"
                     />
                 </Form.Item>
+                {this.props.authError ?
+                    <Alert
+                        message="Error"
+                        description={this.props.authError}
+                        type="error"
+                        showIcon
+                    /> :
+                    null
+                }
                 <Button type="primary" htmlType="submit">    
                     <Icon type="plus"/>
                     Login
