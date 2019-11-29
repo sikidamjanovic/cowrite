@@ -38,7 +38,7 @@ class Prompt extends Component {
             var diffHours = Math.abs(new Date() - postedTime.toDate()) / 36e5;
             var hoursLeft = 48 - diffHours
             var minutesLeft = hoursLeft * 60
-            const tooltipTitle = "Time left before prompt is deleted Needs " + (15 - this.state.amountOfLikes) + " more likes!"
+            const tooltipTitle = "Time left before prompt is deleted Needs " + (10 - this.state.amountOfLikes) + " more likes!"
 
             if(hoursLeft > 1){
                 return(
@@ -166,7 +166,7 @@ class Prompt extends Component {
                     })
                 }
             } else {
-                message.error("No such document!");
+                console.log("No such user");
             }
         }).catch(function(error) {
             message.error("Error getting document:", error);

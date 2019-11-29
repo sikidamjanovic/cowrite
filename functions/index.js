@@ -22,7 +22,7 @@ exports.convertToStory = functions.firestore
 */
 const evaluateLikes = ((data, id) => {
     // TODO: Add another parameter for time
-    if(data.likes.length >= 15){
+    if(data.likes.length >= 10){
         var posted = new Date()
         story = {
             promptId: id,
