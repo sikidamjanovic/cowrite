@@ -29,7 +29,7 @@ class SelectedComments extends Component {
 
     getLikeAmount(){
         this.setState({
-            amountOfLikes: this.props.likeCount
+            amountOfLikes: this.props.likes.length
         })
     }
 
